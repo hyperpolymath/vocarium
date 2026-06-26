@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: MPL-2.0
+# Mustfile — Physical state contract (GENERIC TEMPLATE)
+#
+# What MUST be true about this repository. Hard requirements.
+# Run with: must check
+# Fix with: must fix (where a deterministic fix exists)
+
+@abstract:
+GENERIC TEMPLATE: Physical-state invariants. Replace all checks below
+with project-specific requirements. These are hard requirements —
+CI and pre-commit hooks should fail if any check fails.
+@end
+
+## File Presence
+
+[REPLACE WITH PROJECT-SPECIFIC FILE REQUIREMENTS]
+
+### required-file-check
+- description: [File that must exist and why]
+- run: test -f [filename]
+- severity: critical | warning | info
+
+## Directory Structure
+
+### required-directory-check
+- description: [Directory that must exist and why]
+- run: test -d [dirname]
+- severity: critical
+
+## Repository Standards
+
+### license-check
+- description: LICENSE file must exist with correct SPDX identifier
+- run: test -f LICENSE && grep -q 'SPDX-License-Identifier' LICENSE
+- severity: critical
+
+### readme-check
+- description: README must exist
+- run: test -f README.adoc || test -f README.md
+- severity: critical
+
+### governance-check
+- description: Governance docs must exist
+- run: test -f GOVERNANCE.adoc && test -f MAINTAINERS.adoc && test -f .github/CODEOWNERS
+- severity: critical
+
+## Code Quality
+
+### no-committed-secrets
+- description: No secrets committed in repo
+- run: [Custom command to check for secrets]
+- severity: critical
+
+### linting-check
+- description: Code must pass linter
+- run: [Custom lint command]
+- severity: warning

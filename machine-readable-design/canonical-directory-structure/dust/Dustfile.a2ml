@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: MPL-2.0
+# Dustfile — Cleanup and hygiene contract (GENERIC TEMPLATE)
+# Author: [Replace with author]
+
+@abstract:
+GENERIC TEMPLATE: What should be cleaned up or removed from this repository.
+These are housekeeping items, not blockers. Replace all checks below
+with project-specific cleanup requirements.
+@end
+
+## Stale Files
+
+[REPLACE WITH PROJECT-SPECIFIC STALE FILE PATTERNS]
+
+### no-stale-temp-files
+- description: No temporary or stale files in root
+- run: "! ls *-temp-*.md *-old-*.md 2>/dev/null | head -1 | grep -q ."
+- severity: info
+
+## Build Artifacts
+
+### no-tracked-artifacts
+- description: No build artifacts tracked in git
+- run: "! git ls-files target/ dist/ build/ 2>/dev/null | head -1 | grep -q ."
+- severity: warning
+
+## Format Duplicates
+
+### no-duplicate-formats
+- description: Only one format for each document type
+- run: "! (test -f README.md && test -f README.adoc)"
+- severity: warning
