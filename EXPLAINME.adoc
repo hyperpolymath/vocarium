@@ -1,118 +1,440 @@
-// SPDX-License-Identifier: CC-BY-SA-4.0
-// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-= RSR Template Repo - Explainme
-image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[License: MPL-2.0,link="https://opensource.org/licenses/MPL-2.0"]
+# EXPLAINME: Vocarium
 
-:toc:
-:icons: font
+> The README makes claims. This file backs them up.
 
-This file explains how the key template claims map to real files.
+Vocarium is an experimental trope database: a store for vokeable particulars, their transformation paths, grades, warrants, use-models, and verdicts.
 
-== Central Session Protocol Authority
+This file explains what that means, what the repository is trying to prove, what is currently only design intent, and what evidence should exist before stronger claims are made.
 
-Claim:
-Session protocols are centrally maintained and not duplicated in this template.
+## Contents
 
-How this is implemented:
+1. What the README claims
+2. Core claim: Vocarium stores particularities, not just entities
+3. Core claim: Vocarium is a database of vokeable particulars
+4. Core claim: Vocarium stores transformation paths and loss-shapes
+5. Core claim: Vocarium separates retrieved, interpretable, and licensed
+6. Core claim: Vocarium works with Haec and Hermeneia
+7. Evidence boundary
+8. What Vocarium is not
+9. Falsifiability and failure modes
+10. Next receipts needed
 
-* The local dispatcher (`session/dispatch.sh`) maps canonical commands to central
-  protocol paths in `standards/session-management-standards`.
-* Local files (`session/custom-checks.k9`, `session/local-hooks.sh`,
-  `coordination.k9`) are integration-only.
+---
 
-Caveat:
+## 1. What the README claims
 
-* If `SESSION_STANDARDS_DIR` is unset and no adjacent standards checkout exists,
-  the dispatcher records the command but cannot resolve central checklist paths.
+The README should claim only this much:
 
-== Canonical Command Surface
+> Vocarium is an experimental database architecture for storing trope-shaped particulars and their transformation records, so that Hermeneia can query what those particulars can become under a use-model.
 
-Claim:
-Template bindings align to one canonical command model.
+This is deliberately narrower than:
 
-How this is implemented:
+> Vocarium is a complete semantic database.
 
-* `Justfile` provides thin aliases (`intake-repo`, `checkpoint-change`,
-  `verify-maintenance`, `verify-substantial`, `verify-release`, `close-planned`,
-  `close-urgent`, `recover-repo`, `handover-*`).
-* Every alias calls `session/dispatch.sh` with canonical verb-object pairs.
+or:
 
-Caveat:
+> Vocarium solves meaning, interpretation, and context.
 
-* Recipes are wrappers only. They do not replace protocol content from
-  the central standards repo.
+It does not.
 
-== Runtime State Is Local
+Vocarium is a storage and inspection layer for particularity-aware records.
 
-Claim:
-Session state is per-repository runtime output, not standards text.
+---
 
-How this is implemented:
+## 2. Core claim: Vocarium stores particularities, not just entities
 
-* `session/dispatch.sh` writes command and continuity-core capture stubs to
-  `.session/LAST-CANONICAL-COMMAND.md` in the target repository path.
+### README claim
 
-Caveat:
+Vocarium stores **tropes**: particularised property-instances.
 
-* Runtime files are intentionally lightweight and require human/agent completion.
+A trope has at least four core coordinates:
 
-== Template Token Policy
+```text
+quality  — what is at stake
+bearer   — what bears it
+context  — the use-situation or language-game
+record   — the record, claim, speech-act, source, or evidential role
+```
 
-Claim:
-Placeholders are explicit template content until initialization.
+### What this means
 
-How this is implemented:
+A conventional database may store:
 
-* `README.adoc` and bootstrap recipes keep `{{TOKEN}}` placeholders visible.
-* `just init` performs token replacement.
+```text
+student_id = 42
+property = anxious
+value = true
+```
 
-Caveat:
+Vocarium should instead be able to store something like:
 
-* Uninitialized placeholders must not be treated as project-specific truth.
+```text
+quality = "anxious hesitation"
+bearer  = "student_42"
+context = "feedback discussion"
+record  = "tutor observation"
+```
 
-== Dependency Updates (Dependabot)
+The important difference is that the system does not collapse the observation into a flat universal predicate such as:
 
-Claim:
-Dependency bumps land fast and safely, without manual chasing.
+```text
+student_42 IS anxious
+```
 
-How this is implemented:
+It preserves the particular occurrence:
 
-* `dependabot.yml` watches the Dependabot-supported ecosystems the estate
-  actually uses: `github-actions`, `cargo`, `mix` (Elixir), `docker`.
-* `dependabot-automerge.yml` auto-merges *every* bump (patch/minor/major,
-  security or routine) **once the required checks are green** — a broken bump
-  fails CI and stays open (you get an email); it never lands on a red `main`.
+```text
+this anxious-hesitation
+borne by this student
+in this setting
+under this record
+```
 
-Caveat:
+### Receipts to look for
 
-* Dependabot has **no Deno or Bun ecosystem**, and `pnpm` only rides under the
-  `npm` ecosystem (itself banned). For this Deno-first estate Dependabot cannot
-  watch the runtime dependencies; the `npm`/`pip` entries are retained only for
-  transitional/legacy manifests and are otherwise inert. Deno dependency
-  currency is managed via `deno.json`/`deno.lock`, not Dependabot.
-* Do **not** add Dependabot as a ruleset *bypass* actor: that lets bumps skip
-  the required checks (secret-scanning, SAST), removing the safety gate and the
-  "it broke" signal. Auto-merge-on-green gives fast merges without it.
+A mature Vocarium repository should contain:
 
-== Julia Registry Packages — Standalone Repo Requirement
+```text
+schema/
+  trope.schema.json
+  grade.schema.json
+  path.schema.json
+  use-model.schema.json
+  verdict.schema.json
 
-Claim:
-If this template is used to create a Julia package, it must remain a standalone repository registered with the Julia package registry.
+examples/
+  basic-trope.json
+  paraphrase-loss.json
+  quotation-to-claim.json
 
-How this is implemented:
+docs/
+  model.md
+  examples.md
+```
 
-* Julia's package registry (General.jl or other) expects each package to be a standalone GitHub repository with `Project.toml` at the repository root.
-* Installation via `Pkg.add()`, dependency resolution, and automated CI/CD all depend on this canonical structure.
+The exact file names may differ, but the repository should expose the structure in machine-readable form.
 
-Caveat:
+### Caveat
 
-* Do NOT move this repository into a monorepo or subdirectory, as this breaks registry registration and package discoverability.
-* Julia packages published to a registry must each remain a standalone top-level repository (registry registration and package discovery require it).
-* Non-registry Julia packages can be organized differently if they are not published to any registry.
+If the repository only stores ordinary entities and labels, then “trope database” is aspirational. The claim is earned only when the stored records preserve bearer, context, record, and transformation information as first-class data.
 
+---
 
-== License
+## 3. Core claim: Vocarium is a database of vokeable particulars
 
-This project is licensed under the Mozilla Public License, v. 2.0. See the `LICENSE` file for details.
+### README claim
 
-SPDX-License-Identifier: CC-BY-SA-4.0
+Vocarium stores things that Hermeneia can **voke**.
+
+To voke is to call a stored particular into a use-relation.
+
+### What this means
+
+Vocarium is not merely an archive. A stored trope should be queryable under operations such as:
+
+```text
+invoke    — call a particular into a use-model
+evoke     — call forth neighbouring or resonant particulars
+convoke   — bring several particulars together
+transvoke — trace a particular across context or use
+provoke   — stress-test a candidate interpretation
+revoke    — withdraw a previous licence
+```
+
+Vocarium does not need to implement all of these operations itself. Its responsibility is to store the records Hermeneia needs in order to perform them.
+
+### Receipts to look for
+
+A mature repository should contain examples where the same stored trope is called under different use-models and receives different verdicts.
+
+For example:
+
+```text
+"real language"
+  under casual-note use-model       → sufficient
+  under critical-paraphrase model   → insufficient
+```
+
+### Caveat
+
+If the database cannot store use-models, floors, or verdicts, then it is not yet a Vocarium in the strong sense. It may be a prototype store for tropes, but not yet a database of vokeable particulars.
+
+---
+
+## 4. Core claim: Vocarium stores transformation paths and loss-shapes
+
+### README claim
+
+Vocarium stores not only records, but transformations between records.
+
+### What this means
+
+A trope-aware database needs to remember what happened when a particular was moved, paraphrased, quoted, summarised, projected, detached, fused, or attenuated.
+
+A transformation path should record at least:
+
+```text
+input trope
+output trope
+effect
+grade
+warrant
+source
+```
+
+Example effects, aligned with Haec, include:
+
+```text
+preserve
+project
+collapse
+detach
+attenuate
+fuse
+```
+
+A loss-shape might say:
+
+```text
+quality = Attenuated(6)
+bearer  = Present
+context = Present
+record  = Present
+bond    = Intact
+merge   = Single
+```
+
+This allows the system to distinguish:
+
+```text
+the phrase was preserved
+the phrase was loosely paraphrased
+the phrase lost its technical force
+the context was dropped
+the record was misrepresented
+```
+
+### Receipts to look for
+
+The repository should contain transformation examples that round-trip into the same IR shape used by Haec or the checker.
+
+Minimum fixture set:
+
+```text
+passing/
+  preserve-present.json
+  attenuate-within-floor.json
+
+failing/
+  dropped-context.json
+  over-attenuated-quality.json
+  untagged-fusion.json
+```
+
+### Caveat
+
+The database can store a claimed loss-shape. It does not magically prove that the loss-shape is true. That is an O2/front-end obligation.
+
+If a front end claims:
+
+```text
+"authentic" → "real" = Attenuated(1)
+```
+
+Vocarium can store that claim, but the claim still needs a warrant.
+
+---
+
+## 5. Core claim: Vocarium separates retrieved, interpretable, and licensed
+
+### README claim
+
+Vocarium supports a distinction between:
+
+```text
+retrieved
+interpretable
+licensed
+```
+
+### What this means
+
+A conventional search result can be misleading. The fact that something was retrieved does not mean it supports the user’s purpose.
+
+Vocarium should support distinctions such as:
+
+```text
+retrieved:      yes
+interpretable:  yes
+licensed:       no
+```
+
+Example:
+
+```text
+"real language" is retrieved as a paraphrase candidate for "authentic language".
+
+It is interpretable as a loose gloss.
+
+It is not licensed as a submitted critical paraphrase under a strict use-model.
+```
+
+### Receipts to look for
+
+A mature repository should include verdict examples where a record is found but fails the use-model floor.
+
+### Caveat
+
+This is a design claim unless there is an implemented verdict/check layer or a stored verdict schema with examples.
+
+---
+
+## 6. Core claim: Vocarium works with Haec and Hermeneia
+
+### README claim
+
+```text
+Haec transforms.
+Vocarium holds.
+Hermeneia vokes.
+```
+
+### What this means
+
+Vocarium is not the whole system.
+
+Its role is storage and traceability.
+
+```text
+Haec
+  writes or lowers trope transformations
+
+Vocarium
+  stores tropes, transformation paths, grades, warrants, use-models, and verdicts
+
+Hermeneia
+  queries stored particulars through voking operations
+```
+
+Vocarium should not absorb Haec’s transformation syntax or Hermeneia’s query language. It should expose stable records that both can use.
+
+### Receipts to look for
+
+Minimum integration evidence:
+
+```text
+examples/haec-output.ir.json
+examples/vocarium-ingest.json
+examples/hermeneia-query.hil
+examples/hermeneia-result.json
+```
+
+### Caveat
+
+If integration is not implemented, the README should say:
+
+> Vocarium is designed to sit between Haec and Hermeneia.
+
+not:
+
+> Vocarium integrates with Haec and Hermeneia.
+
+---
+
+## 7. Evidence boundary
+
+Vocarium may currently be one of several things:
+
+```text
+design sketch
+schema prototype
+storage prototype
+queryable database
+checker-integrated database
+```
+
+The README should state which one is true.
+
+Do not claim:
+
+```text
+production database
+complete semantic engine
+general theory of interpretation
+verified storage layer
+```
+
+unless the repository contains direct evidence.
+
+The honest public framing is:
+
+> Vocarium is an experimental trope database architecture. Its current evidence should be read from the schema, examples, tests, and integration fixtures present in this repository.
+
+---
+
+## 8. What Vocarium is not
+
+Vocarium is not:
+
+```text
+a thesaurus
+an ontology of types
+a normal document database with poetic naming
+a truth engine
+a replacement for warrants
+a proof that a transformation is faithful
+a finished semantic database
+```
+
+Vocarium is also not responsible for “nearestness” search by itself. A front end may rank candidates, but Vocarium’s core responsibility is to store the particular, the path, the grade, the warrant, and the verdict.
+
+---
+
+## 9. Falsifiability and failure modes
+
+Vocarium’s core claims fail if:
+
+1. The stored records collapse tropes into ordinary entity/property rows.
+2. Context, bearer, record, or warrant are optional decoration rather than first-class data.
+3. Transformations are not stored as paths with grades.
+4. Use-model floors cannot be represented.
+5. Verdicts cannot distinguish retrieved from licensed.
+6. The database cannot show what was lost across a transformation.
+7. The system silently accepts unwarranted substitutions as preserves.
+
+A particularly important failure case:
+
+```text
+"passed away" → "croaked"
+```
+
+If Vocarium cannot represent the difference between a loose lexical relation and an infelicitous context/register substitution, then the design has not yet earned its own premise.
+
+---
+
+## 10. Next receipts needed
+
+Recommended next evidence items:
+
+```text
+1. Minimal JSON schemas for trope, grade, path, use-model, verdict, warrant.
+2. One full worked example:
+   source quotation → paraphrase → claim → verdict.
+3. One passing case and three failing cases:
+   over-attenuated quality
+   dropped context
+   wrong record / force
+4. A small CLI or fixture runner:
+   vocarium validate examples/*.json
+5. A design note explaining exactly what Vocarium stores and what it delegates to Haec/Hermeneia.
+6. A no-overclaiming status table:
+   Designed / Schematized / Implemented / Tested / Integrated.
+```
+
+Until those receipts exist, the safe claim is:
+
+> Vocarium is a proposed database architecture for storing trope-shaped particulars and their transformation evidence.
+
+Once they exist, the stronger claim becomes:
+
+> Vocarium is an implemented store for trope-shaped particulars, transformation paths, grades, warrants, use-models, and verdicts.
