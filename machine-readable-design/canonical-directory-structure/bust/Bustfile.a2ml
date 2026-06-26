@@ -1,0 +1,24 @@
+// Bustfile.a2ml — Rollback and breakage contractile (GENERIC TEMPLATE)
+// SPDX-License-Identifier: MPL-2.0
+
+Bust {
+    name: "{{PROJECT_NAME}}"
+    version: "1.0.0"
+    description: "Rollback procedures when something breaks in this repository"
+
+    scenarios: {
+        "{{SCENARIO_1_NAME}}": "{{SCENARIO_1_ROLLBACK_PROCEDURE}}",
+        "{{SCENARIO_2_NAME}}": "{{SCENARIO_2_ROLLBACK_PROCEDURE}}"
+    }
+
+    escalation-ladder: [
+        "1. {{ESCALATION_STEP_1}}",
+        "2. {{ESCALATION_STEP_2}}",
+        "3. {{ESCALATION_STEP_3}}"
+    ]
+
+    backup-points: [
+        "{{BACKUP_POINT_1}}",
+        "{{BACKUP_POINT_2}}"
+    ]
+}

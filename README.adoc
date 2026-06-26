@@ -1,0 +1,99 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+// SPDX-FileCopyrightText: 2024-2026 Jonathan D.A. Jewell (hyperpolymath)
+= {{PROJECT_NAME}}
+:toc:
+:toc-placement: preamble
+
+image:https://img.shields.io/badge/OpenSSF-Best_Practices-green?logo=opensourcesecurity[OpenSSF Best Practices,link="https://www.bestpractices.dev/en/projects/new?repo_url=https://{{FORGE}}/{{OWNER}}/{{REPO}}"]
+image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[License: MPL-2.0,link="https://opensource.org/licenses/MPL-2.0"]
+image:https://raw.githubusercontent.com/hyperpolymath/palimpsest-license/main/assets/badges/svg/badge-quantum-safe.svg[Quantum-Safe Provenance,link="https://github.com/hyperpolymath/palimpsest-license/blob/main/v1.0/exhibits/EXHIBIT-B-QUANTUM-SAFE.txt"]
+image:https://img.shields.io/badge/Docs-CC--BY--SA--4.0-blue.svg[Docs: CC-BY-SA-4.0,link="https://creativecommons.org/licenses/by-sa/4.0/"]
+image:https://api.thegreenwebfoundation.org/greencheckimage/{{FORGE}}[Green Web,link="https://www.thegreenwebfoundation.org/green-web-check/?url={{FORGE}}"]
+image:https://img.shields.io/badge/RSR-Rhodium_Standard-9C27B0[Rhodium Standard Repository,link="https://github.com/hyperpolymath/rhodium-standard-repositories"]
+image:https://img.shields.io/badge/Idris-Inside-5E5086?logo=idris&logoColor=white[Idris Inside,link="https://github.com/hyperpolymath/proven"]
+
+{{PROJECT_DESCRIPTION}}
+
+[IMPORTANT]
+====
+*This file is a template.* You are reading `README.adoc` from the *RSR template repo*
+(or a freshly-cloned copy of it). Run `just init` to replace every `{{PLACEHOLDER}}`
+token with your project's details, then delete this admonition. Until you do, the
+`{{...}}` markers below are intentional placeholders, not content.
+====
+
+== What this is
+
+A new repository scaffolded from the *Rhodium Standard Repository (RSR)* template:
+a batteries-included starting point that ships with CI/CD, machine-readable project
+metadata, an AI-agent gatekeeper protocol, a formally-typed ABI/FFI seam
+(Idris2 + Zig), container and reproducible-build scaffolding, and governance
+infrastructure — all wired and passing the RSR validators on day one.
+
+Replace this section with a description of *your* project once initialised.
+
+== Quick start
+
+[source,bash]
+----
+# 1. Create a repo from this template (or clone it), then from the repo root:
+just init                # interactive bootstrap: fills every {{PLACEHOLDER}}
+
+# 2. See the available tasks:
+just                     # lists all phases (build, test, validate, audit, ...)
+
+# 3. Check the repo still satisfies the RSR shape:
+just validate            # structure + metadata checks
+----
+
+`just init` prompts for the project name, owner, author, licence contact, and the
+other values listed in `.machine_readable/ai/PLACEHOLDERS.adoc`, substitutes them
+across the tree, validates the result, and (if available) runs the `k9-svc` checks.
+
+== What you get
+
+* *Machine-readable metadata* (`.machine_readable/6a2/`) — `STATE`, `META`,
+  `ECOSYSTEM`, `PLAYBOOK`, `AGENTIC`, `NEUROSYM`, `CLADE`, and `anchors/ANCHOR`,
+  in a2ml, so tools and agents can read the project's state and boundaries.
+* *AI gatekeeper protocol* — `0-AI-MANIFEST.a2ml` is the universal entry point that
+  tells an AI agent how to work in this repo before it touches anything.
+* *Typed ABI/FFI seam* — `src/interface/Abi/` (Idris2 type + layout proofs) over
+  `src/interface/ffi/` (Zig implementation), with generated C headers.
+* *CI/CD* — GitHub Actions for quality, security (CodeQL, Scorecard, secret
+  scanning), multi-forge mirroring, and RSR anti-pattern enforcement.
+* *Supply-chain & reproducibility* — container layering (stapeln), Guix shells,
+  SBOM, and signing hooks.
+* *Governance* — `GOVERNANCE.adoc`, `MAINTAINERS.adoc`, `.github/` community health
+  files, and a release `AUDIT.adoc` gate.
+
+== Repository map
+
+[cols="1,3"]
+|===
+| Path | What lives there
+
+| `0-AI-MANIFEST.a2ml`      | Universal entry point for AI agents (read first).
+| `.machine_readable/`      | Project metadata, policies, contractiles, AI configs.
+| `src/interface/`          | Typed ABI (Idris2) + FFI (Zig) + generated headers.
+| `docs/`                   | Onboarding, status, governance, practice, decisions.
+| `build/`, `Justfile`      | Task orchestration (`just` phases delegate to `build/just/*.just`).
+| `.github/`                | Workflows + community health files.
+| `tests/`, `benches/`      | Test suites and benchmarks.
+|===
+
+== Where to go next
+
+* `EXPLAINME.adoc` — the engineering deep-dive: how the pieces actually work.
+* `AFFIRMATION.adoc` — the dated, signed honesty snapshot of the repo's true state.
+* `AUDIT.adoc` — the release audit gate.
+* `.machine_readable/ai/PLACEHOLDERS.adoc` — the full placeholder reference.
+
+== Licence
+
+Code, configuration and scripts are link:LICENSE[Mozilla Public License 2.0]
+(`MPL-2.0`); prose documentation is `CC-BY-SA-4.0`. Both texts live in
+`LICENSES/`, and per-file `SPDX-License-Identifier` headers are authoritative.
+The GitHub-detected licence is MPL-2.0 (the root `LICENSE`). Long-term
+attribution uses Quantum-Safe Provenance — see
+link:https://github.com/hyperpolymath/palimpsest-license/blob/main/v1.0/exhibits/EXHIBIT-B-QUANTUM-SAFE.txt[PMPL Exhibit B].

@@ -1,0 +1,108 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Canonical Directory Structure for Contractiles
+
+This directory contains the GENERIC TEMPLATE versions of the canonical contractile files.
+Copy these files to your repository's `.machine_readable/contractiles/` directory
+and customize them with your project-specific content.
+
+== Structure
+
+[tree]
+----
+.machine_readable/
+├── 6a2/
+│   ├── anchors/
+│   ├── META.a2ml
+│   ├── ECOSYSTEM.a2ml
+│   ├── STATE.a2ml
+│   ├── PLAYBOOK.a2ml
+│   ├── AGENTIC.a2ml
+│   └── NEUROSYM.a2ml
+├── contractiles/
+│   ├── Intentfile.a2ml   <- Copy from here
+│   ├── Mustfile.a2ml     <- Copy from here
+│   ├── Trustfile.a2ml    <- Copy from here
+│   ├── Adjustfile.a2ml   <- Copy from here
+│   ├── bust/
+│   │   └── Bustfile.a2ml <- Copy from here
+│   └── dust/
+│       └── Dustfile.a2ml <- Copy from here
+├── self-validating/
+│   ├── examples/
+│   └── k9-svc/
+└── bot_directives/
+----
+
+== Runners
+
+The following command-line runners process these files:
+
+[cols="1,1,2"]
+|===
+| Runner | Processes | Purpose
+
+| `intend` | Intentfile.a2ml | North-star tracking (intents + wishes)
+| `must` | Mustfile.a2ml | Hard requirements (CI gates)
+| `trust` | Trustfile.a2ml | Trust boundaries + integrity checks
+| `adjust` | Adjustfile.a2ml | Drift tolerance + corrective actions
+| `bust` | Bustfile.a2ml | Rollback procedures
+| `dust` | Dustfile.a2ml | Cleanup/hygiene checks
+| `anchor` | anchors/ | Anchoring system (6a2)
+| `just` | Justfile | Task automation
+|===
+
+== File Descriptions
+
+=== Intentfile.a2ml
+North-star contractile. Declares:
+- **Purpose**: What the project IS
+- **Anti-Purpose**: What the project is NOT (prevents scope creep)
+- **Committed Next-Actions**: Concrete deliverables being worked on
+- **Wishes**: Aspirational goals grouped by horizon (near/mid/far)
+
+=== Mustfile.a2ml
+Physical state contractile. Defines hard requirements:
+- File presence checks
+- Directory structure requirements
+- Repository standards compliance
+- Code quality gates
+
+=== Trustfile.a2ml
+Trust boundaries and integrity:
+- Trust level (maximal/standard/restricted/minimal)
+- Integrity invariants (secrets, provenance, container security)
+- Sensitive areas requiring explicit approval
+
+=== Adjustfile.a2ml
+Drift tolerance contractile. Tracks:
+- Cumulative drift against tolerance bands
+- Corrective actions for when drift is detected
+- Advisory warnings (does not block, unlike MUST)
+
+=== Bustfile.a2ml
+Rollback and breakage contractile. Defines:
+- Breakage scenarios and rollback procedures
+- Escalation ladder
+- Backup points
+
+=== Dustfile.a2ml
+Cleanup and hygiene contractile. Defines:
+- Stale file patterns to remove
+- Build artifacts that should not be tracked
+- Format duplicates to consolidate
+
+== Usage
+
+To initialize a new repository with contractiles:
+
+. Create `.machine_readable/contractiles/` directory
+. Copy all files from this `canonical-directory-structure/` directory
+. Customize each file with your project-specific content
+. Remove all template markers (e.g., `{{PROJECT_NAME}}`)
+. Ensure all checks pass: `must check`, `adjust check`, etc.
+
+== See Also
+
+- link:../../.machine_readable/contractiles/[Bespoke contractiles for rsr-template-repo]
+- link:../../rhodium-standard-repositories/spec/RSR-SPEC.adoc[Rhodium Standard Repository Specification]

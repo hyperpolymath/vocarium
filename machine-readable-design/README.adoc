@@ -1,0 +1,38 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath)
+= machine-readable-design — design rationale (NOT the live machine-readable layer)
+:status: REFERENCE
+
+This directory holds the *design rationale and reference layout* for the
+machine-readable substrate. It explains **why** `.machine_readable/` is shaped
+the way it is.
+
+== This is NOT a duplicate of `.machine_readable/`
+
+A reader (or scanner) may see contractile-shaped files here and in
+`.machine_readable/contractiles/` and assume duplication. They are distinct:
+
+[cols="1,2", options="header"]
+|===
+| Location | Role
+
+| `.machine_readable/contractiles/`
+| The **live, authoritative** contractile set this repo runs against — the
+  canonical *subdir "trident"* shape (`<verb>/<Verb>file.a2ml` + `.ncl` +
+  `.k9.ncl` + `.manifest.a2ml`), validated by `just validate`. Source of truth.
+
+| `machine-readable-design/canonical-directory-structure/`
+| **Reference / teaching copies** that document the canonical layout for humans
+  designing or auditing the substrate. Often a flatter illustrative form with
+  `[REPLACE WITH …]` placeholders. *Not executed, not validated, not the
+  source of truth.*
+|===
+
+Rule of thumb: if a tool reads it, it lives under `.machine_readable/`. If a
+*person* reads it to understand the design, it lives here. When the two appear
+to disagree, `.machine_readable/` (and ultimately `hyperpolymath/standards`)
+wins; this directory is descriptive, not normative.
+
+NOTE: The contractile toolchain is under active reconciliation (the flat-vs-
+trident drift is a known item in the machine-readable respec programme). Treat
+`hyperpolymath/standards` as canonical if a discrepancy surfaces.

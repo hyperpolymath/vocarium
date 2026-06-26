@@ -1,0 +1,81 @@
+# SPDX-License-Identifier: MPL-2.0
+# Intentfile (A2ML Canonical) — north-star contractile (GENERIC TEMPLATE)
+#
+# Paired runner: intend.ncl
+# Verb:          intend
+#
+# Semantics: North-star contractile. Declares BOTH concrete committed
+#            next-actions AND horizon aspirations the project wishes to
+#            become. Two sections share one file because they answer
+#            the same question at different ranges:
+#              [[intents]] — "we WILL do this; track progress"
+#                            status: declared → in_progress → done |
+#                                    deferred | retired
+#              [[wishes]]  — "we WISH this were true; revisit later"
+#                            status: declared → in_progress → achieved |
+#                                    abandoned
+#                            grouped by horizon: near / mid / far.
+#            Non-gating — this is a report, not a gate. See the `must`
+#            contractile for hard gates.
+
+@abstract:
+GENERIC TEMPLATE: North-star contractile. Replace all content below
+with project-specific intents and wishes. This file declares what
+the project IS (purpose), what it is NOT (anti-purpose), and its
+committed next-actions and aspirational wishes.
+@end
+
+## Purpose
+
+[REPLACE WITH PROJECT-SPECIFIC PURPOSE]
+
+Example: The {{PROJECT_NAME}} provides {{MAIN_FUNCTION}} for {{TARGET_AUDIENCE}}.
+
+## Anti-Purpose
+
+[REPLACE WITH PROJECT-SPECIFIC ANTI-PURPOSE]
+
+This repository is NOT:
+- Example: A general-purpose framework (it solves one specific problem)
+- Example: A runtime library (it is build-time only)
+- Example: A replacement for X (that is handled by Y)
+
+## If In Doubt
+
+If you are unsure whether a change is in scope, ask. Sensitive areas:
+[REPLACE WITH PROJECT-SPECIFIC SENSITIVE AREAS]
+
+## Committed Next-Actions
+
+[REPLACE WITH PROJECT-SPECIFIC INTENTS]
+
+### intent-identifier
+- description: [What this intent achieves]
+- probe: [Test command that returns 0 when intent is satisfied]
+- status: declared | in_progress | done | deferred | retired
+- notes: [Optional additional context]
+
+## Wishes
+
+[REPLACE WITH PROJECT-SPECIFIC WISHES]
+
+### Near Horizon
+
+#### wish-identifier
+- description: [What this wish describes]
+- horizon: near
+- status: declared | in_progress | achieved | abandoned
+
+### Mid Horizon
+
+#### wish-identifier
+- description: [What this wish describes]
+- horizon: mid
+- status: declared
+
+### Far Horizon
+
+#### wish-identifier
+- description: [What this wish describes]
+- horizon: far
+- status: declared

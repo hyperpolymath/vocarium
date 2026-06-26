@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: MPL-2.0
+# Adjustfile — Drift-tolerance contract (GENERIC TEMPLATE)
+#
+# Cumulative-drift catchment: tolerance bands + corrective actions.
+# Authority: advisory (Yard) — continue-with-warnings; auto_fix where deterministic.
+# Run with: adjust check
+# Fix with: adjust fix (applies deterministic patches; advisory otherwise)
+
+@abstract:
+GENERIC TEMPLATE: Drift tolerances and corrective actions. Unlike
+MUST (hard gate), ADJUST tracks cumulative drift against tolerance bands
+and proposes corrective actions. Advisory — it warns and trends, it does
+not block.
+@end
+
+## [CATEGORY] Drift
+
+[REPLACE WITH PROJECT-SPECIFIC DRIFT CATEGORIES]
+
+### drift-check-identifier
+- description: [What this drift check monitors]
+- tolerance: [Acceptable tolerance level]
+- corrective: [How to correct the drift]
+- severity: advisory
+- notes: [Optional additional context]
+
+## Example Categories
+
+### Documentation Drift
+
+#### docs-completeness
+- description: Documentation should cover all features
+- tolerance: All public APIs documented
+- corrective: Update documentation
+- severity: advisory
+
+### Structural Drift
+
+#### file-organization
+- description: Files should follow project conventions
+- tolerance: All files in correct directories
+- corrective: Move files to correct locations
+- severity: advisory
+
+### Dependency Drift
+
+#### dependency-versions
+- description: Dependencies should be up-to-date
+- tolerance: No outdated dependencies
+- corrective: Run dependency update
+- severity: advisory
