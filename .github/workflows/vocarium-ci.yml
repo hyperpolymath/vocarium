@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: MPL-2.0
+# The M1 honest gate in CI (ADR-0002). Self-contained steps, SHA-pinned
+# actions only (repo has sha_pinning_required). The gate script hard-fails
+# on toolchain absence or version skew — never soften that.
+name: Vocarium CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  gate:
+    name: invoke-slice gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Setup Zig (exact pin from .tool-versions)
+        uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2.2.1
+        with:
+          version: 0.16.0
+      - name: Run the invoke-slice gate
+        run: ./tests/e2e/invoke_slice.sh

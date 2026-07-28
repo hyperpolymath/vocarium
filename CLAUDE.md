@@ -54,14 +54,43 @@ Deny: **Nix, Node/npm, TypeScript, Python, Go, AGPL**. (Guix, not Nix.)
 
 ---
 
-# This repo: `rsr-template-repo`  ·  clade `rm-rsr-template-repo`
+# This repo: `vocarium`
 
-- **Identity** — uuid `a5ea1382-a34c-5334-8a46-a2ebe904c810`; clade `rm` (secondary `gv`); born 2026-03-16; forge `hyperpolymath/rsr-template-repo`.
-- **IS** — Canonical RSR-compliant repository template: scaffolding (CI/CD, AI manifests, ABI/FFI standards, container ecosystem, governance) that new hyperpolymath projects are instantiated from.
-- **IS-NOT** — a project in its own right · Scaffoldia (the full-featured repo designer) · standards (the canon source this template operationalises)
-- **Where it sits** — pipeline position **foundation**; chain `standards → rsr-template-repo → (every estate repo)`; coordination = `standards`.
+- **Identity** — forge `hyperpolymath/vocarium`; born 2026-06-26. (The uuid/clade
+  fields below the fold in `.machine_readable/` still carry the mint-template's
+  identity and need a mint-time cure + `just claude-md` regeneration.)
+- **IS** — the trope database: a store for vokeable particulars (quality, bearer,
+  context, record) with transformation paths, grades, warrants, use-models, and
+  verdicts. The storage third of `Haec → Vocarium → Hermeneia`.
+- **IS-NOT** — the trope language (haec) · the checker/algebra (trope-checker —
+  vocarium never absorbs the grading order) · the query language (hermeneia) ·
+  a template.
+- **Where it sits** — chain `haec → vocarium → hermeneia`, verified by
+  `trope-checker`; coordination = `standards`.
 - **Constraints here** (AGENTIC) — fail-closed; evidence-per-step; no-silent-skip; rerun-after-fix; release-claim-requires-hard-pass. Never: banned langs (above), secrets, state files in repo root, AGPL. Details: `.machine_readable/bot_directives/{methodology,coverage,debt}.a2ml`.
 - **Golden path** (ANCHOR) — `just test && just quality` → Core tests pass; Quality gates pass; No unresolved critical security findings.
 - **State** — phase maintenance; maturity production; 95% complete; status active.
 
 <!-- ARRIVAL-PACK:END · provenance: CLADE@b974798d108a ECOSYSTEM@1c30abd8f618 AGENTIC@d72859864bbe STATE@9fbef88c72f8 ANCHOR@8b66b03d7736 · Manifesto@DRAFT-unratified · regenerate: `just claude-md` (k9 drift-detects; do not hand-edit above) -->
+
+<!-- Hand-authored below the generated region. -->
+
+# Vocarium architecture (M1, ADR-0002)
+
+**Pure Zig, wire boundary, no C.** The store engine is `src/store/` → the `voc`
+executable. Its only contract is Trope IR v0.2 JSON over process I/O; the
+schema at `trope-checker/schemas/trope-ir.schema.json` is the trust boundary
+and `tropecheck` is the verifier. No C sources, no C-ABI structs, no bindings
+— see `docs/decisions/0002-pure-zig-wire-boundary.adoc` before adding any.
+
+- Build/test: `zig build test` (Zig version is hard-pinned; see `.tool-versions`).
+- Gate: `tests/e2e/invoke_slice.sh` — ingests the canonical fixtures, runs
+  `voc invoke` under two use-models, and asserts opposite tropecheck verdicts
+  (use-relativity) plus a rejected unwarranted edge. It hard-fails if the
+  toolchain is missing; never soften that.
+- Store format: append-only JSONL (`{"t":"trope"|"edge"|"use_model"|"warrant"}`),
+  replayed into in-memory indexes on open. `"t":"revocation"` is reserved.
+- Never implement the cross-kind retention order here (`neighbours(max_loss)`
+  stays `unsupported`) — that algebra belongs to trope-checker.
+- Hermeneia integration is M2: a Rust adapter implementing
+  `hermeneia_store::StoreProvider` by driving `voc`. Do not link; wire only.

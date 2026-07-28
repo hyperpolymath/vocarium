@@ -1,0 +1,55 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= ADR-0002: Pure-Zig store, wire boundary, no C
+:status: Accepted
+:date: 2026-07-28
+:deciders: Jonathan D.A. Jewell (owner ruling), Claude (analysis)
+
+== Status
+
+Accepted (owner ruling, 2026-07-28).
+
+== Context
+
+Vocarium is the storage third of the Haec → Vocarium → Hermeneia stack. Two
+first-milestone designs were produced and adversarially judged: (A) a Rust
+crate implementing hermeneia's `StoreProvider` trait directly, and (B) a Zig
+core exposing a C ABI with Idris2 layout proofs and unsafe Rust bindings.
+The judge found (A) integrates cheapest but makes a churning Rust trait the
+de facto API; (B)'s C ABI freezes struct layouts before the schema is settled
+and pays a three-language maintenance tax for consumers that do not exist.
+
+The deciding fact: every inter-component contract in this stack is *wire*,
+not *linkage* — Haec emits Trope IR JSON, trope-checker consumes Trope IR
+JSON, hermeneia round-trips the same shapes. The owner ruled: **no C,
+anywhere**.
+
+== Decision
+
+1. The store engine is a single *pure-Zig* executable, `voc`
+   (`src/store/`). No C sources, no C-ABI structs, no bindings.
+2. Vocarium's only contract is **Trope IR v0.2 JSON over process I/O**
+   (`trope-checker/schemas/trope-ir.schema.json` is the trust boundary).
+   `voc invoke` emits an IR Document; `tropecheck` is the verifier.
+3. Hermeneia integration is a later milestone: a small Rust adapter crate
+   implements `hermeneia_store::StoreProvider` by driving `voc` as a
+   subprocess. Hermeneia built that trait expressly so vocarium could be
+   substituted without its planner changing.
+4. Vocarium never absorbs the grading algebra. Anything that requires the
+   cross-kind retention order (e.g. `neighbours(max_loss)`) is answered
+   `unsupported` until tropecheck exposes it — the order lives in the
+   checker's calculus, not here.
+5. If linkage is ever genuinely forced, Zig `export fn` produces
+   C-convention symbols without a line of C being written. That door stays
+   shut until a real, named consumer needs it.
+
+== Consequences
+
+* The estate ABI/FFI template (`src/interface/`, `abi.ipkg`) is deleted, not
+  instantiated — it is a C-ABI shim, the wrong shape for this design.
+* The Idris2 layout proofs that accompanied the template go dormant; the
+  proof obligations that matter here are the checker's (already discharged
+  in trope-checker's Idris2/Lean4/Agda estate).
+* The M1 gate needs no Rust: `zig build test` + an end-to-end invoke slice
+  against a pinned `tropecheck-rs` build.
+* JSONL storage records are kept flat (string ids, no pointers) so a future
+  engine change — or the M2 adapter — needs no schema change.

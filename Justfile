@@ -87,14 +87,7 @@ import? "build/just/assess.just"
 
 # Build the project (debug mode)
 build *args:
-    @echo "Building {{project}} (debug)..."
-    # TODO: Replace with your build command
-    # Examples:
-    #   cargo build {{args}}                    # Rust
-    #   mix compile {{args}}                    # Elixir
-    #   zig build {{args}}                      # Zig
-    #   deno task build {{args}}                # Deno/ReScript
-    @echo "Build complete"
+    zig build {{args}}
 
 # Build in release mode with optimizations
 build-release *args:
@@ -131,14 +124,7 @@ clean-all: clean
 
 # Run all tests
 test *args:
-    @echo "Running tests..."
-    # TODO: Replace with your test command
-    # Examples:
-    #   cargo test {{args}}
-    #   mix test {{args}}
-    #   zig build test {{args}}
-    #   deno test {{args}}
-    @echo "Tests passed!"
+    zig build test {{args}}
 
 # Run tests with verbose output
 test-verbose:
@@ -152,13 +138,12 @@ test-smoke:
 
 # Run end-to-end tests (full pipeline: build → run → verify)
 e2e:
-    @echo "Running E2E tests..."
-    # TODO: Replace with your E2E test command. Examples:
-    #   bash tests/e2e.sh                    # Shell-based E2E
-    #   npx playwright test                  # Browser E2E
-    #   mix test test/integration/e2e_test.exs  # Elixir E2E
-    #   cargo test --test end_to_end         # Rust E2E
-    @echo "E2E tests passed!"
+    ./tests/e2e/invoke_slice.sh
+
+# The M1 honest gate (ADR-0002): unit tests + end-to-end invoke slice against
+# tropecheck at its pinned SHA. Hard-fails on toolchain absence or skew.
+gate:
+    ./tests/e2e/invoke_slice.sh
 
 # Run aspect tests (cross-cutting concern validation)
 aspect:

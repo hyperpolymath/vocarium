@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: MPL-2.0
+# Canonical M1 fixture — the README's worked example.
+# "authentic language" (de Man) paraphrased as "real language": the paraphrase
+# keeps bearer/context/record but attenuates the quality by a quantified 6.
+{"t":"warrant","id":"w-editorial","text":"Editorial comparison of the source quotation against the paraphrase; quality loss quantified against the de Man reading."}
+{"t":"trope","id":"t_authentic","quality":"authentic language","bearer":"quoted phrase","context":"de Man / rhetoric / Romantic irony","record":"source quotation"}
+{"t":"trope","id":"t_real","quality":"real language","bearer":"paraphrase","context":"casual gloss","record":"secondhand paraphrase"}
+{"t":"edge","id":"e_paraphrase","effect":"attenuate","inputs":["t_authentic"],"output":"t_real","grade":{"fate":{"quality":{"k":"Attenuated","delta":6},"bearer":{"k":"Present"},"context":{"k":"Present"},"record":{"k":"Present"}},"bond":{"k":"Intact"},"merge":{"k":"Single"}},"warrant_id":"w-editorial","source":"README worked example"}
+{"t":"use_model","id":"casual-note","floor":{"fate":{"quality":{"k":"Attenuated","delta":10}}}}
+{"t":"use_model","id":"critical-paraphrase","floor":{"fate":{"quality":{"k":"Present"}}}}
