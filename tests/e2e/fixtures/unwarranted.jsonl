@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MPL-2.0
+# Negative fixture: the edge cites a warrant that does not exist in the store.
+# An unwarranted loss-shape claim must be refused at the store door (exit 2) —
+# EXPLAINME's falsifiability list: the design fails if the system "silently
+# accepts unwarranted substitutions as preserves".
+{"t":"trope","id":"t_a","quality":"passed away","bearer":"obituary phrase","context":"condolence register","record":"family notice"}
+{"t":"trope","id":"t_b","quality":"croaked","bearer":"slang phrase","context":"barroom register","record":"retelling"}
+{"t":"edge","id":"e_substitution","effect":"preserve","inputs":["t_a"],"output":"t_b","grade":{"fate":{"quality":{"k":"Present"},"bearer":{"k":"Present"},"context":{"k":"Present"},"record":{"k":"Present"}},"bond":{"k":"Intact"},"merge":{"k":"Single"}},"warrant_id":"w-nonexistent"}
+{"t":"use_model","id":"casual-note","floor":{"fate":{"quality":{"k":"Attenuated","delta":10}}}}

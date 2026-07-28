@@ -173,3 +173,17 @@ Vocarium is part of a wider language/database ecology:
 * **KRL** — knot resolution language
 
 Vocarium’s role is to hold the particularities that other systems transform, interpret, narrate, or test.
+
+## Status (honest, 2026-07-28)
+
+*Implemented (M1 invoke slice, ADR-0002):* the `voc` store engine (pure Zig,
+no C) — JSONL replay, warrant-door validation, and `voc invoke` emitting a
+Trope IR v0.2 Document verified end-to-end against `tropecheck` (use-relativity
+proven by the gate: same trope, opposite verdicts under two use-models).
+Run `just gate`.
+
+*Not yet implemented:* evoke/convoke/transvoke/provoke/revoke, revocation
+records, neighbours/nearestness (the retention order stays in trope-checker),
+Haec ingestion, the Hermeneia `StoreProvider` adapter (M2). Most docs outside
+this README/EXPLAINME are un-instantiated estate template text — trust the
+code and `docs/decisions/0002-pure-zig-wire-boundary.adoc` over them.

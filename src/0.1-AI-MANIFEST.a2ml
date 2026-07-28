@@ -13,7 +13,7 @@ description: |
 
 canonical_locations:
   core: "core/"
-  interface: "interface/"
+  store: "store/"
   bridges: "bridges/"
   contracts: "contracts/"
   errors: "errors/"
@@ -22,6 +22,6 @@ canonical_locations:
 
 invariants:
   - "Core logic MUST reside in core/"
-  - "Verified seams MUST reside in interface/"
+  - "The voc store engine MUST reside in store/ (pure Zig, wire boundary, no C — ADR-0002)"
   - "Safety constraints MUST reside in contracts/"
   - "Failure dictionaries MUST reside in errors/"
