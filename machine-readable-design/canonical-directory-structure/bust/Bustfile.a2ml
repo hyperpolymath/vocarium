@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 Bust {
-    name: "{{PROJECT_NAME}}"
+    name: "Vocarium"
     version: "1.0.0"
     description: "Rollback procedures when something breaks in this repository"
 

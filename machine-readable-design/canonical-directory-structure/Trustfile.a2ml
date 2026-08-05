@@ -13,7 +13,7 @@ plus checks that verify repository integrity.
 
 ## Trust Levels
 
-The {{PROJECT_NAME}} operates at trust level: [maximal | standard | restricted | minimal]
+The Vocarium operates at trust level: [maximal | standard | restricted | minimal]
 
 Trust levels:
 - maximal:    Agent may read, build, test, lint, format, heal freely.

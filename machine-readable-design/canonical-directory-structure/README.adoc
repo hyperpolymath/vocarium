@@ -99,7 +99,7 @@ To initialize a new repository with contractiles:
 . Create `.machine_readable/contractiles/` directory
 . Copy all files from this `canonical-directory-structure/` directory
 . Customize each file with your project-specific content
-. Remove all template markers (e.g., `{{PROJECT_NAME}}`)
+. Remove all template markers (e.g., `Vocarium`)
 . Ensure all checks pass: `must check`, `adjust check`, etc.
 
 == See Also
