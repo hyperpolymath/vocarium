@@ -69,3 +69,16 @@ container/                 # may host Containerfile if not at build/
 .pre-commit-config.yaml    # TODO: relocate to ci/.pre-commit-config.yaml after invocation pattern decided
 affinescript/              # AffineScript source subtree consumed by this template
 tools/                     # TODO: consolidate with scripts/ or document the split (pending decision)
+
+# ─── Declared 2026-08-06: entries the RSR template's directory map did
+#     not anticipate. The template targets a documentation repository;
+#     these are this project's real top-level shape. Moving them would
+#     break every path that references them, to satisfy a map that was
+#     never written for it. Read from the estate-rules gate's own output.
+.githooks/                  # Top-level component directory of this project.
+GOVERNANCE.md               # Project documentation.
+MAINTAINERS                 # Project file that must remain at the repository root.
+REQUIRES_INITIALISATION.md  # Project documentation.
+build.zig                   # Project file that must remain at the repository root.
+flake.nix                   # Project file that must remain at the repository root.
+mise.toml                   # Build/tool manifest — must sit at the root to be found.
