@@ -134,3 +134,7 @@ dist/
 
 # Coaptation re-anchor basis (occasional, generated on --reanchor when red; not a baseline)
 .machine_readable/coaptation/receipts/reanchor-basis.a2ml
+
+# gate toolchain (built from pinned SHA by tests/e2e/invoke_slice.sh)
+.gate-tools/
+zig-out/

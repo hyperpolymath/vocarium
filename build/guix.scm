@@ -1,5 +1,5 @@
 ; SPDX-License-Identifier: MPL-2.0
-;; guix.scm — GNU Guix package definition for squisher-corpus
+;; guix.scm — GNU Guix package definition for vocarium
 ;; Usage: guix shell -f guix.scm
 
 (use-modules (guix packages)
@@ -7,12 +7,15 @@
              (guix licenses))
 
 (package
-  (name "squisher-corpus")
+  (name "vocarium")
   (version "0.1.0")
   (source #f)
   (build-system gnu-build-system)
-  (synopsis "squisher-corpus")
-  (description "squisher-corpus — part of the hyperpolymath ecosystem.")
-  (home-page "https://github.com/hyperpolymath/squisher-corpus")
-  (license ((@@ (guix licenses) license) "PMPL-1.0-or-later"
-             "https://github.com/hyperpolymath/palimpsest-license")))
+  (synopsis "Trope database: a store for vokeable particulars")
+  (description
+   "Vocarium is an experimental trope database: a structured store of
+particularised property-instances (quality, bearer, context, record), their
+transformation paths, grades, warrants, use-models, and verdicts.  It is the
+storage component of the Haec / Vocarium / Hermeneia stack.")
+  (home-page "https://github.com/hyperpolymath/vocarium")
+  (license mpl2.0))
