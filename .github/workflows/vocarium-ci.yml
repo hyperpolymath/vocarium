@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MPL-2.0
+# This workflow is managed by gh actions-lock.
 # The M1 honest gate in CI (ADR-0002). Self-contained steps, SHA-pinned
 # actions only (repo has sha_pinning_required). The gate script hard-fails
 # on toolchain absence or version skew — never soften that.
@@ -20,9 +21,9 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7.0.1
       - name: Setup Zig (exact pin from .tool-versions)
-        uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2.2.1
+        uses: mlugg/setup-zig@v2.2.1
         with:
           version: 0.16.0
       - name: Run the invoke-slice gate
