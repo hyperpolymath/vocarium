@@ -179,7 +179,7 @@ Vocarium’s role is to hold the particularities that other systems transform, i
 *Implemented (M1 invoke slice, ADR-0002):* the `voc` store engine (pure Zig,
 no C) — JSONL replay, warrant-door validation, and `voc invoke` emitting a
 Trope IR v0.2 Document verified end-to-end against `tropecheck` (use-relativity
-proven by the gate: same trope, opposite verdicts under two use-models).
+shown by the gate: same trope, opposite verdicts under two use-models).
 Run `just gate`.
 
 *Not yet implemented:* evoke/convoke/transvoke/provoke/revoke, revocation
