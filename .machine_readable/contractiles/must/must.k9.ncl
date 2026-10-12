@@ -1,3 +1,4 @@
+# K9!
 # SPDX-License-Identifier: MPL-2.0
 # must.k9.ncl — K9 trust-tier component of the must trident
 # Author: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
@@ -53,6 +54,7 @@ let base    = import "../_base.ncl" in
 
     security = {
       leash = 'Hunt,
+      signature_required = true,
       trust_level = "read-only invariant verification with subprocess",
       allow_network = false,
       allow_filesystem_write = false,

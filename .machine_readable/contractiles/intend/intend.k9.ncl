@@ -1,3 +1,4 @@
+# K9!
 # SPDX-License-Identifier: MPL-2.0
 # intend.k9.ncl — K9 trust-tier component of the intend trident
 # Author: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
@@ -59,6 +60,7 @@ let base    = import "../_base.ncl" in
 
     security = {
       leash = 'Hunt,
+      signature_required = true,
       trust_level = "subprocess + filesystem-read",
       allow_network = false,
       allow_filesystem_write = false,   # evidence sinks are indirected

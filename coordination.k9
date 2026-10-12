@@ -1,4 +1,10 @@
+# K9!
 # Thin coordination bindings for central session-management standards
+
+pedigree:
+  name: "vocarium-session-coordination"
+  version: "1.0.0"
+  security_level: "kennel"
 
 session_management:
   source_of_truth: "standards/session-management-standards"

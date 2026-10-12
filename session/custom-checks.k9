@@ -1,4 +1,10 @@
+# K9!
 # Local repository session checks (thin policy layer)
+pedigree:
+  name: "vocarium-session-checks"
+  version: "1.0.0"
+  security_level: "kennel"
+
 version: "0.1"
 
 checks:

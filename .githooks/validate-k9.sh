@@ -5,7 +5,7 @@
 # validate-k9.sh — K9 configuration file validation script
 #
 # Scans for .k9 and .k9.ncl files and validates:
-#   1. K9! magic number on line 1
+#   1. K9! marker (bare envelope or source-compatible comment)
 #   2. Pedigree block presence with required fields (name, version)
 #   3. Security level is one of: kennel, yard, hunt (case-insensitive)
 #   4. Hunt-level files must have a signature or signature_required field
@@ -130,9 +130,11 @@ validate_k9() {
         break
     done < "$file"
 
-    if [[ "$first_content_line" != "K9!" ]]; then
+    # A bare envelope marker is used by the self-validating examples. Native
+    # Nickel and YAML consumers need the marker to be a comment instead.
+    if [[ "$first_content_line" != "K9!" && "$first_content_line" != "# K9!" ]]; then
         report_issue "error" "$file" "$first_content_line_num" \
-            "Missing K9! magic number. First non-empty line must be exactly 'K9!'"
+            "Missing K9! marker. First non-empty line must be 'K9!' or '# K9!'"
     fi
 
     # --- Check 2: SPDX header ---
@@ -164,10 +166,40 @@ validate_k9() {
     local has_signature_field=false
     local in_pedigree=false
     local pedigree_depth=0
+    local yaml_pedigree=false
 
     line_num=0
     while IFS= read -r line; do
         line_num=$((line_num + 1))
+
+        # Session bindings are YAML data, not executable Nickel contracts.
+        # Validate their explicit pedigree without changing the session keys.
+        if [[ "$file" == *.k9 && "$line" == "pedigree:" ]]; then
+            has_pedigree=true
+            yaml_pedigree=true
+            continue
+        fi
+        if [[ "$yaml_pedigree" == "true" ]]; then
+            if [[ "$line" =~ ^[^[:space:]#] ]]; then
+                yaml_pedigree=false
+            else
+                if [[ "$line" =~ ^[[:space:]]+name:[[:space:]]+[^[:space:]#] ]]; then
+                    has_pedigree_name=true
+                fi
+                if [[ "$line" =~ ^[[:space:]]+(version|schema_version):[[:space:]]+[^[:space:]#] ]]; then
+                    has_pedigree_version=true
+                fi
+                if [[ "$line" =~ ^[[:space:]]+(leash|security_level):[[:space:]]* ]]; then
+                    has_security_level=true
+                    security_level_value="$(normalise_level "=${line#*:}")"
+                    security_level_line=$line_num
+                fi
+                if [[ "$line" =~ ^[[:space:]]+(signature|signature_required):[[:space:]]+[^[:space:]#] ]]; then
+                    has_signature_field=true
+                fi
+                continue
+            fi
+        fi
 
         # Detect pedigree block start. Note: do NOT `continue` here — the
         # `pedigree = {` line itself contains the opening brace that
@@ -179,7 +211,8 @@ validate_k9() {
         # brace, depth started at 0, and the first nested block's close
         # prematurely terminated the validator's view of the pedigree —
         # making `pedigree.metadata.name` invisible.
-        if [[ "$line" =~ ^[[:space:]]*pedigree[[:space:]]*= ]]; then
+        if [[ "$line" =~ ^[[:space:]]*pedigree[[:space:]]*=.*\{ ]] || \
+           [[ "$line" =~ ^let[[:space:]]+component_pedigree[[:space:]]*=[[:space:]]*\{ ]]; then
             has_pedigree=true
             in_pedigree=true
             pedigree_depth=0

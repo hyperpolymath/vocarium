@@ -23,7 +23,7 @@ what-this-is-not = [
 [pipeline]
 position = "foundation"
 chain = "standards → rsr-template-repo → (every estate repo)"
-notes = "rsr-template-repo turns the RSR standard into runnable scaffolding. New repos are created from it via `just init`, which substitutes the {{PLACEHOLDER}} tokens."
+notes = "rsr-template-repo turns the RSR standard into runnable scaffolding. New repos are created from it via `just init`, which substitutes template placeholder tokens."
 coordination = "standards"
 
 [related-projects]
