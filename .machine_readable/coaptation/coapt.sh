@@ -21,7 +21,7 @@ MODE="${1:---report}"
 
 # Kennel (sense) -> deterministic atomised inputs.
 bash "$CO/extract-clauses.sh" "$ROOT/.machine_readable/contractiles" > "$CO/clauses.json"
-bash "$CO/extract-facts.sh"   "$ROOT/.machine_readable/6a2"           > "$CO/facts.json"
+bash "$CO/extract-facts.sh"   "$ROOT/.machine_readable/descriptiles"           > "$CO/facts.json"
 
 # Yard (compare, pure) -> receipt text.
 receipt="$(nickel export --format raw "$CO/coapt.ncl")"

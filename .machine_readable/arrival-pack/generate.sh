@@ -13,7 +13,7 @@ ROOT="$(git rev-parse --show-toplevel)"
 AP="$ROOT/.machine_readable/arrival-pack"
 TARGET="$ROOT/CLAUDE.md"
 
-bash "$AP/extract.sh" "$ROOT/.machine_readable/6a2" > "$AP/claude-md-data.json"
+bash "$AP/extract.sh" "$ROOT/.machine_readable/descriptiles" > "$AP/claude-md-data.json"
 nickel export --format raw "$AP/arrival-pack.ncl" > "$AP/.region.tmp"
 
 if [ -f "$TARGET" ] && grep -q 'ARRIVAL-PACK:BEGIN' "$TARGET"; then

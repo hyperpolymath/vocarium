@@ -11,7 +11,7 @@ and customize them with your project-specific content.
 [tree]
 ----
 .machine_readable/
-├── 6a2/
+├── descriptiles/
 │   ├── anchors/
 │   ├── META.a2ml
 │   ├── ECOSYSTEM.a2ml

@@ -34,12 +34,12 @@
       { fact = "state.phase", op = 'present },
       { fact = "ecosystem.type", op = 'present },
     ],
-    note = "STATE.a2ml + ECOSYSTEM.a2ml were read from .machine_readable/6a2/",
+    note = "STATE.a2ml + ECOSYSTEM.a2ml were read from .machine_readable/descriptiles/",
   },
   "must.anchors-directory" = {
     kind = "descriptile",
     witnesses = [ { fact = "anchor.authority", op = 'present } ],
-    note = "ANCHOR.a2ml was read from .machine_readable/6a2/anchors/",
+    note = "ANCHOR.a2ml was read from .machine_readable/descriptiles/anchors/",
   },
 
   # --- TRUST: deliberately NO descriptile witness. ---

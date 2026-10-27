@@ -19,7 +19,7 @@ TARGET="$CO/receipts/latest.a2ml"
 [ -f "$TARGET" ] || { echo "DRIFT: coaptation receipt missing — run \`just coapt\`"; exit 1; }
 
 bash "$CO/extract-clauses.sh" "$ROOT/.machine_readable/contractiles" > "$CO/clauses.json"
-bash "$CO/extract-facts.sh"   "$ROOT/.machine_readable/6a2"           > "$CO/facts.json"
+bash "$CO/extract-facts.sh"   "$ROOT/.machine_readable/descriptiles"           > "$CO/facts.json"
 
 fresh="$(nickel export --format raw "$CO/coapt.ncl")"
 committed="$(cat "$TARGET")"
