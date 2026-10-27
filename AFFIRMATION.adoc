@@ -1,95 +1,93 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 // SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-= AFFIRMATION — {{PROJECT_NAME}}, as of <UTC timestamp>
+= AFFIRMATION — Vocarium, as of 2026-10-27T08:17Z
 :toc: macro
 :toclevels: 2
 
 _the No-Bullshit file: what we affirm was true and checkable at this moment._
 
-[NOTE]
-====
-*This file is a template.* Replace the `{{…}}` placeholders and the `<…>` anchor
-fields, then re-run your project's own checks in the same session before signing.
-
-An *affirmation* is a solemn declaration of the truth of a statement, made by
-someone who _declines to swear an oath_ — our truth-as-best-believed at a stamped
-instant, binding on our honesty, not a claim of infallibility. It is the third of
-the README / EXPLAINME / AFFIRMATION trio:
-
-[cols="1,3,2",options="header"]
-|===
-| File | Answers | Tense
-| `README.adoc` | _Where is this going, and why?_ — steering, intent, vision | future / aspirational
-| `EXPLAINME.adoc` | _How is it built, and what's the evidence?_ — engineering | descriptive / mechanism
-| *`AFFIRMATION.adoc`* (this file) | _What can we honestly affirm was *true and checkable* at a stamped moment?_ | a frozen instant, falsifiable
-|===
-====
-
 toc::[]
 
 == What this is, and how it works
 
-*What it is.* A short, dated, signed snapshot of what {{OWNER}} can honestly and
-verifiably claim about *{{PROJECT_NAME}}* at one exact commit. Nothing here is
-marketing and nothing is a promise about the future — those live in the README.
-This file is the receipt.
+A short, dated, signed snapshot of what hyperpolymath can honestly and verifiably
+claim about *Vocarium* at one exact commit. Nothing here is marketing or a
+promise; those live in the README. Every claim is tied to a command, and where a
+command could not be run in the session that wrote this file it says so and names
+the run that attests it instead. The anchor (<<verifiable-anchor>>) fixes commit,
+time and toolchain. It is to be landed by a signed commit — the owner signs on
+landing.
 
-*How it stays trustworthy.* Three moving parts:
+== The epistemic contract
 
-. *Ground truth, not memory.* Every claim below must be produced by _running the
-  project's own checks_ in the session that writes this file (build, tests,
-  typecheck, `just audit`). Where a status doc, the `Justfile`, or memory says
-  otherwise, the live run wins and the contradiction is flagged here.
-. *A frozen anchor.* The file names the exact commit SHA, branch, UTC timestamp,
-  and toolchain (see <<verifiable-anchor>>), so "true" always means "true _at
-  this point_". Move the SHA and this file is a draft until it is re-run.
-. *A real signature.* It is landed by a *signed git commit*; that signature over
-  this content at the anchored SHA is what makes the affirmation tamper-evident
-  and attributable — not the prose alone.
+Best belief at the timestamp below, not a guarantee of correctness; the only
+guarantee is no intentional overclaim. Refute any line with a counter-example, a
+failing run, or a contradicting source.
 
-*We are fallible.* This is our best honest belief, not a proof of its own
-correctness. Treat it as a falsifiable claim, not gospel.
-
-== The epistemic contract (read this before you trust _or_ attack)
-
-This document records {{OWNER}}'s *best belief* at the timestamp below. It is
-*not a guarantee of correctness.* The only guarantee is *no intentional
-overclaim*: where something is proven we say "proven"; where it is a documented
-trust boundary, an experiment, or an unwired module, we say so; where a claim is
-the README's aspiration rather than a checked result, we say so. An honest claim
-that later turns out false is an *error to be fixed* — not a lie.
-
-*Standing invitation to refute.* You are invited to bulldoze any claim in this
-file. Bring a counter-example, a failing run, or a contradicting source.
-
-== What we affirm (fill in — delete the examples)
+== What we affirm
 
 [cols="2,1,3",options="header"]
 |===
-| Claim | Status | Evidence (command / `file:line`)
-| _e.g. The library builds clean_ | affirmed | `just build` at the anchor SHA
-| _e.g. The ABI seam typechecks_ | affirmed | `idris2 --typecheck abi.ipkg`
-| _e.g. Feature X is complete_ | aspiration | README §… (not yet checked)
+| Claim | Status | Evidence (command / file)
+
+| The store engine `voc` (pure Zig, no C; ADR-0002) builds and its unit tests
+pass under the pinned Zig 0.16.0.
+| NOT RUN here — attested by CI run 40472451463 on commit 71c4374 (success, 2026-10-27T08:17:46Z)
+| `zig build test` (Zig 0.16.0, `.tool-versions`). The session that wrote this
+file could not run Zig: ziglang.org and its mirrors were unreachable and a
+checksummed conda-forge 0.16.0 binary was obtained but not permitted to execute.
+CI runs it on pushes to `main`, pull requests and manual dispatch:
+`.github/workflows/vocarium-ci.yml` (mlugg/setup-zig pinned to 0.16.0). On this
+branch, at commit 71c43744ca5304cc7c228c5d8273ef92be789a4e: job "invoke-slice gate" of
+https://github.com/hyperpolymath/vocarium/actions/runs/40472451463 — success,
+2026-10-27T08:17:46Z.
+
+| The M1 invoke slice holds end to end: the canonical fixture ingests; the same
+stored trope yields opposite tropecheck verdicts under two use-models
+(`casual-note` → `p-sufficient`, `critical-paraphrase` → `p-insufficient` with
+the witness edge named); an unwarranted edge is refused at the store door.
+| NOT RUN here — attested by CI run 40472451463 on commit 71c4374 (success, 2026-10-27T08:17:46Z)
+| `TROPECHECK_BIN=/path/to/tropecheck-rs bash tests/e2e/invoke_slice.sh` (placeholder path) → expected
+`GATE PASS: invoke slice proven (use-relativity + warrant door + unit tests)`.
+Same CI workflow (`./tests/e2e/invoke_slice.sh`), which hard-fails on toolchain
+absence or skew. Note: without `TROPECHECK_BIN` the script builds the checker at
+its own pin `69221ad6`; with it set, the pin is bypassed. The pin predates the
+spec v0.2 consolidation and is to be bumped once Phase 0 lands upstream (issue
+filed, not changed here).
+
+| The store format is append-only JSONL (one record per line, `"t"` one of `trope`, `edge`, `use_model`, `warrant`)
+replayed into in-memory indexes; the only external contract is Trope IR v0.2 over
+process I/O, verified by `tropecheck`.
+| affirmed (by reading)
+| `src/store/`, `docs/decisions/0002-pure-zig-wire-boundary.adoc`; the schema
+at `trope-checker/schemas/trope-ir.schema.json` is the trust boundary.
 |===
 
 == What we do NOT claim
 
-* List the known gaps, trust boundaries, postulates, unwired modules, and stale
-  docs here. Silence is not affirmation — name what you have *not* verified.
+* `evoke`, `convoke`, `transvoke`, `provoke`, `revoke` — not implemented.
+* The M2 Hermeneia `StoreProvider` adapter — not implemented (wire, do not link).
+* Haec ingestion — not implemented.
+* `neighbours` / nearestness — `unsupported` by design; the retention order and the
+  cross-kind algebra live in trope-checker and are never reimplemented here.
+* Nothing about `voc` was executed in the session that wrote this file; the two
+  NOT RUN rows above are exactly that.
 
 [#verifiable-anchor]
 == Verifiable anchor
 
 [cols="1,3"]
 |===
-| Project | {{PROJECT_NAME}}
-| Repository | https://{{FORGE}}/{{OWNER}}/{{REPO}}
-| Commit (SHA) | <full commit SHA at time of signing>
-| Branch | {{MAIN_BRANCH}}
-| Timestamp (UTC) | <ISO-8601 UTC timestamp>
-| Toolchain | <compilers / provers / versions used to ground the claims>
-| Affirmed by | {{AUTHOR}} <{{AUTHOR_EMAIL}}>
+| Project | Vocarium
+| Repository | https://github.com/hyperpolymath/vocarium
+| Commit (SHA) tested | 71c43744ca5304cc7c228c5d8273ef92be789a4e (this branch; the commit CI run 40472451463 ran on)
+| Affirmed base | 57944e6ad15067a29456096654e4f7dee44dc816 (`main` at the time; differs from the tested commit only in this file and the README, so the gate result carries over to it)
+| Landing commit | the signed commit that lands this snapshot on `main` (the file itself predates it as a template); after landing, `git log --first-parent --show-signature -1 main -- AFFIRMATION.adoc` selects it. A file cannot record its own commit's SHA
+| Timestamp (UTC) | 2026-10-27T08:17:46Z (completion of the cited CI gate job)
+| Toolchain | Zig 0.16.0 pinned in `.tool-versions`, which the gate enforces; `mise.toml` still says `zig = "latest"` — a drift the gate would reject, to be reconciled (issue). Checker for the gate: `tropecheck-rs` from trope-checker (script pin `69221ad6`; the session's binary was built from 44020f9). Zig was not executed in this session (see above).
+| Affirmed by | Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk> (owner signs on landing; written by the Phase 0 agent)
 |===
 
-_Landed by a signed git commit. Verify with `git log --show-signature` that the
-anchor SHA above matches the commit that introduced this affirmation._
+_To be landed by a signed git commit. The "Commit (SHA) tested" row is the commit the
+CI gate ran on and the "Affirmed base" row the `main` state it speaks for; verify the landing commit and its signature with
+`git log --first-parent --show-signature -1 main -- AFFIRMATION.adoc`._
