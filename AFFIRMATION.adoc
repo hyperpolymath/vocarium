@@ -31,18 +31,19 @@ failing run, or a contradicting source.
 
 | The store engine `voc` (pure Zig, no C; ADR-0002) builds and its unit tests
 pass under the pinned Zig 0.16.0.
-| NOT RUN here — attested by CI
+| NOT RUN here — attested by CI run 40472451463 (success, 2026-10-27T08:17Z)
 | `zig build test` (Zig 0.16.0, `.tool-versions`). The session that wrote this
 file could not run Zig: ziglang.org and its mirrors were unreachable and a
 checksummed conda-forge 0.16.0 binary was obtained but not permitted to execute.
 CI runs it on every push: `.github/workflows/vocarium-ci.yml` (mlugg/setup-zig
-pinned to 0.16.0). The run on this branch is cited in the Phase 0 pull request.
+pinned to 0.16.0). On this branch: job "invoke-slice gate" of
+https://github.com/hyperpolymath/vocarium/actions/runs/40472451463 — success.
 
 | The M1 invoke slice holds end to end: the canonical fixture ingests; the same
 stored trope yields opposite tropecheck verdicts under two use-models
 (`casual-note` → `p-sufficient`, `critical-paraphrase` → `p-insufficient` with
 the witness edge named); an unwarranted edge is refused at the store door.
-| NOT RUN here — attested by CI
+| NOT RUN here — attested by CI run 40472451463 (success, 2026-10-27T08:17Z)
 | `TROPECHECK_BIN=<tropecheck-rs> bash tests/e2e/invoke_slice.sh` → expected
 `GATE PASS: invoke slice proven (use-relativity + warrant door + unit tests)`.
 Same CI workflow (`./tests/e2e/invoke_slice.sh`), which hard-fails on toolchain
