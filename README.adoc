@@ -161,6 +161,10 @@ Vocarium makes that difference queryable.
 
 Vocarium is an experimental database architecture for trope-aware, loss-aware, warrant-aware data. It is intended to support research into particularity-preserving computation, interpretive query languages, AI-assisted reasoning, evidential databases, and transformation-aware knowledge systems.
 
+## Where this repo sits
+
+Vocabulary track: trope-particularity-workbench → haec → trope-checker (verdict). Store/query track: haec → vocarium → hermeneia → trope-checker (verdict). trope-checker depends on nothing (HC-1); the workbench depends on nothing; vocarium and hermeneia meet at the M2 StoreProvider adapter (vocarium ADR-0002: wire, do not link).
+
 ## Relationship to other systems
 
 Vocarium is part of a wider language/database ecology:
