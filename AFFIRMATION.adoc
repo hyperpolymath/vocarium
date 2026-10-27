@@ -15,7 +15,8 @@ claim about *Vocarium* at one exact commit. Nothing here is marketing or a
 promise; those live in the README. Every claim is tied to a command, and where a
 command could not be run in the session that wrote this file it says so and names
 the run that attests it instead. The anchor (<<verifiable-anchor>>) fixes commit,
-time and toolchain. It is landed by a signed commit.
+time and toolchain. It is to be landed by a signed commit — the owner signs on
+landing.
 
 == The epistemic contract
 
@@ -79,13 +80,14 @@ at `trope-checker/schemas/trope-ir.schema.json` is the trust boundary.
 |===
 | Project | Vocarium
 | Repository | https://github.com/hyperpolymath/vocarium
-| Commit (SHA) tested | 57944e6ad15067a29456096654e4f7dee44dc816 (`main` at the time; the tree the CI gate ran on is this branch's 71c4374, whose only differences from it are this file and the README)
+| Commit (SHA) tested | 71c43744ca5304cc7c228c5d8273ef92be789a4e (this branch; the commit CI run 40472451463 ran on)
+| Affirmed base | 57944e6ad15067a29456096654e4f7dee44dc816 (`main` at the time; differs from the tested commit only in this file and the README, so the gate result carries over to it)
 | Landing commit | the signed commit that introduces this file, identified with `git log --show-signature -- AFFIRMATION.adoc`; a file cannot record its own commit's SHA
 | Timestamp (UTC) | 2026-10-27T08:17:46Z (completion of the cited CI gate job)
 | Toolchain | Zig 0.16.0 pinned in `.tool-versions`, which the gate enforces; `mise.toml` still says `zig = "latest"` — a drift the gate would reject, to be reconciled (issue). Checker for the gate: `tropecheck-rs` from trope-checker (script pin `69221ad6`; the session's binary was built from 44020f9). Zig was not executed in this session (see above).
 | Affirmed by | Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk> (owner signs on landing; written by the Phase 0 agent)
 |===
 
-_To be landed by a signed git commit. The "Commit (SHA) tested" row is the base the
-checks ran on; verify the introducing commit and its signature with
+_To be landed by a signed git commit. The "Commit (SHA) tested" row is the commit the
+CI gate ran on and the "Affirmed base" row the `main` state it speaks for; verify the introducing commit and its signature with
 `git log --show-signature -- AFFIRMATION.adoc`._
