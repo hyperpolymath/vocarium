@@ -13,7 +13,7 @@
 # Determinism (no timestamps) is required so the k9 drift check can byte-compare.
 set -euo pipefail
 
-DIR6A2="${1:-.machine_readable/descriptiles}"
+DIR6A2="${1:-.machine_readable/6a2}"
 CLADE="$DIR6A2/CLADE.a2ml"
 ECO="$DIR6A2/ECOSYSTEM.a2ml"
 AGENTIC="$DIR6A2/AGENTIC.a2ml"

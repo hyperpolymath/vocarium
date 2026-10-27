@@ -34,11 +34,11 @@
   # Inputs the projection reads (single source of truth).
   inputs = {
     descriptiles = [
-      ".machine_readable/descriptiles/CLADE.a2ml",
-      ".machine_readable/descriptiles/ECOSYSTEM.a2ml",
-      ".machine_readable/descriptiles/AGENTIC.a2ml",
-      ".machine_readable/descriptiles/STATE.a2ml",
-      ".machine_readable/descriptiles/anchors/ANCHOR.a2ml",
+      ".machine_readable/6a2/CLADE.a2ml",
+      ".machine_readable/6a2/ECOSYSTEM.a2ml",
+      ".machine_readable/6a2/AGENTIC.a2ml",
+      ".machine_readable/6a2/STATE.a2ml",
+      ".machine_readable/6a2/anchors/ANCHOR.a2ml",
     ],
     estate_common = "hyperpolymath/manifesto@<pinned-sha>",  # DRAFT-unratified today
     target = "CLAUDE.md",
