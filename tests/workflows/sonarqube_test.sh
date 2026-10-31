@@ -73,7 +73,7 @@ MOCK
 chmod +x "$tmp/bin/gh"
 export PATH="$tmp/bin:$PATH" MOCK_RESPONSE="$tmp/response.json"
 sha=0123456789abcdef0123456789abcdef01234567
-jq -n --arg sha "$sha" '{id:10,head_sha:$sha,name:"SonarCloud Code Analysis",app:{id:12526,slug:"sonarqubecloud"},status:"completed",conclusion:"success",completed_at:"2026-10-30T20:17:00Z",details_url:"https://sonarcloud.io/dashboard?id=hyperpolymath_vocarium&pullRequest=47"}' > "$tmp/base.json"
+jq -n --arg sha "$sha" '{id:10,head_sha:$sha,name:"SonarCloud Code Analysis",app:{id:12526,slug:"sonarqubecloud"},status:"completed",conclusion:"success",started_at:"2026-10-30T20:16:50Z",completed_at:"2026-10-30T20:17:00Z",details_url:"https://sonarcloud.io/dashboard?id=hyperpolymath_vocarium&pullRequest=47"}' > "$tmp/base.json"
 context_case() {
   local label=$1 expected=$2 filter=$3 event=${4:-pull_request} pr=${5:-47} id=${6:-10}
   local event_time=${7-2026-10-30T20:16:44Z} rc=0
@@ -92,9 +92,12 @@ context_case 'matching PR project and subject' success '.'
 context_case 'matching main project and subject' success '.details_url="https://sonarcloud.io/dashboard?id=hyperpolymath_vocarium&branch=main"' push ''
 push_epoch=$(date -u -d '2026-10-30T20:16:44Z' +%s)
 context_case 'numeric push timestamp accepted' success '.details_url="https://sonarcloud.io/dashboard?id=hyperpolymath_vocarium&branch=main"' push '' 10 "$push_epoch"
-context_case 'old same-SHA receipt from a prior event refused' failure '.completed_at="2026-10-29T20:17:00Z"'
-context_case 'same-second receipt is not provably fresh' failure '.completed_at="2026-10-30T20:16:44Z"'
+context_case 'old same-SHA receipt from a prior event refused' failure '.started_at="2026-10-29T20:16:50Z" | .completed_at="2026-10-29T20:17:00Z"'
+context_case 'old in-progress check finishing after a new event refused' failure '.started_at="2026-10-30T20:16:40Z"'
+context_case 'same-second check is not provably fresh' failure '.started_at="2026-10-30T20:16:44Z"'
+context_case 'missing start time refused' failure 'del(.started_at)'
 context_case 'missing completion time refused' failure 'del(.completed_at)'
+context_case 'completion before start refused' failure '.completed_at="2026-10-30T20:16:49Z"'
 context_case 'missing event timestamp refused' failure '.' pull_request 47 10 ''
 context_case 'invalid event timestamp refused' failure '.' pull_request 47 10 'yesterday;false'
 context_case 'other project refused' failure '.details_url="https://sonarcloud.io/dashboard?id=other_project&pullRequest=47"'

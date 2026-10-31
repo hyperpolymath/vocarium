@@ -93,11 +93,13 @@ The pinned `cicd-suite` verifier checks the latest official app check for the
 exact SHA and rejects missing, pending, skipped, stale, wrong-app, and failing
 results. The consumer also checks the official receipt's project and PR/main
 URL, preventing a successful result for a different Sonar project or PR from
-being substituted. Its completion must be strictly after the PR update or push
-event timestamp; missing timestamps and same-second receipts fail closed. This
-prevents an older same-SHA success from passing before a new check appears,
-although GitHub timestamps have only second precision and do not prove which
-base revision or server-side configuration Sonar analyzed. Neither check proves
+being substituted. Its start time must be strictly after the PR update or push
+event timestamp, with a valid completion at or after its start; missing
+timestamps and same-second starts fail closed. This prevents an older same-SHA
+check, including one still running, from passing before a new check appears.
+GitHub timestamps have only second precision and do not prove which base
+revision or server-side configuration Sonar analyzed; a check that starts too
+close to the event may need a fresh analysis and workflow rerun. Neither check proves
 rules, coverage, current base-branch analysis, or entitlement. A new run on the
 same SHA can supersede a prior result; a newer pending run is not a pass. The
 five-minute wait is bounded and an unavailable result fails rather than

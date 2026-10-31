@@ -78,9 +78,9 @@ jobs:
             echo '::error::Invalid check-run ID or subject SHA.'
             exit 1
           fi
-          # A prior success on the same SHA must not satisfy a later event
-          # before SonarCloud has even published its new check. GitHub push
-          # payloads use epoch seconds; PR updated_at uses ISO 8601.
+          # A prior check on the same SHA, including one still in progress,
+          # must not satisfy a later event. GitHub push payloads use epoch
+          # seconds; PR updated_at uses ISO 8601.
           if [[ "$EVENT_TIME" =~ ^[0-9]{1,12}$ ]]; then
             event_epoch=$((10#$EVENT_TIME))
           elif [[ "$EVENT_TIME" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$ ]]; then
@@ -110,7 +110,9 @@ jobs:
               .app.id == 12526 and .app.slug == "sonarqubecloud" and
               .status == "completed" and .conclusion == "success" and
               .details_url == $url and
-              ((try (.completed_at | fromdateiso8601) catch 0) > $event_epoch)
+              ((try (.started_at | fromdateiso8601) catch 0) > $event_epoch) and
+              ((try (.completed_at | fromdateiso8601) catch 0) >=
+               (try (.started_at | fromdateiso8601) catch 0))
             ' >/dev/null; then
             echo '::error::Official receipt is unavailable, stale, or belongs to a different project, PR, branch, commit, or quality gate.'
             exit 1
