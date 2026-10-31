@@ -1,15 +1,14 @@
 # SPDX-License-Identifier: MPL-2.0
 # This workflow is managed by gh actions-lock.
 # Automatic analysis owns main/PR results; the Actions job verifies its receipt.
-# Legacy push-to-master / manual scans remain separate and are not a fallback
-# for missing or failed official results. See .github/workflows/README.adoc.
+# No CI scanner, manual dispatch, non-main route, or merge-queue analysis is
+# configured. See .github/workflows/README.adoc before changing coverage.
 name: SonarQube
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
-  workflow_dispatch:
+    branches: [main]
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -41,14 +40,6 @@ jobs:
           case "$EVENT_NAME:$EVENT_REF:$BASE_REF" in
             pull_request:*:main|push:refs/heads/main:)
               route=official ;;
-            push:refs/heads/master:|workflow_dispatch:refs/heads/main:|workflow_dispatch:refs/heads/master:)
-              route=legacy ;;
-            pull_request:*:master)
-              echo '::error::PRs targeting master have no qualified automatic analysis route; review the migration before enabling this branch.'
-              exit 1 ;;
-            workflow_dispatch:*)
-              echo '::error::Manual scanner runs are restricted to the repository main or master branch, not PR or arbitrary refs.'
-              exit 1 ;;
             *)
               echo '::error::No qualified Sonar analysis route for this event.'
               exit 1 ;;
@@ -117,23 +108,6 @@ jobs:
             echo '::error::Official receipt is unavailable, stale, or belongs to a different project, PR, branch, commit, or quality gate.'
             exit 1
           fi
-      # These legacy events do not trigger a new automatic analysis. The
-      # project currently has automatic analysis enabled, so the owner must
-      # review the documented mode conflict before expecting this scan to work.
-      # No pull_request event reaches a step containing SONAR_TOKEN.
-      - name: Checkout for legacy scan
-        if: steps.route.outputs.route == 'legacy'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - name: Legacy SonarQube scan
-        if: steps.route.outputs.route == 'legacy'
-        uses: SonarSource/sonarqube-scan-action@d209202bc7d53ff1cc128f7f907dac145c9d6ae9 # v8.3.0
-        with:
-          args: -Dsonar.qualitygate.wait=true
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   sonar-contract:
     name: SonarQube contract tests
     runs-on: ubuntu-latest

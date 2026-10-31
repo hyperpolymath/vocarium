@@ -42,12 +42,11 @@ repo=hyperpolymath/vocarium
 route_case 'same-repo PR to main' pull_request refs/pull/47/merge main "$repo" official
 route_case 'fork PR to main follows the same secret-free route' pull_request refs/pull/48/merge main "$repo" official
 route_case 'main push' push refs/heads/main '' "$repo" official
-route_case 'master push keeps the legacy scanner' push refs/heads/master '' "$repo" legacy
-route_case 'manual run on main keeps the legacy scanner' workflow_dispatch refs/heads/main '' "$repo" legacy
-route_case 'manual run on master keeps the legacy scanner' workflow_dispatch refs/heads/master '' "$repo" legacy
-route_case 'master PR fails closed without a secret' pull_request refs/pull/49/merge master "$repo" failure
-route_case 'manual PR ref cannot access scanner secret' workflow_dispatch refs/pull/47/merge '' "$repo" failure
-route_case 'manual feature branch cannot access scanner secret' workflow_dispatch refs/heads/feature '' "$repo" failure
+route_case 'master push is not an analysis route' push refs/heads/master '' "$repo" failure
+route_case 'master PR is not an analysis route' pull_request refs/pull/49/merge master "$repo" failure
+route_case 'manual main dispatch is not an analysis route' workflow_dispatch refs/heads/main '' "$repo" failure
+route_case 'manual PR ref is not an analysis route' workflow_dispatch refs/pull/47/merge '' "$repo" failure
+route_case 'manual feature branch is not an analysis route' workflow_dispatch refs/heads/feature '' "$repo" failure
 route_case 'merge-group SHA is not treated as a PR head' merge_group refs/heads/gh-readonly-queue/main/pr-1 main "$repo" failure
 route_case 'unknown branch is not silently accepted' push refs/heads/other '' "$repo" failure
 route_case 'different repository is not this project' push refs/heads/main '' other/vocarium failure
@@ -57,12 +56,11 @@ grep -Fq 'uses: hyperpolymath/cicd-suite/actions/sonarcloud-result-check@4404c3c
 grep -Fq 'sha: ${{ github.event.pull_request.head.sha || github.sha }}' "$workflow" || fail 'subject is not the PR head / push SHA'
 grep -Fxq 'permissions: {}' "$workflow" || fail 'workflow-wide token permissions are not disabled'
 grep -Fxq '      checks: read' "$workflow" || fail 'job-scoped checks: read is missing'
-grep -Fq 'args: -Dsonar.qualitygate.wait=true' "$workflow" || fail 'legacy scan does not wait for its quality gate'
-if grep -Eq '^[[:space:]]*(continue-on-error|pull_request_target):' "$workflow"; then
-  fail 'unsafe bypass or privileged PR trigger present'
+if grep -Eq '^[[:space:]]*(continue-on-error|pull_request_target|workflow_dispatch):|SONAR_TOKEN|sonarqube-scan-action' "$workflow"; then
+  fail 'unexpected bypass, privileged/manual trigger, scanner, or scanner secret present'
 fi
-awk '/- name: Legacy SonarQube scan/{getline; if ($0 !~ /if: steps.route.outputs.route == '\''legacy'\''/) exit 1; found=1} END {if (!found) exit 1}' "$workflow" || fail 'scanner is not limited to the legacy route'
-echo 'ok: verifier pin, permissions, secret boundary and quality-gate wiring'
+[[ $(grep -Fxc '    branches: [main]' "$workflow") -eq 2 ]] || fail 'Sonar triggers are not limited to main'
+echo 'ok: verifier pin, main-only triggers, permissions and secret-free quality-gate wiring'
 
 mkdir -p "$tmp/bin"
 cat > "$tmp/bin/gh" <<'MOCK'
