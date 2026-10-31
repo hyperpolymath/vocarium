@@ -1,34 +1,122 @@
-# This workflow is managed by gh actions-lock.
 # SPDX-License-Identifier: MPL-2.0
 # This workflow is managed by gh actions-lock.
-# SonarQube Cloud (SonarCloud) static analysis. Analysis scope + exclusions live
-# in sonar-project.properties. Requires the SONAR_TOKEN repository secret
-# (Settings -> Secrets and variables -> Actions) and a SonarCloud project:
-# https://sonarcloud.io/project/overview?id=hyperpolymath_rsr-template-repo
-# Mirrors the boj-server arrangement.
+# Automatic analysis owns main/PR results; the Actions job verifies its receipt.
+# No CI scanner, manual dispatch, non-main route, or merge-queue analysis is
+# configured. See .github/workflows/README.adoc before changing coverage.
 name: SonarQube
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
-  workflow_dispatch:
+    branches: [main]
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-permissions:
-  contents: read
+permissions: {}
 jobs:
   sonarqube:
+    # Preserve the existing Actions check context even though its main/PR
+    # meaning changes from "scanner ran" to "official quality gate passed".
     name: SonarQube
+    permissions:
+      contents: read
+      checks: read
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7.0.1
-        with:
-          fetch-depth: 0   # full history for accurate new-code detection
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v8.3.0
+      - name: Select analysis route
+        id: route
+        shell: bash
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_REF: ${{ github.ref }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REPOSITORY" != 'hyperpolymath/vocarium' ]]; then
+            echo '::error::This workflow is bound to the vocarium SonarCloud project.'
+            exit 1
+          fi
+          case "$EVENT_NAME:$EVENT_REF:$BASE_REF" in
+            pull_request:*:main|push:refs/heads/main:)
+              route=official ;;
+            *)
+              echo '::error::No qualified Sonar analysis route for this event.'
+              exit 1 ;;
+          esac
+          echo "route=$route" >> "$GITHUB_OUTPUT"
+      - name: Verify official same-commit quality gate
+        id: official
+        if: steps.route.outputs.route == 'official'
+        uses: hyperpolymath/cicd-suite/actions/sonarcloud-result-check@4404c3c0474e17753fe7689f3485c02890aac113
+        with:
+          repository: ${{ github.repository }}
+          sha: ${{ github.event.pull_request.head.sha || github.sha }}
+          wait-seconds: '300'
+      - name: Verify project and analysis context
+        if: steps.route.outputs.route == 'official'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECK_RUN_ID: ${{ steps.official.outputs.check-run-id }}
+          SUBJECT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_TIME: ${{ github.event.pull_request.updated_at || github.event.repository.pushed_at }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$CHECK_RUN_ID" =~ ^[1-9][0-9]*$ || ! "$SUBJECT_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo '::error::Invalid check-run ID or subject SHA.'
+            exit 1
+          fi
+          # A prior check on the same SHA, including one still in progress,
+          # must not satisfy a later event. GitHub push payloads use epoch
+          # seconds; PR updated_at uses ISO 8601.
+          if [[ "$EVENT_TIME" =~ ^[0-9]{1,12}$ ]]; then
+            event_epoch=$((10#$EVENT_TIME))
+          elif [[ "$EVENT_TIME" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$ ]]; then
+            event_epoch=$(date -u -d "$EVENT_TIME" +%s) || exit 1
+          else
+            echo '::error::Missing or invalid event timestamp; no fresh receipt can be verified.'
+            exit 1
+          fi
+          case "$EVENT_NAME" in
+            pull_request)
+              if [[ ! "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]]; then
+                echo '::error::Invalid PR number.'
+                exit 1
+              fi
+              expected_url="https://sonarcloud.io/dashboard?id=hyperpolymath_vocarium&pullRequest=$PR_NUMBER" ;;
+            push)
+              expected_url='https://sonarcloud.io/dashboard?id=hyperpolymath_vocarium&branch=main' ;;
+            *)
+              echo '::error::Unexpected receipt event.'
+              exit 1 ;;
+          esac
+          if ! gh api "repos/$GITHUB_REPOSITORY/check-runs/$CHECK_RUN_ID" | jq -e \
+            --arg id "$CHECK_RUN_ID" --arg sha "$SUBJECT_SHA" --arg url "$expected_url" \
+            --argjson event_epoch "$event_epoch" '
+              .id == ($id | tonumber) and .head_sha == $sha and
+              .name == "SonarCloud Code Analysis" and
+              .app.id == 12526 and .app.slug == "sonarqubecloud" and
+              .status == "completed" and .conclusion == "success" and
+              .details_url == $url and
+              ((try (.started_at | fromdateiso8601) catch 0) > $event_epoch) and
+              ((try (.completed_at | fromdateiso8601) catch 0) >=
+               (try (.started_at | fromdateiso8601) catch 0))
+            ' >/dev/null; then
+            echo '::error::Official receipt is unavailable, stale, or belongs to a different project, PR, branch, commit, or quality gate.'
+            exit 1
+          fi
+  sonar-contract:
+    name: SonarQube contract tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Test routing and receipt context
+        run: bash tests/workflows/sonarqube_test.sh
