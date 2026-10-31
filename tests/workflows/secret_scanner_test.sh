@@ -34,3 +34,32 @@ fi
 
 echo 'Secret scanner contract passed: PR, main push and merge-group wiring; required job; pinned reusable; no inherited secrets.'
 echo 'A real merge-group event and scan still require a hosted canary.'
+
+# Exercise the checker itself against unsafe mutations. Passing a workflow
+# path is the recursive fixture mode, which does not make further fixtures.
+if [[ $# -eq 0 ]]; then
+  tmp=$(mktemp -d)
+  trap 'rm -rf "$tmp"' EXIT
+  expect_reject() {
+    local label=$1 candidate=$2
+    if bash "$0" "$candidate" > "$tmp/fixture.log" 2>&1; then
+      fail "$label mutation unexpectedly passed"
+    fi
+    echo "ok: $label mutation rejected"
+  }
+  cp "$workflow" "$tmp/inherit.yml"
+  sed -i '/^  scanner-contract:/i\    secrets: inherit' "$tmp/inherit.yml"
+  expect_reject 'inherited secrets' "$tmp/inherit.yml"
+  cp "$workflow" "$tmp/redirect.yml"
+  sed -i 's/uses: metadatastician\/standards/uses: hyperpolymath\/standards/' "$tmp/redirect.yml"
+  expect_reject 'redirecting reusable owner' "$tmp/redirect.yml"
+  cp "$workflow" "$tmp/permission.yml"
+  sed -i '/^      contents: read$/a\      pull-requests: write' "$tmp/permission.yml"
+  expect_reject 'excess PR permissions' "$tmp/permission.yml"
+  cp "$workflow" "$tmp/context.yml"
+  sed -i 's/^  scan:$/  renamed:/' "$tmp/context.yml"
+  expect_reject 'renamed required job' "$tmp/context.yml"
+  cp "$workflow" "$tmp/group.yml"
+  sed -i '/^  merge_group:/d' "$tmp/group.yml"
+  expect_reject 'missing merge-group trigger' "$tmp/group.yml"
+fi

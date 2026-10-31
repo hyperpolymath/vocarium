@@ -28,12 +28,15 @@ The https://github.com/hyperpolymath/vocarium/actions/runs/41199621947[run annot
 says the called workflow was not found. `hyperpolymath/standards` redirects to
 `metadatastician/standards`, but GitHub Actions does not follow redirects for
 reusable workflows. The caller now uses the canonical name and the *same*
-immutable commit. The inspected reusable needs only `contents: read` and has no
-secret expressions; the caller does not inherit repository secrets. Its
-first baseline checkout still follows the standards `main` branch; its mutable
-security allowlist and upstream ownership should be reviewed independently.
-A real hosted run must confirm the canonical reference and actual scan work;
-`merge_group` is wired in preparation for a later queue canary, not yet proven.
+immutable commit. The first run with that name was separately rejected by the
+repository's Actions allowlist; the owner must permit the exact pinned reusable
+workflow without removing existing policy entries. The inspected reusable needs
+only `contents: read` and has no secret expressions; the caller does not inherit
+repository secrets. Its first baseline checkout still follows the standards
+`main` branch; its mutable security allowlist and upstream ownership should be
+reviewed independently. A real hosted run must confirm the canonical reference
+and actual scan work; `merge_group` is wired in preparation for a later queue
+canary, not yet proven.
 
 The same retired `hyperpolymath/standards` owner appears in other reusable
 callers (`governance`, `hypatia-scan`, `mirror`, `rust-ci`, and `scorecard`).
