@@ -13,14 +13,15 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-permissions:
-  contents: read
-  checks: read
+permissions: {}
 jobs:
   sonarqube:
     # Preserve the existing Actions check context even though its main/PR
     # meaning changes from "scanner ran" to "official quality gate passed".
     name: SonarQube
+    permissions:
+      contents: read
+      checks: read
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

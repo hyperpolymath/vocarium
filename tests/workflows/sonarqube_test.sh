@@ -55,7 +55,8 @@ route_case 'different repository is not this project' push refs/heads/main '' ot
 # Check the wiring around the scripts as well as their runtime behaviour.
 grep -Fq 'uses: hyperpolymath/cicd-suite/actions/sonarcloud-result-check@4404c3c0474e17753fe7689f3485c02890aac113' "$workflow" || fail 'verifier is not pinned'
 grep -Fq 'sha: ${{ github.event.pull_request.head.sha || github.sha }}' "$workflow" || fail 'subject is not the PR head / push SHA'
-grep -Fq 'checks: read' "$workflow" || fail 'checks: read is missing'
+grep -Fxq 'permissions: {}' "$workflow" || fail 'workflow-wide token permissions are not disabled'
+grep -Fxq '      checks: read' "$workflow" || fail 'job-scoped checks: read is missing'
 grep -Fq 'args: -Dsonar.qualitygate.wait=true' "$workflow" || fail 'legacy scan does not wait for its quality gate'
 if grep -Eq '^[[:space:]]*(continue-on-error|pull_request_target):' "$workflow"; then
   fail 'unsafe bypass or privileged PR trigger present'
