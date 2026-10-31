@@ -23,10 +23,126 @@ check). An inline TruffleHog job was removed: the reusable deliberately retired
 TruffleHog as redundant with gitleaks, so re-adding it was duplicated work, not
 extra coverage.
 
+== SonarCloud: automatic analysis and the legacy scanner
+
+The project is `hyperpolymath_vocarium` in organization `hyperpolymath`.
+On 2026-10-31 the public
+https://sonarcloud.io/api/settings/values?component=hyperpolymath_vocarium&keys=sonar.autoscan.enabled,sonar.project.monorepo.enabled[project settings]
+reported `sonar.autoscan.enabled=true` and monorepo mode disabled. The official
+GitHub app is `sonarqubecloud` (app ID `12526`). SonarCloud documents automatic
+analysis for the default branch and PRs, including forks:
+https://docs.sonarsource.com/sonarqube-cloud/analyzing-source-code/automatic-analysis[automatic analysis] and
+https://docs.sonarsource.com/sonarqube-cloud/analyzing-source-code/ci-based-analysis/github-actions-for-sonarcloud[fork PRs].
+
+The official check for PR #47, commit
+`748cf83de60de9cc9b968d38c187a7330183b2e2`, was
+https://github.com/hyperpolymath/vocarium/runs/124289772397[124289772397]:
+`SonarCloud Code Analysis`, success, zero new issues. The separate Actions
+scanner https://github.com/hyperpolymath/vocarium/actions/runs/41121896614/job/124289694405[124289694405]
+failed with exit 3 and a missing-`SONAR_TOKEN` warning; its complete final
+scanner error was not retrieved. These are duplicate *attempts/reporting*, not
+proof that two analyses completed or that the scanner failed due to findings.
+The official app also analyzed `main` commit
+`297bdd98156f621ee95aa57e20290fbe948a7027` while the Actions scanner had a
+startup failure. Real findings must not be ignored: the official gate on
+https://github.com/hyperpolymath/vocarium/runs/117203725307[an earlier main commit]
+failed its new-code security rating; the 2026-10-27 main analysis reported
+21 vulnerabilities, independently of the PR #47 result.
+
+[cols="2,3,3",options="header"]
+|===
+| Event | Route in `sonarqube.yml` | Coverage / review boundary
+
+| PR targeting `main` (including forks)
+| The `SonarQube` Actions job verifies the official app's exact *PR head* SHA;
+  it never receives `SONAR_TOKEN` or checks out PR code.
+| Same-repository PRs are observed. SonarCloud documents fork support, but
+  no vocarium fork PR canary has been observed. The verifier fails closed if
+  the result or permission is absent; qualify a real fork before rollout.
+
+| Push to `main`
+| Verify the official app's exact push SHA.
+| Observed on main, including independent success and failure results.
+
+| Push to `master`
+| Retain the separate legacy CI scanner, waiting for its quality gate.
+| No `master` branch currently exists. This is not evidence the scanner works:
+  automatic and CI-based analysis conflict for the same project.
+
+| Manual dispatch
+| Retain the legacy scanner only on repository `main` or `master` refs.
+| A dispatch does not itself trigger a fresh automatic analysis. The workflow
+  previously had no ref restriction; arbitrary branch / PR-ref dispatches are
+  now refused to avoid exposing secrets to untrusted code. The mode conflict
+  still applies.
+
+| PR targeting `master`
+| Fail explicitly without exposing a scanner secret.
+| This changes the old scanner route; no current `master` branch or proven
+  automatic PR-to-master coverage exists. Review a real analysis route before
+  enabling such PRs.
+
+| Merge queue (`merge_group`)
+| No trigger, as before.
+| Neither a synthetic merge-group analysis nor its official receipt has been
+  qualified. Do not substitute a PR-head result or a skipped/success job for
+  the queue SHA; qualify an actual queue candidate before requiring this check.
+|===
+
+The pinned `cicd-suite` verifier checks the latest official app check for the
+exact SHA and rejects missing, pending, skipped, stale, wrong-app, and failing
+results. The consumer also checks the official receipt's project and PR/main
+URL, preventing a successful result for a different Sonar project or PR from
+being substituted. Its start time must be strictly after the PR update or push
+event timestamp, with a valid completion at or after its start; missing
+timestamps and same-second starts fail closed. This prevents an older same-SHA
+check, including one still running, from passing before a new check appears.
+GitHub timestamps have only second precision and do not prove which base
+revision or server-side configuration Sonar analyzed; a check that starts too
+close to the event may need a fresh analysis and workflow rerun. Neither check proves
+rules, coverage, current base-branch analysis, or entitlement. A new run on the
+same SHA can supersede a prior result; a newer pending run is not a pass. The
+five-minute wait is bounded and an unavailable result fails rather than
+launching an extra scanner or becoming green.
+
+`sonar-project.properties` is for CI scans. Automatic analysis ignores it;
+its exclusions are *not* evidence of the active automatic-analysis scope.
+Review the SonarCloud project settings and actual findings before changing
+scope. In particular, do not copy those exclusions into `.sonarcloud.properties`
+merely to make a check pass. Automatic analysis does not import coverage or
+external reports. SonarCloud explicitly
+https://docs.sonarsource.com/sonarqube-cloud/analyzing-source-code/ci-based-analysis/overview-of-integrated-cis[does not support simultaneous automatic and CI-based analysis]
+of the same project. Before relying on a legacy scan, the owner must decide on
+a compatible analysis method/project and verify that doing so does not remove
+the main/PR automatic coverage. The legacy steps are not a silent fallback if
+the official analysis is missing or red.
+
+=== Rollout and branch protection review
+
+* The Actions job keeps its existing `SonarQube` context and the official
+  `SonarCloud Code Analysis` app check remains separate. The visible active
+  rules for `main` required `scan / gitleaks` (GitHub Actions app `15368`),
+  not a Sonar context, on 2026-10-31. The branch-protection API returned 403,
+  so the owner must also inspect any classic/organization protection and
+  app-bound required contexts before merging or changing them. The checked-in
+  `.github/settings.yml` declares other contexts and is not proof of live state.
+* Before qualifying forks, open a real fork PR against `main` containing this
+  candidate workflow. Confirm that both the official check and `SonarQube`
+  refer to the fork PR's exact head SHA and this project, without a secret;
+  push a second commit and confirm the older success cannot satisfy it.
+  Record the check IDs. Repeat when project permissions or analysis mode change.
+* Before enabling a merge queue or requiring a Sonar context in one, qualify
+  the exact merge-group SHA and an appropriately scoped analysis; review all
+  required checks and their app identities. This workflow is not queue-ready.
+* Manual scanner / non-default-branch needs and the loss of arbitrary-ref
+  dispatch and PR-to-master scanning require explicit owner review. Do not
+  enable a privileged `pull_request_target` scan of untrusted PR code.
+
 == SAST tools are complementary, not redundant
 
 * `codeql.yml` — CodeQL (matrix defaults to `actions`; every repo has workflows).
-* `sonarqube.yml` — SonarCloud (shell / JS surface; see `sonar-project.properties`).
+* `sonarqube.yml` — verifies SonarCloud automatic analysis for main / PRs; the
+  legacy scanner configuration is `sonar-project.properties`.
 * `static-analysis-gate.yml` — panic-attack + Hypatia gate (see above).
 
 Each targets a different language/surface; together they cover what no single
