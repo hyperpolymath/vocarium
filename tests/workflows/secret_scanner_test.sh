@@ -21,7 +21,7 @@ awk '
   /^  scan:$/ { in_scan=1; next }
   in_scan && /^  [a-zA-Z0-9_-]+:$/ { exit }
   in_scan && $0 == "      contents: read" { read_contents=1 }
-  in_scan && $0 == "    uses: metadatastician/standards/.github/workflows/secret-scanner-reusable.yml@84355587cb2a1f86e6882de83514a32db2646e7a" { pinned=1 }
+  in_scan && $0 == "    uses: metadatastician/standards/.github/workflows/secret-scanner-reusable.yml@8d1a2aab4211493cf42f147f2080f024605797dc" { pinned=1 }
   END { if (!in_scan || !read_contents || !pinned) exit 1 }
 ' "$workflow" || fail 'required scan job, minimal permissions, or pinned canonical reusable changed'
 
@@ -53,6 +53,9 @@ if [[ $# -eq 0 ]]; then
   cp "$workflow" "$tmp/redirect.yml"
   sed -i 's/uses: metadatastician\/standards/uses: hyperpolymath\/standards/' "$tmp/redirect.yml"
   expect_reject 'redirecting reusable owner' "$tmp/redirect.yml"
+  cp "$workflow" "$tmp/old-pin.yml"
+  sed -i 's/8d1a2aab4211493cf42f147f2080f024605797dc/84355587cb2a1f86e6882de83514a32db2646e7a/' "$tmp/old-pin.yml"
+  expect_reject 'upstream commit with invalid checkout lock' "$tmp/old-pin.yml"
   cp "$workflow" "$tmp/permission.yml"
   sed -i '/^      contents: read$/a\      pull-requests: write' "$tmp/permission.yml"
   expect_reject 'excess PR permissions' "$tmp/permission.yml"
