@@ -40,9 +40,11 @@ git-history scan, and fetches its estate baseline at the reusable's pinned SHA
 rather than `main`. Its baseline includes upstream allowlist rules, and deleted
 AsciiDoc content is not covered by the separate AsciiDoc working-tree pass.
 The repository's Actions allowlist must permit the *new exact pin* as well.
-A real hosted run must confirm the canonical reference, upstream lock, and
-actual scans work; `merge_group` is wired in preparation for a later queue
-canary, not yet proven.
+The https://github.com/hyperpolymath/vocarium/actions/runs/41220900235[first run]
+using it was rejected by the effective Actions policy; recheck the saved pattern
+and allow time for settings to propagate. A real hosted run must confirm the
+canonical reference, upstream lock, and actual scans work; `merge_group` is
+wired in preparation for a later queue canary, not yet proven.
 
 The same retired `hyperpolymath/standards` owner appears in other reusable
 callers (`governance`, `hypatia-scan`, `mirror`, `rust-ci`, and `scorecard`).
