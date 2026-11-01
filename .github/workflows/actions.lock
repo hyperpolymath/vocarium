@@ -155,3 +155,8 @@ dependencies:
         commit: 'sha1-efb35369e0ad2afab669f228072c1b0d510eae64'
         owner_id: 2242
         repo_id: 204253808
+    'sonarsource/sonarqube-scan-action@v8.4.0':
+        ref: 'v8.4.0'
+        commit: 'sha1-4d1dc0c91ee400dcf8a6dddf2f705ac36542e304'
+        owner_id: 545988
+        repo_id: 366408409
