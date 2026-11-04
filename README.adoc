@@ -165,6 +165,8 @@ Vocarium is an experimental database architecture for trope-aware, loss-aware, w
 
 Vocabulary track: trope-particularity-workbench → haec → trope-checker (verdict). Store/query track: haec → vocarium → hermeneia → trope-checker (verdict). trope-checker depends on nothing (HC-1); the workbench depends on nothing; vocarium and hermeneia meet at the M2 StoreProvider adapter (vocarium ADR-0002: wire, do not link).
 
+The M2 adapter is planned, not built: a Hermeneia-side Rust `StoreProvider` that drives `voc` as a subprocess over the Trope IR v0.2 JSON contract (see `AFFIRMATION.adoc`, "What we do NOT claim"). The five-repo paragraph above is shared verbatim across the five READMEs; this sentence is Vocarium's own.
+
 ## Relationship to other systems
 
 Vocarium is part of a wider language/database ecology:
