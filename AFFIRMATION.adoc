@@ -63,8 +63,7 @@ the IR that `src/store/emit.zig` writes for `examples/vocarium-ingest.jsonl`,
 reconstructed by hand, was fed to `tropecheck-rs` built from `4ecba4f` and gave
 `casual-note` → `p-sufficient` (exit 0) and `critical-paraphrase` →
 `p-insufficient witness=e_paraphrase coord=fate.quality` (exit 1), the verdicts
-the gate asserts; the same binary passes trope-checker's own conformance suite at
-that revision.
+the gate asserts.
 
 | The store format is append-only JSONL (one record per line, `"t"` one of `trope`, `edge`, `use_model`, `warrant`)
 replayed into in-memory indexes; the only external contract is Trope IR v0.2 over
