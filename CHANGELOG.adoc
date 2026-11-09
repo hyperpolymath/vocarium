@@ -10,6 +10,25 @@ https://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
 ==== Fixed
 
+* *The `+proof-check-idris2+` account was wrong (2026-11-09).* Review found it,
+  and it was right. `+docs/status/PROOF-STATUS.adoc+` said that with a toolchain
+  present every individual `+proof-check-*+` recipe would report green on
+  template boilerplate, and that only the aggregate fails, "because of comment
+  text, not because it checked anything". That holds for Agda, Coq and Lean but
+  is false for Idris2: the recipe runs `+idris2 --check+` from the repository
+  root with no `+--source-dir+` and there is no `+.ipkg+` in the tree, so every
+  file under `+verification/proofs/idris2/+` declares a module name
+  (`+Types+`, `+ABI.Compliance+`, …) that cannot match the name Idris2 derives
+  from its path. Idris2 rejects the header before elaborating anything, and
+  because `+proof-check-all+` runs its dependencies in order it would stop there
+  and never reach `+proof-scan-dangerous+`. The entry now states both failure
+  paths and which one applies when. NOT RUN: Idris2 is unavailable in this
+  session, so the Idris2 path is read from the recipe and from Idris2's own
+  header check in `+src/Idris/ProcessIdr.idr+`, not executed — and that is said
+  in the document rather than left implied.
+
+==== Fixed
+
 * *`+docs/status/PROOF-STATUS.adoc+` published a percentage, which PROOF-POLICY
 forbids (2026-11-09).* The summary read `+*Overall*: 0% proven+`. §8.4 rule 7 is
 explicit — "Never publish 'X% proved', an average grade, or a single confidence

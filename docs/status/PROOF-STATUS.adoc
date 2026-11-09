@@ -93,12 +93,27 @@ Two consequences worth stating rather than leaving implicit:
 
 * The individual `proof-check-*` recipes in `build/just/proofs.just` print
   `SKIP: <tool> not installed` and continue. That contradicts this repository's
-  own `no-silent-skip` constraint, and with a toolchain present each would report
-  green on template boilerplate. The aggregate `proof-check-all` is the exception
-  and fails for an unintended reason: it also runs `proof-scan-dangerous`, whose
-  pattern matches the words `postulate` and `Admitted` *in the templates' own
-  comments*. So the one recipe that does fail does so because of comment text,
-  not because it checked anything. The recipes are not reachable from the
+  own `no-silent-skip` constraint, and with an Agda, Coq or Lean toolchain
+  present each would report green on template boilerplate.
+  `proof-check-idris2` is the exception among the individual recipes: it runs
+  `idris2 --check` from the repository root with no `--source-dir`, and there is
+  no `.ipkg` anywhere in this repository, so for every file under
+  `verification/proofs/idris2/` the declared module name (`Types`,
+  `ABI.Compliance`, …) cannot match the name Idris2 derives from the path.
+  Idris2 rejects the header before elaborating anything — `Module name Types
+  does not match file name "verification/proofs/idris2/Types.idr"`.
+  The aggregate `proof-check-all` therefore fails for one of two reasons
+  depending on the environment: with Idris2 installed it stops at
+  `proof-check-idris2`, its first dependency, and never reaches
+  `proof-scan-dangerous`; with no prover installed every `proof-check-*` recipe
+  skips and the failure comes from `proof-scan-dangerous`, whose pattern matches
+  the words `postulate` and `Admitted` *in the templates' own comments*. Either
+  way the failure says nothing about whether any proof was checked. (NOT RUN
+  here: Idris2 is unavailable in this session, so the first path is read from the
+  recipe and from Idris2's own header check in `src/Idris/ProcessIdr.idr`, not
+  executed. Agda is not affected the same way: it adds the file's own directory
+  to the include path, where Idris2 keys off the source dir.)
+  The recipes are not reachable from the
   golden path (`just test && just quality`), so no gate is currently affected.
   `hyperpolymath/trope-checker`'s `build/just/proofs.just` carries the estate's
   reference treatment: it refuses to report a skip as a pass.
