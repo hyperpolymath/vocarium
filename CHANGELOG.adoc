@@ -18,7 +18,7 @@ figure was accurate; the form was the forbidden one. It now reads as a census.
 The same line ships in `+rsr-template-repo+`'s `+PROOF-STATUS.adoc+`, so fixing
 it there is the solution at source.
 * *`+docs/status/PROOF-STATUS.adoc+` title was an unfilled mint placeholder
-(2026-11-09).* It read `+= Proof Status — {{PROJECT}}+`; it now reads
+(2026-11-09).* Its title carried the mint's unfilled project-name token; it now reads
 `+VOCARIUM+`, matching haec and hermeneia. The repository's placeholder gate
 (`+.github/workflows/openssf-compliance.yml+`) checks a fixed list of required
 files that does not include the status surfaces, which is why this passed CI.

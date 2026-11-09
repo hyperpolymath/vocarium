@@ -91,10 +91,14 @@ accurate.
 
 Two consequences worth stating rather than leaving implicit:
 
-* The `proof-check-*` recipes in `build/just/proofs.just` print
+* The individual `proof-check-*` recipes in `build/just/proofs.just` print
   `SKIP: <tool> not installed` and continue. That contradicts this repository's
-  own `no-silent-skip` constraint, and if a toolchain *were* present they would
-  report green on template boilerplate. The recipes are not reachable from the
+  own `no-silent-skip` constraint, and with a toolchain present each would report
+  green on template boilerplate. The aggregate `proof-check-all` is the exception
+  and fails for an unintended reason: it also runs `proof-scan-dangerous`, whose
+  pattern matches the words `postulate` and `Admitted` *in the templates' own
+  comments*. So the one recipe that does fail does so because of comment text,
+  not because it checked anything. The recipes are not reachable from the
   golden path (`just test && just quality`), so no gate is currently affected.
   `hyperpolymath/trope-checker`'s `build/just/proofs.just` carries the estate's
   reference treatment: it refuses to report a skip as a pass.
@@ -112,8 +116,14 @@ is mint boilerplate rather than a theory entrypoint of this repository, the
 defensible fix is removal rather than adding flags to a template.
 
 Under PROOF-POLICY §8.1 these files support no Proof Witness Grade: they are not
-theory obligations of this repository at all. Vocarium's real proof obligations
-are the store invariants named in `PROOF-NEEDS.adoc`.
+theory obligations of this repository at all. Nor does `PROOF-NEEDS.adoc` yet
+list vocarium's own obligations — its project-specific table is empty, and the
+seven rows the summary counts are the mint's ABI/FFI and typing categories, which
+sit oddly beside ADR-0002's pure-Zig wire boundary (no C-ABI structs, no
+bindings). The obligations this store actually owes — append-only JSONL replay,
+index reconstruction on open, use-model relativity, warrant checking — are
+described in `README.adoc` and the ADR, and are not yet written down as proof
+obligations anywhere.
 
 == Verification Commands
 
