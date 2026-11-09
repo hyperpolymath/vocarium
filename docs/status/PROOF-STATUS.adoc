@@ -93,8 +93,9 @@ Two consequences worth stating rather than leaving implicit:
 
 * The individual `proof-check-*` recipes in `build/just/proofs.just` print
   `SKIP: <tool> not installed` and continue. That contradicts this repository's
-  own `no-silent-skip` constraint, and with an Agda, Coq or Lean toolchain
-  present each would report green on template boilerplate.
+  own `no-silent-skip` constraint, and with a Coq or Lean toolchain present each
+  would report green on template boilerplate. Agda would do so only if its
+  standard library is configured; `proof-check-agda` does not configure it.
   `proof-check-idris2` is the exception among the individual recipes: it runs
   `idris2 --check` from the repository root with no `--source-dir`, and there is
   no `.ipkg` anywhere in this repository, so for every file under

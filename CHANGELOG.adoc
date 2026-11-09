@@ -14,10 +14,11 @@ https://semver.org/spec/v2.0.0.html[Semantic Versioning].
   and it was right. `+docs/status/PROOF-STATUS.adoc+` said that with a toolchain
   present every individual `+proof-check-*+` recipe would report green on
   template boilerplate, and that only the aggregate fails, "because of comment
-  text, not because it checked anything". That holds for Agda, Coq and Lean but
-  is false for Idris2: the recipe runs `+idris2 --check+` from the repository
-  root with no `+--source-dir+` and there is no `+.ipkg+` in the tree, so every
-  file under `+verification/proofs/idris2/+` declares a module name
+  text, not because it checked anything". That holds for Coq and Lean, and for
+  Agda only if its standard library is configured (`+proof-check-agda+` does not
+  configure it), but is false for Idris2: the recipe runs `+idris2 --check+` from
+  the repository root with no `+--source-dir+` and there is no `+.ipkg+` in the
+  tree, so every file under `+verification/proofs/idris2/+` declares a module name
   (`+Types+`, `+ABI.Compliance+`, …) that cannot match the name Idris2 derives
   from its path. Idris2 rejects the header before elaborating anything, and
   because `+proof-check-all+` runs its dependencies in order it would stop there
