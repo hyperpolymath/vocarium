@@ -7,3 +7,20 @@ Changelog], and this project adheres to
 https://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
 === [Unreleased]
+
+==== Fixed
+
+* *`+docs/status/PROOF-STATUS.adoc+` title was an unfilled mint placeholder
+(2026-11-09).* It read `+= Proof Status — {{PROJECT}}+`; it now reads
+`+VOCARIUM+`, matching haec and hermeneia. The repository's placeholder gate
+(`+.github/workflows/openssf-compliance.yml+`) checks a fixed list of required
+files that does not include the status surfaces, which is why this passed CI.
+
+==== Added
+
+* *A note saying what `+verification/proofs/+` actually contains (2026-11-09).*
+Every file there is an unmodified mint template that states nothing about
+vocarium, so the 0%-proven summary is accurate rather than a backlog. The note
+also records that `+build/just/proofs.just+`'s `+proof-check-*+` recipes report
+`+SKIP+` and continue, against this repository's `+no-silent-skip+` constraint,
+and that they are not reachable from the golden path.

@@ -2,7 +2,7 @@
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Template: rsr-template-repo/docs/status/PROOF-STATUS.adoc
 // Tracks proof completion. Requirements defined in PROOF-NEEDS.adoc
-= Proof Status — {{PROJECT}}
+= Proof Status — VOCARIUM
 
 == Summary
 
@@ -67,6 +67,44 @@
 | TP-1 | Core data type well-formedness | TP | Idris2 | P1 | 4h
 | TP-2 | Public API type safety | TP | Lean4 | P2 | 4h
 |===
+
+== What `verification/proofs/` currently contains
+
+NOTE: as of 2026-11-09 every file under `verification/proofs/` is an *unmodified
+mint template*. Each still carries its "Replace with your project's …" header, and
+none of them states anything about vocarium: `coq/TypeSafety.v` is a toy expression
+language, `agda/Properties.agda` proves `length (xs ++ ys) ≡ length xs + length ys`,
+`lean4/ApiTypes.lean` proves the functor laws for a template `ApiResult`, and
+`tlaplus/StateMachine.tla` models a placeholder request pipeline. They are
+therefore *not* evidence for anything, which is why the summary above correctly
+reads 0% proven — the figure is not a backlog against those files, it is the
+accurate count.
+
+Two consequences worth stating rather than leaving implicit:
+
+* The `proof-check-*` recipes in `build/just/proofs.just` print
+  `SKIP: <tool> not installed` and continue. That contradicts this repository's
+  own `no-silent-skip` constraint, and if a toolchain *were* present they would
+  report green on template boilerplate. The recipes are not reachable from the
+  golden path (`just test && just quality`), so no gate is currently affected.
+  `hyperpolymath/trope-checker`'s `build/just/proofs.just` carries the estate's
+  reference treatment: it refuses to report a skip as a pass.
+* `hyperpolymath/trope-checker` removed the identical never-instantiated templates
+  under ADR 0005 D5. Whether vocarium does the same is an owner decision (doctrine
+  7: cold is not disposable), so nothing is deleted here.
+
+No escape hatch is present: no `believe_me`, `assert_total`, `postulate`, `sorry`,
+`Axiom` or `Admitted` occurs in any body — verified by `hyperpolymath/mathesis`,
+`scripts/census/proof-holes.sh`, run over this tree on 2026-11-09. That scan does
+return one real policy finding: `verification/proofs/agda/Properties.agda` carries
+no `OPTIONS` pragma at all, so it does not set `--safe`, let alone the
+PROOF-POLICY §2.1 invocation `--safe --without-K --cubical-compatible`. As the file
+is mint boilerplate rather than a theory entrypoint of this repository, the
+defensible fix is removal rather than adding flags to a template.
+
+Under PROOF-POLICY §8.1 these files support no Proof Witness Grade: they are not
+theory obligations of this repository at all. Vocarium's real proof obligations
+are the store invariants named in `PROOF-NEEDS.adoc`.
 
 == Verification Commands
 
