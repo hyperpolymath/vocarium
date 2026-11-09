@@ -10,6 +10,13 @@ https://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
 ==== Fixed
 
+* *`+docs/status/PROOF-STATUS.adoc+` published a percentage, which PROOF-POLICY
+forbids (2026-11-09).* The summary read `+*Overall*: 0% proven+`. §8.4 rule 7 is
+explicit — "Never publish 'X% proved', an average grade, or a single confidence
+score" — and asks for a count per category with the denominator instead. The
+figure was accurate; the form was the forbidden one. It now reads as a census.
+The same line ships in `+rsr-template-repo+`'s `+PROOF-STATUS.adoc+`, so fixing
+it there is the solution at source.
 * *`+docs/status/PROOF-STATUS.adoc+` title was an unfilled mint placeholder
 (2026-11-09).* It read `+= Proof Status — {{PROJECT}}+`; it now reads
 `+VOCARIUM+`, matching haec and hermeneia. The repository's placeholder gate
