@@ -2,7 +2,7 @@
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Template: rsr-template-repo/docs/status/PROOF-STATUS.adoc
 // Tracks proof completion. Requirements defined in PROOF-NEEDS.adoc
-= Proof Status — {{PROJECT}}
+= Proof Status — VOCARIUM
 
 == Summary
 
@@ -20,7 +20,16 @@
 | *Total* | *7* | *0* | *0* | *0* | *7*
 |===
 
-*Overall*: 0% proven
+*Census.* Of 7 recorded obligations: 0 done, 0 in progress, 0 blocked, 7
+remaining. No obligation here carries a Proof Witness Grade, because none is a
+theory obligation of this repository under PROOF-POLICY §8.1.
+
+NOTE: this line used to read "*Overall*: 0% proven". PROOF-POLICY §8.4 rule 7 is
+explicit — "Never publish 'X% proved', an average grade, or a single confidence
+score" — and requires a count per category with the denominator instead. The
+figure was accurate; the *form* was the one the policy forbids. The same line
+ships in `rsr-template-repo`'s `PROOF-STATUS.adoc`, so every repository minted
+from it carries it; fixing it there is the solution at source.
 
 == Proofs Done
 
@@ -67,6 +76,70 @@
 | TP-1 | Core data type well-formedness | TP | Idris2 | P1 | 4h
 | TP-2 | Public API type safety | TP | Lean4 | P2 | 4h
 |===
+
+== What `verification/proofs/` currently contains
+
+NOTE: as of 2026-11-09 every file under `verification/proofs/` is an *unmodified
+mint template*. Each still carries its "Replace with your project's …" header, and
+none of them states anything about vocarium: `coq/TypeSafety.v` is a toy expression
+language, `agda/Properties.agda` proves `length (xs ++ ys) ≡ length xs + length ys`,
+`lean4/ApiTypes.lean` proves the functor laws for a template `ApiResult`, and
+`tlaplus/StateMachine.tla` models a placeholder request pipeline. They are
+therefore *not* evidence for anything, which is why the census above correctly
+reads 0 done of 7 — that count is not a backlog against those files, it is
+accurate.
+
+Two consequences worth stating rather than leaving implicit:
+
+* The individual `proof-check-*` recipes in `build/just/proofs.just` print
+  `SKIP: <tool> not installed` and continue. That contradicts this repository's
+  own `no-silent-skip` constraint, and with a Coq or Lean toolchain present each
+  would report green on template boilerplate. Agda would do so only if its
+  standard library is configured; `proof-check-agda` does not configure it.
+  `proof-check-idris2` is the exception among the individual recipes: it runs
+  `idris2 --check` from the repository root with no `--source-dir`, and there is
+  no `.ipkg` anywhere in this repository, so for every file under
+  `verification/proofs/idris2/` the declared module name (`Types`,
+  `ABI.Compliance`, …) cannot match the name Idris2 derives from the path.
+  Idris2 rejects the header before elaborating anything — `Module name Types
+  does not match file name "verification/proofs/idris2/Types.idr"`.
+  The aggregate `proof-check-all` therefore fails for one of two reasons
+  depending on the environment: with Idris2 installed it stops at
+  `proof-check-idris2`, its first dependency, and never reaches
+  `proof-scan-dangerous`; with no prover installed every `proof-check-*` recipe
+  skips and the failure comes from `proof-scan-dangerous`, whose pattern matches
+  the words `postulate` and `Admitted` *in the templates' own comments*. Either
+  way the failure says nothing about whether any proof was checked. (NOT RUN
+  here: Idris2 is unavailable in this session, so the first path is read from the
+  recipe and from Idris2's own header check in `src/Idris/ProcessIdr.idr`, not
+  executed. Agda is not affected the same way: it adds the file's own directory
+  to the include path, where Idris2 keys off the source dir.)
+  The recipes are not reachable from the
+  golden path (`just test && just quality`), so no gate is currently affected.
+  `hyperpolymath/trope-checker`'s `build/just/proofs.just` carries the estate's
+  reference treatment: it refuses to report a skip as a pass.
+* `hyperpolymath/trope-checker` removed the identical never-instantiated templates
+  under ADR 0005 D5. Whether vocarium does the same is an owner decision (doctrine
+  7: cold is not disposable), so nothing is deleted here.
+
+No escape hatch is present: no `believe_me`, `assert_total`, `postulate`, `sorry`,
+`Axiom` or `Admitted` occurs in any body — verified by `hyperpolymath/mathesis`,
+`scripts/census/proof-holes.sh`, run over this tree on 2026-11-09. That scan does
+return one real policy finding: `verification/proofs/agda/Properties.agda` carries
+no `OPTIONS` pragma at all, so it does not set `--safe`, let alone the
+PROOF-POLICY §2.1 invocation `--safe --without-K --cubical-compatible`. As the file
+is mint boilerplate rather than a theory entrypoint of this repository, the
+defensible fix is removal rather than adding flags to a template.
+
+Under PROOF-POLICY §8.1 these files support no Proof Witness Grade: they are not
+theory obligations of this repository at all. Nor does `PROOF-NEEDS.adoc` yet
+list vocarium's own obligations — its project-specific table is empty, and the
+seven rows the summary counts are the mint's ABI/FFI and typing categories, which
+sit oddly beside ADR-0002's pure-Zig wire boundary (no C-ABI structs, no
+bindings). The obligations this store actually owes — append-only JSONL replay,
+index reconstruction on open, use-model relativity, warrant checking — are
+described in `README.adoc` and the ADR, and are not yet written down as proof
+obligations anywhere.
 
 == Verification Commands
 
