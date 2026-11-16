@@ -22,7 +22,15 @@ proof-check-idris2:
         exit 0
     fi
     ERRORS=0
-    mapfile -t FILES < <(find verification/proofs/idris2 -name '*.idr' 2>/dev/null | sort)
+    # Discovery runs in the parent shell so a failing find (an unreadable subtree)
+    # fails the recipe instead of passing on a partial list; -type f so a directory
+    # named like a proof file is not counted.
+    if ! LIST=$(find verification/proofs/idris2 -type f -name '*.idr' | sort); then
+        echo "FAIL: could not list proof files under verification/proofs/idris2 -- discovery failed, so nothing passes"
+        exit 1
+    fi
+    FILES=()
+    [ -n "$LIST" ] && mapfile -t FILES <<< "$LIST"
     if [ "${#FILES[@]}" -eq 0 ]; then
         echo "FAIL: no proof files under verification/proofs/idris2 -- nothing was verified, so nothing passes"
         exit 1
@@ -52,7 +60,15 @@ proof-check-lean4:
         exit 0
     fi
     ERRORS=0
-    mapfile -t FILES < <(find verification/proofs/lean4 -name '*.lean' 2>/dev/null | sort)
+    # Discovery runs in the parent shell so a failing find (an unreadable subtree)
+    # fails the recipe instead of passing on a partial list; -type f so a directory
+    # named like a proof file is not counted.
+    if ! LIST=$(find verification/proofs/lean4 -type f -name '*.lean' | sort); then
+        echo "FAIL: could not list proof files under verification/proofs/lean4 -- discovery failed, so nothing passes"
+        exit 1
+    fi
+    FILES=()
+    [ -n "$LIST" ] && mapfile -t FILES <<< "$LIST"
     if [ "${#FILES[@]}" -eq 0 ]; then
         echo "FAIL: no proof files under verification/proofs/lean4 -- nothing was verified, so nothing passes"
         exit 1
@@ -82,7 +98,15 @@ proof-check-agda:
         exit 0
     fi
     ERRORS=0
-    mapfile -t FILES < <(find verification/proofs/agda -name '*.agda' 2>/dev/null | sort)
+    # Discovery runs in the parent shell so a failing find (an unreadable subtree)
+    # fails the recipe instead of passing on a partial list; -type f so a directory
+    # named like a proof file is not counted.
+    if ! LIST=$(find verification/proofs/agda -type f -name '*.agda' | sort); then
+        echo "FAIL: could not list proof files under verification/proofs/agda -- discovery failed, so nothing passes"
+        exit 1
+    fi
+    FILES=()
+    [ -n "$LIST" ] && mapfile -t FILES <<< "$LIST"
     if [ "${#FILES[@]}" -eq 0 ]; then
         echo "FAIL: no proof files under verification/proofs/agda -- nothing was verified, so nothing passes"
         exit 1
@@ -112,7 +136,15 @@ proof-check-coq:
         exit 0
     fi
     ERRORS=0
-    mapfile -t FILES < <(find verification/proofs/coq -name '*.v' 2>/dev/null | sort)
+    # Discovery runs in the parent shell so a failing find (an unreadable subtree)
+    # fails the recipe instead of passing on a partial list; -type f so a directory
+    # named like a proof file is not counted.
+    if ! LIST=$(find verification/proofs/coq -type f -name '*.v' | sort); then
+        echo "FAIL: could not list proof files under verification/proofs/coq -- discovery failed, so nothing passes"
+        exit 1
+    fi
+    FILES=()
+    [ -n "$LIST" ] && mapfile -t FILES <<< "$LIST"
     if [ "${#FILES[@]}" -eq 0 ]; then
         echo "FAIL: no proof files under verification/proofs/coq -- nothing was verified, so nothing passes"
         exit 1
@@ -139,7 +171,15 @@ proof-scan-dangerous:
     echo "=== Scanning for dangerous patterns in proofs ==="
     DANGEROUS=0
     PATTERNS="believe_me|assert_total|postulate|sorry|Admitted|unsafeCoerce|Obj\.magic"
-    mapfile -t FILES < <(find verification/proofs \( -name '*.idr' -o -name '*.lean' -o -name '*.agda' -o -name '*.v' \) 2>/dev/null | sort)
+    # Discovery runs in the parent shell so a failing find (an unreadable subtree)
+    # fails the recipe instead of passing on a partial list; -type f so a directory
+    # named like a proof file is not counted.
+    if ! LIST=$(find verification/proofs -type f \( -name '*.idr' -o -name '*.lean' -o -name '*.agda' -o -name '*.v' \) | sort); then
+        echo "FAIL: could not list proof files under verification/proofs -- discovery failed, so nothing passes"
+        exit 1
+    fi
+    FILES=()
+    [ -n "$LIST" ] && mapfile -t FILES <<< "$LIST"
     if [ "${#FILES[@]}" -eq 0 ]; then
         echo "FAIL: no proof files under verification/proofs -- nothing was scanned, so nothing passes"
         exit 1
