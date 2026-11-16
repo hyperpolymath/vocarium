@@ -10,6 +10,18 @@ https://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
 ==== Fixed
 
+* *No proof recipe reports PASS over zero files (2026-11-16).* Each of
+  `+proof-check-idris2|lean4|agda|coq+` and `+proof-scan-dangerous+` in
+  `+build/just/proofs.just+` printed "PASS: All … proofs verified" and exited `+0+`
+  when `+find+` returned nothing: measured against the previous recipes over an
+  empty `+verification/proofs/+`, all five passed having checked nothing. Each now
+  collects its files first, fails with "nothing was verified, so nothing passes"
+  when there are none, and states the count in its PASS line. Over the real tree
+  the behaviour is otherwise unchanged (stub provers: 6 Idris2, 1 Lean, 1 Agda,
+  1 Coq file checked; the scan still reports its 8 comment matches). The
+  `+SKIP: <tool> not installed+` path is untouched and still recorded as a
+  `+no-silent-skip+` contradiction in `+docs/status/PROOF-STATUS.adoc+`.
+
 * *The `+proof-check-idris2+` account was wrong (2026-11-09).* Review found it,
   and it was right. `+docs/status/PROOF-STATUS.adoc+` said that with a toolchain
   present every individual `+proof-check-*+` recipe would report green on
