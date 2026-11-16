@@ -22,7 +22,12 @@ proof-check-idris2:
         exit 0
     fi
     ERRORS=0
-    for f in $(find verification/proofs/idris2 -name '*.idr' 2>/dev/null); do
+    mapfile -t FILES < <(find verification/proofs/idris2 -name '*.idr' 2>/dev/null | sort)
+    if [ "${#FILES[@]}" -eq 0 ]; then
+        echo "FAIL: no proof files under verification/proofs/idris2 -- nothing was verified, so nothing passes"
+        exit 1
+    fi
+    for f in "${FILES[@]}"; do
         echo -n "  Checking $f ... "
         if idris2 --check "$f" 2>/dev/null; then
             echo "OK"
@@ -35,7 +40,7 @@ proof-check-idris2:
         echo "FAIL: $ERRORS Idris2 proof(s) failed"
         exit 1
     fi
-    echo "PASS: All Idris2 proofs verified"
+    echo "PASS: ${#FILES[@]} Idris2 proof file(s) checked"
 
 # Check Lean4 proofs
 proof-check-lean4:
@@ -47,7 +52,12 @@ proof-check-lean4:
         exit 0
     fi
     ERRORS=0
-    for f in $(find verification/proofs/lean4 -name '*.lean' 2>/dev/null); do
+    mapfile -t FILES < <(find verification/proofs/lean4 -name '*.lean' 2>/dev/null | sort)
+    if [ "${#FILES[@]}" -eq 0 ]; then
+        echo "FAIL: no proof files under verification/proofs/lean4 -- nothing was verified, so nothing passes"
+        exit 1
+    fi
+    for f in "${FILES[@]}"; do
         echo -n "  Checking $f ... "
         if lean "$f" 2>/dev/null; then
             echo "OK"
@@ -60,7 +70,7 @@ proof-check-lean4:
         echo "FAIL: $ERRORS Lean4 proof(s) failed"
         exit 1
     fi
-    echo "PASS: All Lean4 proofs verified"
+    echo "PASS: ${#FILES[@]} Lean4 proof file(s) checked"
 
 # Check Agda proofs
 proof-check-agda:
@@ -72,7 +82,12 @@ proof-check-agda:
         exit 0
     fi
     ERRORS=0
-    for f in $(find verification/proofs/agda -name '*.agda' 2>/dev/null); do
+    mapfile -t FILES < <(find verification/proofs/agda -name '*.agda' 2>/dev/null | sort)
+    if [ "${#FILES[@]}" -eq 0 ]; then
+        echo "FAIL: no proof files under verification/proofs/agda -- nothing was verified, so nothing passes"
+        exit 1
+    fi
+    for f in "${FILES[@]}"; do
         echo -n "  Checking $f ... "
         if agda --safe "$f" 2>/dev/null; then
             echo "OK"
@@ -85,7 +100,7 @@ proof-check-agda:
         echo "FAIL: $ERRORS Agda proof(s) failed"
         exit 1
     fi
-    echo "PASS: All Agda proofs verified"
+    echo "PASS: ${#FILES[@]} Agda proof file(s) checked"
 
 # Check Coq proofs
 proof-check-coq:
@@ -97,7 +112,12 @@ proof-check-coq:
         exit 0
     fi
     ERRORS=0
-    for f in $(find verification/proofs/coq -name '*.v' 2>/dev/null); do
+    mapfile -t FILES < <(find verification/proofs/coq -name '*.v' 2>/dev/null | sort)
+    if [ "${#FILES[@]}" -eq 0 ]; then
+        echo "FAIL: no proof files under verification/proofs/coq -- nothing was verified, so nothing passes"
+        exit 1
+    fi
+    for f in "${FILES[@]}"; do
         echo -n "  Checking $f ... "
         if coqc "$f" 2>/dev/null; then
             echo "OK"
@@ -110,7 +130,7 @@ proof-check-coq:
         echo "FAIL: $ERRORS Coq proof(s) failed"
         exit 1
     fi
-    echo "PASS: All Coq proofs verified"
+    echo "PASS: ${#FILES[@]} Coq proof file(s) checked"
 
 # Scan for dangerous patterns in proof files (believe_me, sorry, Admitted, etc.)
 proof-scan-dangerous:
@@ -119,7 +139,12 @@ proof-scan-dangerous:
     echo "=== Scanning for dangerous patterns in proofs ==="
     DANGEROUS=0
     PATTERNS="believe_me|assert_total|postulate|sorry|Admitted|unsafeCoerce|Obj\.magic"
-    for f in $(find verification/proofs -name '*.idr' -o -name '*.lean' -o -name '*.agda' -o -name '*.v' 2>/dev/null); do
+    mapfile -t FILES < <(find verification/proofs \( -name '*.idr' -o -name '*.lean' -o -name '*.agda' -o -name '*.v' \) 2>/dev/null | sort)
+    if [ "${#FILES[@]}" -eq 0 ]; then
+        echo "FAIL: no proof files under verification/proofs -- nothing was scanned, so nothing passes"
+        exit 1
+    fi
+    for f in "${FILES[@]}"; do
         MATCHES=$(grep -nE "$PATTERNS" "$f" 2>/dev/null || true)
         if [ -n "$MATCHES" ]; then
             echo "  DANGEROUS: $f"
@@ -131,7 +156,7 @@ proof-scan-dangerous:
         echo "FAIL: $DANGEROUS file(s) contain dangerous patterns"
         exit 1
     fi
-    echo "PASS: No dangerous patterns found in proofs"
+    echo "PASS: no dangerous patterns in ${#FILES[@]} proof file(s)"
 
 # Show proof status summary
 proof-status:
