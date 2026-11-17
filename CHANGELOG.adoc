@@ -10,6 +10,17 @@ https://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
 ==== Fixed
 
+* *Workflow lint reads the SPDX header block and the lockfile (2026-11-17).*
+The lint tested line 1 of each workflow for the SPDX identifier, but
+`+gh actions-lock+` puts its own banner on line 1 whenever it refreshes the
+lockfile, so the test failed on 26 of 28 workflows here and on `+main+`. It now
+reads the leading comment block, the same test as `+standards+`
+`+governance-reusable.yml+`; a workflow with no identifier there still fails.
+The pin step required an inline commit on every action, which the move to
+`+actions.lock+` made unsatisfiable (38 tag references). It now checks lockfile
+coverage and keeps the inline-commit rule for reusable workflow calls, as the
+copy of this lint in haec does.
+
 * *Stack coherence: the checker pin and the scan pin (2026-11-17).* The
 invoke-slice gate pins trope-checker at `+0dceab6+` (was `+4ecba4f+`), the
 commit haec and hermeneia move to in the same sweep. Between the two commits
