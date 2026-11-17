@@ -87,8 +87,22 @@ jobs:
 
             # Reusable workflow calls are outside lockfile scope and must
             # remain SHA-pinned inline.
-            unpinned=$(grep -rnE "^[[:space:]]+uses:[[:space:]]*[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/\.github/workflows/[^@]+@" .github/workflows/ | \
-              grep -v "@[a-f0-9]\{40\}" || true)
+            # The value of each `uses:` is read as YAML would read it: a
+            # trailing comment is dropped and surrounding quotes are removed.
+            # The ref after the @ must then be exactly 40 lowercase hex
+            # characters; a commit named in a comment, or a quoted branch
+            # name, does not pass.
+            unpinned=$(awk '
+              /^[[:space:]]*(-[[:space:]]+)?uses:/ {
+                v = $0
+                sub(/^[[:space:]]*(-[[:space:]]+)?uses:[[:space:]]*/, "", v)
+                sub(/[[:space:]]+#.*$/, "", v)
+                sub(/[[:space:]]+$/, "", v)
+                gsub(/^["\047]|["\047]$/, "", v)
+                if (v !~ /^[^\/]+\/[^\/]+\/\.github\/workflows\/[^@]+@/) next
+                ref = v; sub(/^[^@]*@/, "", ref)
+                if (ref !~ /^[0-9a-f]+$/ || length(ref) != 40) print FILENAME ":" FNR ": " $0
+              }' .github/workflows/*.yml .github/workflows/*.yaml 2>/dev/null || true)
             if [ -n "$unpinned" ]; then
               echo "ERROR: Found reusable workflow calls not pinned to a SHA:"
               echo "$unpinned"
