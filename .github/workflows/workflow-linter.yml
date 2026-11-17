@@ -92,39 +92,28 @@ jobs:
             # escapes, flow style and trailing comments cannot hide a ref: a
             # call that is not local (./) must end in @ followed by exactly
             # 40 lowercase hex characters.
-            unpinned=""
-            if command -v yq >/dev/null 2>&1; then
-              for file in .github/workflows/*.yml .github/workflows/*.yaml; do
-                [ -f "$file" ] || continue
-                if ! calls="$(yq -r '.jobs[] | select(has("uses")) | .uses' "$file" 2>&1)"; then
-                  echo "ERROR: $file is not parseable as YAML: $calls"
-                  exit 1
-                fi
-                while IFS= read -r call; do
-                  [ -n "$call" ] || continue
-                  case "$call" in ./*) continue ;; esac
-                  if ! printf '%s\n' "$call" | grep -qE '@[0-9a-f]{40}$'; then
-                    unpinned="${unpinned}${file}: ${call}"$'\n'
-                  fi
-                done < <(printf '%s\n' "$calls")
-              done
-            else
-              # No yq on this runner: the raw text is read instead, with the
-              # comment and quotes removed. Escapes inside a quoted value are
-              # not decoded on this path.
-              echo "::warning::yq not on this runner -- reusable workflow refs read from raw text"
-              unpinned=$(awk '
-                /^[[:space:]]*(-[[:space:]]+)?uses:/ {
-                  v = $0
-                  sub(/^[[:space:]]*(-[[:space:]]+)?uses:[[:space:]]*/, "", v)
-                  sub(/[[:space:]]+#.*$/, "", v)
-                  sub(/[[:space:]]+$/, "", v)
-                  gsub(/^["\047]|["\047]$/, "", v)
-                  if (v !~ /^[^\/]+\/[^\/]+\/\.github\/workflows\/[^@]+@/) next
-                  ref = v; sub(/^[^@]*@/, "", ref)
-                  if (ref !~ /^[0-9a-f]+$/ || length(ref) != 40) print FILENAME ":" FNR ": " $0
-                }' .github/workflows/*.yml .github/workflows/*.yaml 2>/dev/null || true)
+            # No parser, no verdict: reading the raw text instead would let a
+            # flow-style mapping or an escaped path through, so the step fails
+            # when yq is missing.
+            if ! command -v yq >/dev/null 2>&1; then
+              echo "ERROR: yq is not on this runner; reusable workflow refs cannot be checked"
+              exit 1
             fi
+            unpinned=""
+            for file in .github/workflows/*.yml .github/workflows/*.yaml; do
+              [ -f "$file" ] || continue
+              if ! calls="$(yq -r '.jobs[] | select(has("uses")) | .uses' "$file" 2>&1)"; then
+                echo "ERROR: $file is not parseable as YAML: $calls"
+                exit 1
+              fi
+              while IFS= read -r call; do
+                [ -n "$call" ] || continue
+                case "$call" in ./*) continue ;; esac
+                if ! printf '%s\n' "$call" | grep -qE '@[0-9a-f]{40}$'; then
+                  unpinned="${unpinned}${file}: ${call}"$'\n'
+                fi
+              done < <(printf '%s\n' "$calls")
+            done
             if [ -n "$unpinned" ]; then
               echo "ERROR: Found reusable workflow calls not pinned to a SHA:"
               echo "$unpinned"
