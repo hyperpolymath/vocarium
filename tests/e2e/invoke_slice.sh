@@ -17,7 +17,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 ZIG_EXPECTED="$(awk '$1=="zig"{print $2}' .tool-versions)"
-TROPECHECK_PIN="4ecba4f1862aec144ec940b1d8a93ddabd1cb591"
+TROPECHECK_PIN="0dceab68459d46b2cda22137c261023223c30e9a"
 
 fail() { echo "GATE FAIL: $*" >&2; exit 1; }
 

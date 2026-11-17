@@ -10,6 +10,14 @@ https://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
 ==== Fixed
 
+* *Stack coherence: the checker pin and the scan pin (2026-11-17).* The
+invoke-slice gate pins trope-checker at `+0dceab6+` (was `+4ecba4f+`), the
+commit haec and hermeneia move to in the same sweep. Between the two commits
+trope-checker's `+src/+`, `+schemas/+`, `+spec/+` and conformance fixtures are
+unchanged. `+zig build test+` and `+tests/e2e/invoke_slice.sh+` pass at the new
+pin (Zig 0.16.0, run locally). The Hypatia scan pin moves to the revision that
+installs OTP 27.3.4.19 (hypatia#1061).
+
 * *The `+proof-check-idris2+` account was wrong (2026-11-09).* Review found it,
   and it was right. `+docs/status/PROOF-STATUS.adoc+` said that with a toolchain
   present every individual `+proof-check-*+` recipe would report green on
