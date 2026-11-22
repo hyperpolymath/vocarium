@@ -145,10 +145,15 @@ Notes for the filer:
   tests must be authored and the runners re-enabled before any
   `just coapt*` claim can be made. Out of scope here; owned by the
   migration follow-up.
-. **pre-commit.ci.** Still failing on `main` per #61 (repository-wide
-  baseline: invalid/template YAML, JSON, TOML; ShellCheck findings;
-  EditorConfig indentation) — unrelated to the retired remote hooks, and
-  not addressed by this PR. Fix the baseline or rule on the hosted job.
+. **pre-commit.ci.** Still failing on `main` (repository-wide baseline —
+  confirmed fresh on PR #73: `check-yaml` on `.github/FUNDING.yml`,
+  `check-json` on `.devcontainer/devcontainer.json`, `check-toml` on
+  `container/stapeln/*.toml`, ShellCheck findings across `.envrc`,
+  `.githooks/validate-k9.sh`, `benches/`, `build/setup.sh`, `tests/e2e.sh`;
+  EditorConfig findings per #61). None of these files is touched by this
+  change; the run flags nothing this PR adds. It is unrelated to the
+  retired remote hooks, and not addressed by this PR. Fix the baseline or
+  rule on the hosted job.
 . **Residue sweep.** See next section; a follow-up chore can retire the
   historical references. Do not bundle it into the cure PR.
 
