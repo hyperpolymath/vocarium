@@ -47,6 +47,7 @@ workflows:
     '.github/workflows/scorecard.yml': []
     '.github/workflows/secret-scanner.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+        - 'metadatastician/standards@8d1a2aab4211493cf42f147f2080f024605797dc'
     '.github/workflows/security-policy.yml':
         - 'actions/checkout@v7.0.1'
     '.github/workflows/sonarqube.yml':
@@ -140,6 +141,13 @@ dependencies:
         commit: 'sha1-4404c3c0474e17753fe7689f3485c02890aac113'
         owner_id: 6759885
         repo_id: 1326697643
+    'metadatastician/standards@8d1a2aab4211493cf42f147f2080f024605797dc':
+        ref: '8d1a2aab4211493cf42f147f2080f024605797dc'
+        commit: 'sha1-8d1a2aab4211493cf42f147f2080f024605797dc'
+        owner_id: 297579217
+        repo_id: 1116521501
+        uses:
+            - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
     'mlugg/setup-zig@v2.2.1':
         ref: 'v2.2.1'
         commit: 'sha1-d1434d08867e3ee9daa34448df10607b98908d29'
