@@ -51,7 +51,6 @@ workflows:
         - 'actions/checkout@v7.0.1'
     '.github/workflows/sonarqube.yml':
         - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
-        - 'actions/checkout@v7.0.1'
         - 'hyperpolymath/cicd-suite@4404c3c0474e17753fe7689f3485c02890aac113'
     '.github/workflows/static-analysis-gate.yml':
         - 'actions/checkout@v7.0.1'

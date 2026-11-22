@@ -17,6 +17,9 @@ cd "$work"
 expect_failure() { if "$@" >/dev/null 2>&1; then echo "unexpected success: $*" >&2; exit 1; fi; }
 bash .github/hooks/validate-deed.sh >/dev/null
 bash .machine_readable/arrival-pack/verify.sh >/dev/null
+mv vocarium_chora.deed missing.deed
+expect_failure bash .github/hooks/validate-deed.sh
+mv missing.deed vocarium_chora.deed
 cp vocarium_chora.deed extra_chora.deed
 expect_failure bash .github/hooks/validate-deed.sh
 rm extra_chora.deed

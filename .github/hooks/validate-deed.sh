@@ -11,7 +11,10 @@ command -v node >/dev/null || { echo 'node is required for deed validation' >&2;
 cd "$root"
 shopt -s nullglob
 roots=(*_chora.deed)
-[ "${#roots[@]}" -eq 1 ] && [ "${roots[0]}" = vocarium_chora.deed ] || { echo 'expected exactly one root deed: vocarium_chora.deed' >&2; exit 1; }
+if [[ ${#roots[@]} -ne 1 || ${roots[0]} != vocarium_chora.deed ]]; then
+  echo 'expected exactly one root deed: vocarium_chora.deed' >&2
+  exit 1
+fi
 mapfile -d '' old < <(find . -path './.git' -prune -o -type f -name '*.a2ml' -print0)
 if [ "${#old[@]}" -gt 0 ]; then printf 'retired A2ML file: %s\n' "${old[@]}" >&2; exit 1; fi
 mapfile -d '' deeds < <(find . -path './.git' -prune -o -type f -name '*.deed' -print0 | sort -z)

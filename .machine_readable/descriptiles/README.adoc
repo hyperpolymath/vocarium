@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Vocarium descriptiles
+
+These descriptive deeds record what is, not normative contractile set-points.
+The root `vocarium_chora.deed` holds identity, the proposed clade, ecosystem
+and anchor. This directory holds `STATE.deed`, `META.deed`, `AGENTIC.deed` and
+`NEUROSYM.deed`. Dated evidence belongs in `docs/status/`.
+
+The directory was renamed from `6a2/` in issue #45; the A2ML inputs are
+retired by issue #43. See `docs/status/DEED-MIGRATION.adoc` for migration and
+contractile limitations.

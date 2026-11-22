@@ -3,7 +3,7 @@
 = Deed migration status
 
 The A2ML files and `machine-readable-design/` are available in Git at commit
-`6beb8ad52726770f98cd73ee95fd06b48fd075a9`. Most of the old metadata described
+`ae3a9b9` (or the earlier `6beb8ad52726770f98cd73ee95fd06b48fd075a9`). Most of the old metadata described
 the template rather than this repository; it was not asserted as Vocarium fact.
 The repo deed proposes `db` as the primary clade; this is not a registry
 assignment. Its profile-C UUID is derived from the repository name and has not
@@ -34,6 +34,8 @@ The deed hook uses Node to run the canonical standards validator. Point
 `STANDARDS_DIR` to a checkout of `metadatastician/standards`, then run
 `STANDARDS_DIR=/path/to/standards bash .github/hooks/validate-deed.sh`.
 The hook fails if Node or the validator is missing. CI checks out the pinned
-standards revision; the local pre-commit hook uses the same interface.
+standards revision; local pre-commit uses the same interface. The hosted
+pre-commit.ci job skips this one hook because it has no standards checkout;
+the independent dogfood job runs the pinned canonical deed validator.
 Run `STANDARDS_DIR=/path/to/standards bash tests/workflows/deed_migration_test.sh`
 for the isolated negative and arrival-pack regression tests.

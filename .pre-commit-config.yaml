@@ -3,6 +3,11 @@
 # Install: pip install pre-commit && pre-commit install
 # Run manually: pre-commit run --all-files
 
+# pre-commit.ci has no sibling standards checkout; the dogfood CI job checks
+# deeds using a pinned canonical checkout. Local pre-commit still runs the gate.
+ci:
+  skip: [validate-deed]
+
 repos:
   # --- Standard hooks ---
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -17,13 +22,6 @@ repos:
       - id: detect-private-key
       - id: check-added-large-files
         args: ['--maxkb=1024']
-
-  # --- K9 contract validation ---
-  - repo: https://github.com/hyperpolymath/k9-pre-commit
-    rev: main
-    hooks:
-      - id: validate-k9
-        name: Validate K9 contracts
 
   # --- Shell linting ---
   - repo: https://github.com/shellcheck-py/shellcheck-py
@@ -47,6 +45,12 @@ repos:
   # --- Local deed and arrival pack checks ---
   - repo: local
     hooks:
+      - id: validate-k9-local
+        name: Validate K9 contracts
+        entry: bash .githooks/validate-k9.sh
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: validate-deed
         name: Validate deeds
         entry: bash .github/hooks/validate-deed.sh

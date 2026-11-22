@@ -1,0 +1,7 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Anchor
+
+The current anchor is the `(anchor ...)` clause in the root
+`vocarium_chora.deed`, not an A2ML file in this directory. Re-anchoring is a
+human authority act; the deed does not yet contain a re-anchor ledger.

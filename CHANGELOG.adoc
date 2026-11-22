@@ -10,6 +10,34 @@ https://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
 ==== Fixed
 
+* *`+mise.toml+` declared `+zig = "latest+` while `+.tool-versions+` pinned
+0.16.0 (2026-11-22).* The invoke-slice gate reads `+.tool-versions+` and
+hard-fails on any other `+zig version+`, so a developer whose mise resolved
+`+latest+` got a compiler the gate refuses (issue #46). `+mise.toml+` now pins
+`+zig = "0.16.0"+`, matching `+.tool-versions+` and `+mlugg/setup-zig+` in
+`+vocarium-ci.yml+`. The gate's tool-pin assert now also compares the `+zig+`
+pin in `+mise.toml+` with `+.tool-versions+` and fails on disagreement, so the
+drift cannot return; a missing `+zig+` line is accepted, the issue's other
+permitted fix.
+
+* *The six Hypatia criticals were a retired directory, not a defect in `+src/+`
+  (2026-11-22).* The `+Hypatia neurosymbolic scan+` job counted six criticals on
+  `+main+` and on the docs-only #42. Read from the artifact, they were SD024
+  three times (policy files naming `+.machine_readable/6a2/+`) and SD004 three
+  times (`+AGENTIC+`, `+NEUROSYM+`, `+PLAYBOOK+` still living there). The store was
+  never implicated. `.machine_readable/6a2/` is now
+  `.machine_readable/descriptiles/`, the layout `+standards+` mandates
+  (`+0-canon/CANONICAL-NAMES.adoc+`: "never write 6a2, migrate it to
+  descriptiles on sight") and that `+rsr-template-repo+`, `+trope-checker+` and
+  `+hermeneia+` already use; hermeneia's own STATE records the same repair for
+  the same red. All 41 referencing files moved in the same commit —
+  `+Justfile+`, `+build/just/*+`, `+openssf-compliance.yml+`, the arrival-pack and
+  coaptation readers, the contractiles, the policies and the docs. No
+  `+.hypatia-ignore+` entry: both rules were right about what they saw.
+  `+deposit-findings+` moves from `+if: always()+` to `+if: ${{ !cancelled() }}+`
+  so a cancelled run no longer reddens a job that needs artifacts it will not
+  find. Triage record: `+docs/reports/security/hypatia-triage-2026-11-22.adoc+`.
+
 * *Workflow lint reads the SPDX header block and the lockfile (2026-11-17).*
 The lint tested line 1 of each workflow for the SPDX identifier, but
 `+gh actions-lock+` puts its own banner on line 1 whenever it refreshes the

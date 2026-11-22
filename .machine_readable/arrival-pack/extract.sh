@@ -35,5 +35,5 @@ Licence edits, release claims and destructive actions require appropriate review
 - State, metadata and agent constraints: \`.machine_readable/descriptiles/\`.
 - Golden path (run with dependencies installed):
 END
-while IFS= read -r cmd; do printf '  - `%s`\n' "$cmd"; done <<< "$commands"
+while IFS= read -r cmd; do printf "  - \`%s\`\n" "$cmd"; done <<< "$commands"
 printf '\n%s\n' '<!-- ARRIVAL-PACK:END -->'
