@@ -116,6 +116,8 @@ Two consequences worth stating rather than leaving implicit:
   to the include path, where Idris2 keys off the source dir.)
   The recipes are not reachable from the
   golden path (`just test && just quality`), so no gate is currently affected.
+  Separately, none of these recipes reports PASS over zero files any more: each
+  fails when it finds nothing to check (2026-11-16; see the CHANGELOG).
   `hyperpolymath/trope-checker`'s `build/just/proofs.just` carries the estate's
   reference treatment: it refuses to report a skip as a pass.
 * `hyperpolymath/trope-checker` removed the identical never-instantiated templates
