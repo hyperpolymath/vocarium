@@ -15,6 +15,37 @@ but are deliberately distinct — documented here so apparent duplication is not
 
 Same tool, two consumers. Removing either loses real function — keep both.
 
+== A workflow that never starts has no surface — so we watch for it
+
+`startup_failure` is the one conclusion GitHub renders nowhere. No job, no log,
+no check run: `gh pr checks` shows nothing, the PR files tab shows nothing, and
+branch protection waits for a context that cannot arrive. A required lane can
+be dead for weeks with no symptom except the absence of something nobody was
+looking for. That is issue #59, where six workflows in this repository
+(`governance`, `hypatia-scan`, `mirror`, `rust-ci`, `scorecard`,
+`secret-scanner`) have not started since roughly 2026-11-05.
+
+`workflow-execution-watch.yml` runs `scripts/check-workflow-failures.sh` daily
+and fails when the latest run of a registered, enabled workflow concluded
+`startup_failure`. It reads run state from the API rather than from a checkout,
+and it deliberately contains **no `uses:`**: a watchdog that depends on an
+action shares its subject's failure mode the moment `actions.lock` drifts, and
+would then die silently, which is the joke it exists to prevent. `just
+watch-execution` runs the same check by hand — useful precisely when a check
+you expected is simply not there.
+
+The alarm is narrow on purpose. It fires only on "did not start". A run that
+started and failed is already red and visible; `action_required` waits on an
+approval the UI renders; a tag-only workflow that has never run has not failed
+to start; a workflow switched off by hand was switched off on purpose. All four
+are printed, none of them fail the run, so a red mark here keeps meaning
+exactly one thing.
+
+What it cannot do is say *why*. The GitHub API exposes no `startup_failure`
+reason — not REST, not GraphQL; `referenced_workflows` comes back empty
+because GitHub resolved nothing. The run page annotation is the only surface,
+and it is frequently absent. See #59 for what has been ruled out.
+
 == Secret scanning is single-sourced
 
 `secret-scanner.yml` calls the standards reusable, which runs gitleaks, a Rust

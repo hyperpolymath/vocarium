@@ -62,6 +62,7 @@ workflows:
         - 'mlugg/setup-zig@v2.2.1'
     '.github/workflows/wellknown-enforcement.yml':
         - 'actions/checkout@v7.0.1'
+    '.github/workflows/workflow-execution-watch.yml': []
     '.github/workflows/workflow-linter.yml':
         - 'actions/checkout@v7.0.1'
 dependencies:
