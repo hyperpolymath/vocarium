@@ -10,6 +10,16 @@ https://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
 ==== Fixed
 
+* *`+mise.toml+` declared `+zig = "latest+` while `+.tool-versions+` pinned
+0.16.0 (2026-11-22).* The invoke-slice gate reads `+.tool-versions+` and
+hard-fails on any other `+zig version+`, so a developer whose mise resolved
+`+latest+` got a compiler the gate refuses (issue #46). `+mise.toml+` now pins
+`+zig = "0.16.0"+`, matching `+.tool-versions+` and `+mlugg/setup-zig+` in
+`+vocarium-ci.yml+`. The gate's tool-pin assert now also compares the `+zig+`
+pin in `+mise.toml+` with `+.tool-versions+` and fails on disagreement, so the
+drift cannot return; a missing `+zig+` line is accepted, the issue's other
+permitted fix.
+
 * *Workflow lint reads the SPDX header block and the lockfile (2026-11-17).*
 The lint tested line 1 of each workflow for the SPDX identifier, but
 `+gh actions-lock+` puts its own banner on line 1 whenever it refreshes the
