@@ -64,7 +64,7 @@ Hypatia — and the Hypatia half was not a bug in the rule.
   the run before the gate promotion. So the six are at least as old as the first
   working scan, not a regression from a later PR, and the lane that would have
   shown a fix landing was itself unreadable for the fortnight when it mattered.
-  See the open item below.
+  See the open item below, filed as #59.
 
 == What was changed here
 
@@ -141,7 +141,7 @@ scanner from OTP 27.3.4.19 back to OTP 28.3, the combination hypatia#1061 record
 as segfaulting on some trees, and vocarium#56 moved this pin *forward* to
 `58362c24` for exactly that reason. Choosing between "starts and may segfault"
 and "does not start" is not a triage decision; it belongs in its own change with
-a run to point at. Filed separately.
+a run to point at. Filed as #59.
 
 == The gate itself
 
