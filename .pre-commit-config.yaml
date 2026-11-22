@@ -6,6 +6,7 @@
 # pre-commit.ci has no sibling standards checkout; the dogfood CI job checks
 # deeds using a pinned canonical checkout. Local pre-commit still runs the gate.
 ci:
+  autofix_prs: false
   skip: [validate-deed]
 
 repos:
@@ -13,8 +14,11 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
+      # License texts are third-party/owner-controlled; never auto-format them.
       - id: trailing-whitespace
+        exclude: '^(LICENSE|LICENSES/.*)$'
       - id: end-of-file-fixer
+        exclude: '^(LICENSE|LICENSES/.*)$'
       - id: check-yaml
       - id: check-json
       - id: check-toml
@@ -34,7 +38,7 @@ repos:
     rev: 3.2.1
     hooks:
       - id: editorconfig-checker
-        exclude: '(\.git|node_modules|target|_build|deps|\.deno|external_corpora|\.lake)/'
+        exclude: '(^LICENSE$|^LICENSES/|\.git/|node_modules/|target/|_build/|deps/|\.deno/|external_corpora/|\.lake/)'
 
   # --- Secret detection ---
   - repo: https://github.com/gitleaks/gitleaks
