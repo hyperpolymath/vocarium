@@ -59,4 +59,4 @@ repos:
         entry: bash .machine_readable/arrival-pack/verify.sh
         language: system
         pass_filenames: false
-        files: '^(\.machine_readable/6a2/.*|CLAUDE\.md)$'
+        files: '^(\.machine_readable/descriptiles/.*|CLAUDE\.md)$'

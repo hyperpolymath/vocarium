@@ -13,7 +13,7 @@ TARGET="$ROOT/CLAUDE.md"
 
 [ -f "$TARGET" ] || { echo "DRIFT: CLAUDE.md missing — run \`just claude-md\`"; exit 1; }
 
-bash "$AP/extract.sh" "$ROOT/.machine_readable/6a2" > "$AP/claude-md-data.json"
+bash "$AP/extract.sh" "$ROOT/.machine_readable/descriptiles" > "$AP/claude-md-data.json"
 fresh="$(nickel export --format raw "$AP/arrival-pack.ncl")"
 committed="$(awk '/<!-- ARRIVAL-PACK:BEGIN/{f=1} f{print} /ARRIVAL-PACK:END/{f=0}' "$TARGET")"
 
