@@ -98,3 +98,14 @@ vocarium, so the 0%-proven summary is accurate rather than a backlog. The note
 also records that `+build/just/proofs.just+`'s `+proof-check-*+` recipes report
 `+SKIP+` and continue, against this repository's `+no-silent-skip+` constraint,
 and that they are not reachable from the golden path.
+* *An aftermath record and registry triage for the A2ML retirement (2026-11-22).*
+`+docs/reports/deed/a2ml-retirement-triage-2026-11-22.adoc+` records what
+`+1b402f9+` (#61) changed, why the deeds on `+main+` are proposals rather than
+registry-confirmed facts (no `+chora-registry+` entry exists for vocarium), a
+ready-to-file registration bundle, the ordered unblock path, and the residue of
+the retired format. Its sibling
+`+a2ml-removal-record-2026-11-22.adoc+` reconstructs, per file, the removal record
+the `+1b402f9+` deletion carried out of band: 119 `+.a2ml+` files, 128,994 bytes,
+with blob ids and `+sha256+` for each — all verified against `+1b402f9^+`. No
+`+.a2ml+` file is deleted, renamed or reintroduced by this change; nothing is
+minted or registered by it.
