@@ -480,6 +480,10 @@ combinations:
 # VERSION CONTROL
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# Alarm when a workflow never STARTED (startup_failure leaves no check run, no job, no log)
+watch-execution:
+    @bash scripts/check-workflow-failures.sh
+
 # Show git status
 status:
     @git status --short

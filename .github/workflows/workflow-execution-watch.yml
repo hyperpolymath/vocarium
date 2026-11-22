@@ -1,0 +1,66 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# workflow-execution-watch.yml — fail loudly when a workflow fails to START.
+#
+# `startup_failure` is the one conclusion with no surface. GitHub creates no
+# job, writes no log, and emits no check run, so `gh pr checks` shows nothing,
+# the PR files tab shows nothing, and branch protection waits for a check that
+# cannot arrive. A required lane can be dead for weeks and the only symptom is
+# the absence of something nobody was watching for. That is issue #59: six
+# lanes in this repository currently never start.
+#
+# ⚠ NO `uses:` ANYWHERE, DELIBERATELY. Two reasons, both from #59:
+#   1. A watcher that depends on an action dies of the very failure it watches
+#      if its `actions.lock` entry goes stale — silently. A watchdog must not
+#      share the failure mode of the thing it watches.
+#   2. `.github/workflows/actions.lock` is keyed BY WORKFLOW PATH: a workflow
+#      the lock does not list is rejected before any step runs. This file is
+#      registered there as `'.github/workflows/workflow-execution-watch.yml': []`
+#      and must stay that way; adding an action means regenerating the lock.
+# The script itself needs only `gh` (preinstalled) and `jq` (preinstalled).
+#
+# NO CHECKOUT. The watch set is read from the API, so this reports on the
+# repository's default branch as GitHub sees it rather than on whichever ref
+# the runner happens to hold.
+#
+# DAILY, AND CHEAP. The job is a handful of API reads and ~5 seconds: no
+# checkout, no action, no image pull. A weekly sweep would leave a dead lane
+# dead for seven days, which is the delay this exists to remove. `41 5` is off
+# the hour and clear of the 04:00 scorecard sweep, per the burn discipline in
+# standards#288.
+#
+# WHAT IT DOES NOT DO, so a green is not misread: it does not diagnose WHY a
+# run failed to start. The GitHub API exposes no reason for startup_failure —
+# not REST, not GraphQL; only the run page annotation, and usually not even
+# that. It reports the fact, on the run, where somebody will see it.
+
+name: Workflow Execution Watch
+
+on:
+  schedule:
+    - cron: '41 5 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  watch:
+    name: Every workflow started
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # `github.repository` is inherited from the event, not from a checkout,
+      # so it is correct even on a fork PR or a manual dispatch.
+      - name: Check that no workflow failed to start
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: bash scripts/check-workflow-failures.sh
