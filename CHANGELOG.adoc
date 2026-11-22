@@ -10,6 +10,14 @@ https://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
 ==== Fixed
 
+* *Proof recipes refuse PASS over zero files (2026-11-22).* The five proof
+  recipes in `+build/just/proofs.just+` (`+proof-check-idris2+`,
+  `+proof-check-lean4+`, `+proof-check-agda+`, `+proof-check-coq+` and
+  `+proof-scan-dangerous+`) fail when proof-file discovery errors or finds no
+  proof files, count only regular files (`+-type f+`), and list them
+  NUL-delimited so a path containing a newline is not split into bogus entries.
+  `+docs/status/PROOF-STATUS.adoc+` records the empty-result behaviour.
+
 * *Workflow lint reads the SPDX header block and the lockfile (2026-11-17).*
 The lint tested line 1 of each workflow for the SPDX identifier, but
 `+gh actions-lock+` puts its own banner on line 1 whenever it refreshes the

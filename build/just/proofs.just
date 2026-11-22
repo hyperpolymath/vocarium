@@ -22,15 +22,19 @@ proof-check-idris2:
         exit 0
     fi
     ERRORS=0
-    # Discovery runs in the parent shell so a failing find (an unreadable subtree)
-    # fails the recipe instead of passing on a partial list; -type f so a directory
-    # named like a proof file is not counted.
-    if ! LIST=$(find verification/proofs/idris2 -type f -name '*.idr' | sort); then
+    # Discovery is NUL-delimited so a proof file whose path contains a newline
+    # is not split into bogus entries; -type f so a directory named like a proof
+    # file is not counted. The list travels through a temp file because command
+    # substitution cannot hold NUL bytes; a failing find or sort fails the recipe
+    # under pipefail, before any PASS/FAIL verdict.
+    TMPLIST=$(mktemp) || { echo "FAIL: could not create temp file for proof discovery"; exit 1; }
+    trap 'rm -f "$TMPLIST"' EXIT
+    if ! find verification/proofs/idris2 -type f -name '*.idr' -print0 | sort -z > "$TMPLIST"; then
         echo "FAIL: could not list proof files under verification/proofs/idris2 -- discovery failed, so nothing passes"
         exit 1
     fi
     FILES=()
-    [ -n "$LIST" ] && mapfile -t FILES <<< "$LIST"
+    mapfile -d '' FILES < "$TMPLIST"
     if [ "${#FILES[@]}" -eq 0 ]; then
         echo "FAIL: no proof files under verification/proofs/idris2 -- nothing was verified, so nothing passes"
         exit 1
@@ -60,15 +64,19 @@ proof-check-lean4:
         exit 0
     fi
     ERRORS=0
-    # Discovery runs in the parent shell so a failing find (an unreadable subtree)
-    # fails the recipe instead of passing on a partial list; -type f so a directory
-    # named like a proof file is not counted.
-    if ! LIST=$(find verification/proofs/lean4 -type f -name '*.lean' | sort); then
+    # Discovery is NUL-delimited so a proof file whose path contains a newline
+    # is not split into bogus entries; -type f so a directory named like a proof
+    # file is not counted. The list travels through a temp file because command
+    # substitution cannot hold NUL bytes; a failing find or sort fails the recipe
+    # under pipefail, before any PASS/FAIL verdict.
+    TMPLIST=$(mktemp) || { echo "FAIL: could not create temp file for proof discovery"; exit 1; }
+    trap 'rm -f "$TMPLIST"' EXIT
+    if ! find verification/proofs/lean4 -type f -name '*.lean' -print0 | sort -z > "$TMPLIST"; then
         echo "FAIL: could not list proof files under verification/proofs/lean4 -- discovery failed, so nothing passes"
         exit 1
     fi
     FILES=()
-    [ -n "$LIST" ] && mapfile -t FILES <<< "$LIST"
+    mapfile -d '' FILES < "$TMPLIST"
     if [ "${#FILES[@]}" -eq 0 ]; then
         echo "FAIL: no proof files under verification/proofs/lean4 -- nothing was verified, so nothing passes"
         exit 1
@@ -98,15 +106,19 @@ proof-check-agda:
         exit 0
     fi
     ERRORS=0
-    # Discovery runs in the parent shell so a failing find (an unreadable subtree)
-    # fails the recipe instead of passing on a partial list; -type f so a directory
-    # named like a proof file is not counted.
-    if ! LIST=$(find verification/proofs/agda -type f -name '*.agda' | sort); then
+    # Discovery is NUL-delimited so a proof file whose path contains a newline
+    # is not split into bogus entries; -type f so a directory named like a proof
+    # file is not counted. The list travels through a temp file because command
+    # substitution cannot hold NUL bytes; a failing find or sort fails the recipe
+    # under pipefail, before any PASS/FAIL verdict.
+    TMPLIST=$(mktemp) || { echo "FAIL: could not create temp file for proof discovery"; exit 1; }
+    trap 'rm -f "$TMPLIST"' EXIT
+    if ! find verification/proofs/agda -type f -name '*.agda' -print0 | sort -z > "$TMPLIST"; then
         echo "FAIL: could not list proof files under verification/proofs/agda -- discovery failed, so nothing passes"
         exit 1
     fi
     FILES=()
-    [ -n "$LIST" ] && mapfile -t FILES <<< "$LIST"
+    mapfile -d '' FILES < "$TMPLIST"
     if [ "${#FILES[@]}" -eq 0 ]; then
         echo "FAIL: no proof files under verification/proofs/agda -- nothing was verified, so nothing passes"
         exit 1
@@ -136,15 +148,19 @@ proof-check-coq:
         exit 0
     fi
     ERRORS=0
-    # Discovery runs in the parent shell so a failing find (an unreadable subtree)
-    # fails the recipe instead of passing on a partial list; -type f so a directory
-    # named like a proof file is not counted.
-    if ! LIST=$(find verification/proofs/coq -type f -name '*.v' | sort); then
+    # Discovery is NUL-delimited so a proof file whose path contains a newline
+    # is not split into bogus entries; -type f so a directory named like a proof
+    # file is not counted. The list travels through a temp file because command
+    # substitution cannot hold NUL bytes; a failing find or sort fails the recipe
+    # under pipefail, before any PASS/FAIL verdict.
+    TMPLIST=$(mktemp) || { echo "FAIL: could not create temp file for proof discovery"; exit 1; }
+    trap 'rm -f "$TMPLIST"' EXIT
+    if ! find verification/proofs/coq -type f -name '*.v' -print0 | sort -z > "$TMPLIST"; then
         echo "FAIL: could not list proof files under verification/proofs/coq -- discovery failed, so nothing passes"
         exit 1
     fi
     FILES=()
-    [ -n "$LIST" ] && mapfile -t FILES <<< "$LIST"
+    mapfile -d '' FILES < "$TMPLIST"
     if [ "${#FILES[@]}" -eq 0 ]; then
         echo "FAIL: no proof files under verification/proofs/coq -- nothing was verified, so nothing passes"
         exit 1
@@ -171,15 +187,19 @@ proof-scan-dangerous:
     echo "=== Scanning for dangerous patterns in proofs ==="
     DANGEROUS=0
     PATTERNS="believe_me|assert_total|postulate|sorry|Admitted|unsafeCoerce|Obj\.magic"
-    # Discovery runs in the parent shell so a failing find (an unreadable subtree)
-    # fails the recipe instead of passing on a partial list; -type f so a directory
-    # named like a proof file is not counted.
-    if ! LIST=$(find verification/proofs -type f \( -name '*.idr' -o -name '*.lean' -o -name '*.agda' -o -name '*.v' \) | sort); then
+    # Discovery is NUL-delimited so a proof file whose path contains a newline
+    # is not split into bogus entries; -type f so a directory named like a proof
+    # file is not counted. The list travels through a temp file because command
+    # substitution cannot hold NUL bytes; a failing find or sort fails the recipe
+    # under pipefail, before any PASS/FAIL verdict.
+    TMPLIST=$(mktemp) || { echo "FAIL: could not create temp file for proof discovery"; exit 1; }
+    trap 'rm -f "$TMPLIST"' EXIT
+    if ! find verification/proofs -type f \( -name '*.idr' -o -name '*.lean' -o -name '*.agda' -o -name '*.v' \) -print0 | sort -z > "$TMPLIST"; then
         echo "FAIL: could not list proof files under verification/proofs -- discovery failed, so nothing passes"
         exit 1
     fi
     FILES=()
-    [ -n "$LIST" ] && mapfile -t FILES <<< "$LIST"
+    mapfile -d '' FILES < "$TMPLIST"
     if [ "${#FILES[@]}" -eq 0 ]; then
         echo "FAIL: no proof files under verification/proofs -- nothing was scanned, so nothing passes"
         exit 1
