@@ -18,13 +18,6 @@ repos:
       - id: check-added-large-files
         args: ['--maxkb=1024']
 
-  # --- A2ML manifest validation ---
-  - repo: https://github.com/hyperpolymath/a2ml-pre-commit
-    rev: main
-    hooks:
-      - id: validate-a2ml
-        name: Validate A2ML manifests
-
   # --- K9 contract validation ---
   - repo: https://github.com/hyperpolymath/k9-pre-commit
     rev: main
@@ -51,12 +44,18 @@ repos:
     hooks:
       - id: gitleaks
 
-  # --- Arrival pack drift: CLAUDE.md must stay in sync with a2ml ---
+  # --- Local deed and arrival pack checks ---
   - repo: local
     hooks:
+      - id: validate-deed
+        name: Validate deeds
+        entry: bash .github/hooks/validate-deed.sh
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: validate-claude-md
-        name: CLAUDE.md arrival pack in sync with a2ml
+        name: CLAUDE.md arrival pack in sync with deed
         entry: bash .machine_readable/arrival-pack/verify.sh
         language: system
         pass_filenames: false
-        files: '^(\.machine_readable/6a2/.*|CLAUDE\.md)$'
+        files: '^(vocarium_chora\.deed|\.machine_readable/descriptiles/STATE\.deed|\.machine_readable/arrival-pack/.*|scripts/deed-field\.sh|CLAUDE\.md)$'

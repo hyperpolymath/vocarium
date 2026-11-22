@@ -14,7 +14,7 @@ Copyright: {{CURRENT_YEAR}} {{AUTHOR}} ({{OWNER}}) <{{AUTHOR_EMAIL}}>
 License: MPL-2.0
 
 # Machine-readable state files
-Files: .machine_readable/*.a2ml
+Files: *.deed .machine_readable/**/*.deed
 Copyright: {{CURRENT_YEAR}} {{AUTHOR}} ({{OWNER}}) <{{AUTHOR_EMAIL}}>
 License: MPL-2.0
 
@@ -55,7 +55,7 @@ License: MPL-2.0
 
 # Narrative documentation is CC-BY-SA-4.0 (estate Rule 1).
 # Placed last so it overrides the MPL-2.0 default for prose (.adoc/.md),
-# including the GitHub community-health .md files. Machine-readable .a2ml is a
+# including the GitHub community-health .md files. Machine-readable .deed is a
 # different extension and stays MPL-2.0 per its stanza above.
 Files: *.adoc *.md
 Copyright: {{CURRENT_YEAR}} {{AUTHOR}} ({{OWNER}}) <{{AUTHOR_EMAIL}}>

@@ -52,7 +52,7 @@ info:
     @echo "Version: {{version}}"
     @echo "RSR Tier: {{tier}}"
     @echo "Recipes: $(just --summary | wc -w)"
-    @[ -f ".machine_readable/6a2/STATE.a2ml" ] && grep -oP 'phase\s*=\s*"\K[^"]+' .machine_readable/6a2/STATE.a2ml | head -1 | xargs -I{} echo "Phase: {}" || true
+    @bash scripts/deed-field.sh .machine_readable/descriptiles/STATE.deed status phase
 
 # Run Invariant Path overlay tools for this repository
 invariant-path *ARGS:
@@ -286,14 +286,14 @@ deps-audit:
     @echo "Audit complete"
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# ARRIVAL PACK — agent-facing CLAUDE.md, compiled from a2ml
+# ARRIVAL PACK — agent-facing CLAUDE.md, compiled from deeds
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# Compile CLAUDE.md (the agent arrival pack) from this repo's a2ml
+# Compile CLAUDE.md (the agent arrival pack) from this repo's deeds
 claude-md:
     @bash .machine_readable/arrival-pack/generate.sh
 
-# Fail if CLAUDE.md's generated region drifted from a2ml or was hand-edited
+# Fail if CLAUDE.md's generated region drifted from the deed or was hand-edited
 validate-claude-md:
     @bash .machine_readable/arrival-pack/verify.sh
 
@@ -414,16 +414,9 @@ import? "build/just/validate.just"
 # STATE MANAGEMENT
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# Update STATE.a2ml timestamp
-state-touch:
-    @if [ -f ".machine_readable/6a2/STATE.a2ml" ]; then \
-        sed -i 's/last-updated = "[^"]*"/last-updated = "'"$(date +%Y-%m-%d)"'"/' .machine_readable/6a2/STATE.a2ml && \
-        echo "STATE.a2ml timestamp updated"; \
-    fi
-
-# Show current phase from STATE.a2ml
+# Display the phase recorded in the descriptive deed.
 state-phase:
-    @grep -oP 'phase\s*=\s*"\K[^"]+' .machine_readable/6a2/STATE.a2ml 2>/dev/null | head -1 || echo "unknown"
+    @bash scripts/deed-field.sh .machine_readable/descriptiles/STATE.deed status phase
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # GUIX

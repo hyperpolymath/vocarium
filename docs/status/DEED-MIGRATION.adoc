@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Deed migration status
+
+The A2ML files and `machine-readable-design/` are available in Git at commit
+`6beb8ad52726770f98cd73ee95fd06b48fd075a9`. Most of the old metadata described
+the template rather than this repository; it was not asserted as Vocarium fact.
+The repo deed proposes `db` as the primary clade; this is not a registry
+assignment. Its profile-C UUID is derived from the repository name and has not
+been registered or minted by chora-registry. The registry owner must confirm
+both identity and placement before treating them as authoritative.
+
+== Unfinished contractile migration
+
+The old six Xfiles and coaptation witness map described the template. The K9
+contractile components also imported a missing `../k9/template-hunt.k9.ncl`
+before this migration. They still refer to the deleted Xfiles and are not
+usable declarations for this repo. Coaptation explicitly fails rather than
+manufacturing a current receipt; `just coapt`, `just coapt-reanchor` and
+`just validate-coapt` remain unavailable. Their old receipts and inputs are
+preserved in Git at the commit above. An owner must review the old obligations,
+author Vocarium-specific contractile declarations and witnesses, and migrate
+and test the runners before re-enabling these commands. Existing generated
+`build/contractile.just` recipes are not evidence of a complete contractile
+migration.
+
+The root deed, root allowlist, coordination binding and `.machine_readable/`
+changes require owner review under the Phase 0 brief. This migration does not
+claim that the Zig tests or invoke-slice gate were run.
+
+== Local validation
+
+The deed hook uses Node to run the canonical standards validator. Point
+`STANDARDS_DIR` to a checkout of `metadatastician/standards`, then run
+`STANDARDS_DIR=/path/to/standards bash .github/hooks/validate-deed.sh`.
+The hook fails if Node or the validator is missing. CI checks out the pinned
+standards revision; the local pre-commit hook uses the same interface.
+Run `STANDARDS_DIR=/path/to/standards bash tests/workflows/deed_migration_test.sh`
+for the isolated negative and arrival-pack regression tests.

@@ -51,10 +51,10 @@ self-assess:
         fi
     done
 
-    if [ -d ".machine_readable/6a2" ]; then
-        echo "  ✓ .machine_readable/6a2/ — KEEP (SCM checkpoint files)"
+    if [ -d ".machine_readable/descriptiles" ]; then
+        echo "  ✓ .machine_readable/descriptiles/ — KEEP (SCM checkpoint files)"
     else
-        echo "  ✗ .machine_readable/6a2/ — MISSING (RSR violation!)"
+        echo "  ✗ .machine_readable/descriptiles/ — MISSING (RSR violation!)"
     fi
 
     if [ -d ".github/workflows" ]; then
@@ -85,16 +85,8 @@ self-assess:
         echo "    ⚠ Consequence: no C-compatible FFI bridge."
     fi
 
-    if $HAS_API && [ -f ".machine_readable/integrations/groove.a2ml" ]; then
-        PORT=$(grep '(port ' .machine_readable/integrations/groove.a2ml 2>/dev/null | sed 's/.*(port \([0-9]*\)).*/\1/')
-        if [ "$PORT" = "0" ]; then
-            echo "  ⚠ groove.a2ml — Port not assigned. Run 'just groove-setup'."
-        else
-            echo "  ✓ groove.a2ml — KEEP (Groove discovery on port $PORT)"
-        fi
-    elif $HAS_API; then
-        echo "  ✗ groove.a2ml — MISSING. Your project has an API but no Groove manifest."
-        echo "    → Run 'just groove-setup' to enable snap-on/snap-off discovery."
+    if $HAS_API; then
+        echo "  ? Groove service declaration needs review; no manifest is declared."
     fi
 
     if $HAS_CONTAINER && [ -d "container" ]; then
@@ -203,9 +195,9 @@ verify:
     check_file "LICENSE"
     check_either "CONTRIBUTING.md" "CONTRIBUTING.adoc"
     check_either "README.adoc" "README.md"
-    check_file ".machine_readable/6a2/STATE.a2ml"
-    check_file ".machine_readable/6a2/META.a2ml"
-    check_file ".machine_readable/6a2/ECOSYSTEM.a2ml"
+    check_file ".machine_readable/descriptiles/STATE.deed"
+    check_file ".machine_readable/descriptiles/META.deed"
+    check_file "vocarium_chora.deed"
     check_either "CHANGELOG.md" "CHANGELOG.adoc"
 
     # Check at least 1 workflow exists

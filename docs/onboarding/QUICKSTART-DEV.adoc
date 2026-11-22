@@ -55,7 +55,7 @@ rsr-template-repo/
 ├── .machine_readable/    # Checkpoint files (STATE, META, ECOSYSTEM)
 ├── Justfile              # Task runner recipes
 ├── guix.scm              # Guix environment
-└── 0-AI-MANIFEST.a2ml    # AI agent entry point
+└── 0-AI-MANIFEST.deed    # AI agent entry point
 ----
 
 == Key Recipes
@@ -95,7 +95,7 @@ If using an AI assistant, load the warmup context first:
 just llm-context    # Outputs role-appropriate context
 ----
 
-Or read `0-AI-MANIFEST.a2ml` and `.claude/CLAUDE.md` directly.
+Or read `0-AI-MANIFEST.deed` and `CLAUDE.md` directly.
 
 == Get Help
 
