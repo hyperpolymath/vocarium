@@ -1,8 +1,15 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-# A2ML 6a2 Directory
+# A2ML Descriptiles Directory
 
-This directory contains the 6 core A2ML machine-readable metadata files for this repository.
+This directory contains the 6 core A2ML machine-readable metadata files for this
+repository: the descriptive half of the 6A2 format family (what-IS), paired with
+`.machine_readable/contractiles/` (the normative half, what-OUGHT).
+
+Formerly shipped as `.machine_readable/6a2/`. Renamed to the estate-canonical
+`.machine_readable/descriptiles/` — the layout `hyperpolymath/standards`
+(`0-canon/rsr/RSR-SPEC-v2.adoc`) names and `rsr-template-repo`, `trope-checker`
+and `hermeneia` all use. See vocarium#45 for the triage that prompted the move.
 
 ## Files
 

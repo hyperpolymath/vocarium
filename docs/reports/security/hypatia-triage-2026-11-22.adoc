@@ -1,0 +1,169 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Hypatia Triage: the six critical findings (vocarium#45)
+:date: 2026-11-22
+:toc: preamble
+:icons: font
+
+Triage of the `Hypatia neurosymbolic scan` job in `static-analysis-gate.yml`,
+recorded red on `main` and on the docs-only PR #42 with the message
+"Hypatia found 6 critical security issue(s) --- blocking merge"
+(run link:https://github.com/hyperpolymath/vocarium/actions/runs/40472451472[40472451472],
+artifact `hypatia-findings`). This document is the reading of that artifact that
+#45 asked for.
+
+== Verdict
+
+*Nothing in `src/store/` is implicated.* All six findings are layout and
+substrate drift, and none of them is a security finding:
+
+[cols="1,3,4",options="header"]
+|===
+| Count | Check | What it actually was
+
+| 3
+| SD024 `CI policy requires a retired descriptile path`
+| `Justfile` (2) and `openssf-compliance.yml` (1) hard-coded
+  `.machine_readable/6a2/…`. SD024 deliberately reports the *policy* for
+  reference repair and tells the reader **not** to recreate the retired file.
+
+| 3
+| SD004 `Descriptile in retired location`
+| `PLAYBOOK.a2ml`, `NEUROSYM.a2ml`, `AGENTIC.a2ml` still under
+  `.machine_readable/6a2/`, the directory the estate retired in favour of
+  `.machine_readable/descriptiles/` (`standards` `0-canon/rsr/RSR-SPEC-v2.adoc`,
+  `0-canon/CANONICAL-NAMES.adoc`: "the old name 6a2 is DEPRECATED --- never").
+|===
+
+== Why they reached the blocking gate
+
+Two separate things produced one red job, and only one of them was in
+Hypatia — and the Hypatia half was not a bug in the rule.
+
+. *The scanner that graded it still classed SD004 as critical.* The gate builds
+  Hypatia from `HEAD` (`static-analysis-gate.yml`, "Clone and build Hypatia"), not
+  from a pinned commit. As of 2026-11-18, `HEAD` and every pin in use here,
+  including the `adb2f41` ref the other Hypatia lanes and `Governance` name, still
+  carried `severity: :critical` for SD004: it was re-graded to
+  `severity: :medium, advisory: true` in hypatia#1044, which landed 2026-11-10
+  *after* `adb2f41` (2026-10-27) and is the first revision that stops counting
+  these three files as critical (hypatia `fix(rules): SD004 is layout drift, not
+  a blocking critical`). So this was not a scanner bug to wait out: on every ref
+  in use, three `.a2ml` files in a retired directory were critical findings, and
+  the only fix that holds across all of them is to stop holding the files in a
+  retired directory.
+
+. *The standalone lane failed from the day it first ran, in a way that hid
+  whether the findings had moved.* `hypatia-scan.yml` has no successful run
+  between 2026-10-12 and 2026-11-22: failures through 2026-11-04T22:50Z, then
+  `startup_failure` — zero jobs, no log, so nothing appears in `gh pr checks` —
+  from 2026-11-04T22:59Z onwards, 28 of its last 30 runs. The last run that
+  executed normally
+  (link:https://github.com/hyperpolymath/vocarium/actions/runs/38313652333[38313652333],
+  2026-10-12) reported *the same six criticals*, under the advisory wording of
+  the run before the gate promotion. So the six are at least as old as the first
+  working scan, not a regression from a later PR, and the lane that would have
+  shown a fix landing was itself unreadable for the fortnight when it mattered.
+  See the open item below.
+
+== What was changed here
+
+* *Migrated the tree.* `.machine_readable/6a2/` → `.machine_readable/descriptiles/`,
+  all ten files, with every reference in the repository updated in the same
+  commit: `Justfile`, `build/just/{validate,assess,groove}.just`,
+  `openssf-compliance.yml`, the arrival-pack (`extract.sh`, `generate.sh`,
+  `verify.sh`, `claude-md.k9.ncl`), coaptation (`coapt.sh`, `verify.sh`,
+  `extract-facts.sh`, `coapt.k9.ncl`, `witness-map.ncl`), the contractiles, the
+  policies, `.pre-commit-config.yaml`, `0.1-AI-MANIFEST.a2ml`, and the docs
+  under `docs/` and `machine-readable-design/`. This is the same repair
+  `hermeneia` recorded for the same red (`descriptiles/STATE.a2ml`: "fixed by
+  migrating to `.machine_readable/descriptiles/`, the layout both hermeneia and
+  standards use"), and the layout `rsr-template-repo` and `trope-checker`
+  already use.
+* *Repaired both of the rules' premises.* SD024 fired on three policy files that
+  named `6a2`; SD004 fired on three files that sat in `6a2`. After the move no
+  `.a2ml` descriptile sits outside `.machine_readable/descriptiles/` and no
+  executable check names `6a2`, so neither rule can fire on this tree — whatever
+  revision grades it, including the pins that still class SD004 as critical.
+* *Fixed the `deposit-findings` lifecycle finding* the scan raised alongside
+  them: `if: always()` → `if: ${{ !cancelled() }}`, so a cancelled run no longer
+  starts a job that needs artifacts it will not find and turns red for it.
+
+No entry was added to `.hypatia-ignore`. Both rules were right about what they
+saw; the tree was wrong, and hypatia#1044 says so explicitly ("a repository still on
+the old layout is not unsafe"). Widening the ignore file would have suppressed
+the next real SD024.
+
+== Verified
+
+Run in this tree after the change:
+
+[source,bash]
+----
+bash scripts/check-root-shape.sh .                          # PASS (47 entries, 58 permitted)
+bash scripts/check-no-md-in-docs.sh .                       # PASS
+INPUT_PATH=. bash .githooks/validate-a2ml.sh                # 119 files, 0 errors
+bash tests/ci/k9-validation.sh                              # PASS
+bash tests/workflows/validate_workflows_test.sh             # PASS (0 errors)
+bash .machine_readable/arrival-pack/extract.sh .machine_readable/descriptiles   # exit 0
+bash .machine_readable/coaptation/extract-facts.sh .machine_readable/descriptiles  # exit 0
+----
+
+`just validate-claude-md` is *not* in that list: it needs `nickel`, which is not
+installed in the environment this was prepared in. The arrival pack's own
+`extract.sh` (the half that reads the files) was run directly and succeeds from
+the new path; `verify.sh` was not executed. Stated here rather than left implied.
+
+== Open item: the standalone lane never starts
+
+`hypatia-scan.yml` has produced no executed job since 2026-10-12: failures through
+2026-11-04T22:50Z, then `startup_failure` on every run since — 28 of its last 30.
+The same shape appears in
+`Governance`, `Rust CI`, `Secret Scanner`, `OSSF Scorecard` and `Mirror to Git
+Forges` here, and on `haec` and `hermeneia`. The common factor is the
+`metadatastician/standards` reusable pin: every repository on `58362c24`
+(`vocarium`, `haec`, `hermeneia`) fails at startup, while `trope-checker`, which
+pins the same file at `857ff096`, has a job that runs and reports. A reusable
+workflow that cannot be resolved fails with *zero jobs and no log*, which is why
+this is invisible in `gh pr checks`.
+
+Repinning to `857ff096` would align the three siblings on a revision that
+demonstrably starts. This change does **not** do it: it would silently move the
+scanner from OTP 27.3.4.19 back to OTP 28.3, the combination hypatia#1061 records
+as segfaulting on some trees, and vocarium#56 moved this pin *forward* to
+`58362c24` for exactly that reason. Choosing between "starts and may segfault"
+and "does not start" is not a triage decision; it belongs in its own change with
+a run to point at. Filed separately.
+
+== The gate itself
+
+`static-analysis-gate.yml` calls `hypatia-cli.sh scan .`. That script uses the
+compiled escript when one is present and otherwise falls back to
+`hypatia-cli-bash.sh`. The three SD024 findings are the Elixir rule's exact
+message at both `adb2f41` and `HEAD` (`lib/rules/structural_drift.ex`), so that
+half of the artifact is the escript. The SD004 message text, however, matches no
+revision of the rule: `git log -S` finds only hypatia#719 and hypatia#1044
+touching SD004, and neither carries this wording (`-- must be in
+.machine_readable/descriptiles/`), which is the wording of the *replacement*, not
+of the rule that recommends it. The bash fallback emits neither string, so it
+was not the fallback either.
+
+Two readings survive: the escript at an unreleased intermediate revision, or a
+build that mixed a stale compiled escript with a newer rules tree. Either way the
+artifact was produced by a scanner whose identity cannot be recovered from the
+artifact, which is the finding worth acting on here: the gate builds Hypatia from
+`HEAD` on every run, so two runs of "the same" required check can grade the tree
+with different rulesets, and the artifact records no scanner revision. Its
+`--exit-zero` recipe also predates the two switches the pinned reusable now
+offers (`block-on-critical`, `block-on-high`), which gate on the SARIF projection
+after baseline filtering instead of counting `.severity` in the raw JSON.
+
+The migration repairs the findings under either reading, so this does not block
+the fix — but the gate should pin its scanner and record the revision it used.
+
+== Not changed
+
+The template identity and the `production, 95%` state under
+`.machine_readable/descriptiles/` still carry `rsr-template-repo`'s values
+(`CLADE.a2ml`, `STATE.a2ml`). That is vocarium#55, owner-only, and is not part of
+this triage: renaming a repo's identity fields is not a package-layout sweep.

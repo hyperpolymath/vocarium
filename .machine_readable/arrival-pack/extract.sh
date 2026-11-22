@@ -13,12 +13,12 @@
 # Determinism (no timestamps) is required so the k9 drift check can byte-compare.
 set -euo pipefail
 
-DIR6A2="${1:-.machine_readable/6a2}"
-CLADE="$DIR6A2/CLADE.a2ml"
-ECO="$DIR6A2/ECOSYSTEM.a2ml"
-AGENTIC="$DIR6A2/AGENTIC.a2ml"
-STATE="$DIR6A2/STATE.a2ml"
-ANCHOR="$DIR6A2/anchors/ANCHOR.a2ml"
+DIR_DESCRIPTILES="${1:-.machine_readable/descriptiles}"
+CLADE="$DIR_DESCRIPTILES/CLADE.a2ml"
+ECO="$DIR_DESCRIPTILES/ECOSYSTEM.a2ml"
+AGENTIC="$DIR_DESCRIPTILES/AGENTIC.a2ml"
+STATE="$DIR_DESCRIPTILES/STATE.a2ml"
+ANCHOR="$DIR_DESCRIPTILES/anchors/ANCHOR.a2ml"
 
 for f in "$CLADE" "$ECO" "$AGENTIC" "$STATE" "$ANCHOR"; do
   [ -f "$f" ] || { echo "extract.sh: missing required a2ml: $f" >&2; exit 2; }

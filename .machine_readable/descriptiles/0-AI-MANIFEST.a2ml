@@ -1,8 +1,10 @@
-# AI Manifest for 6a2 Directory
+# AI Manifest for the descriptiles Directory
 
 ## Purpose
 
-This manifest declares the AI-assistant context for the 6a2 machine-readable metadata directory.
+This manifest declares the AI-assistant context for the descriptiles machine-readable
+metadata directory, `.machine_readable/descriptiles/` (the estate-canonical name;
+the retired name for this directory is 6a2).
 
 ## Canonical Locations
 
