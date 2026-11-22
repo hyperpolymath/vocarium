@@ -40,19 +40,19 @@ evidence doesn't support the claim.
 *Evidence gates (v2.0 is stricter than v1.0):*
 
 * *D*: RSR-compliant + per-capability tests + documented scope. Test matrix
-  must cite counts and live in `.machine_readable/descriptiles/STATE.a2ml` or CI.
+  must cite counts and live in `docs/status/` or CI.
 * *C*: All of D, plus active dogfooding in home context with *no known
   home-context failures over an evidence window*, plus *deep per-file and
   per-directory annotation* (purpose, boundaries, invariants,
   execution/test/proof surfaces, per-directory orientation READMEs).
-  STATE.a2ml `[dogfooding-status]` populated with concrete "done — <evidence>"
+  dogfooding evidence in `docs/status/` populated with concrete "done — <evidence>"
   entries.
 * *B*: All of C, plus *six genuinely diverse external targets* with
-  feedback fed back. STATE.a2ml `[external-targets]` holds target identities
+  feedback fed back. external-target evidence in `docs/status/` holds target identities
   + dates + outcomes; `[issues-fed-back]` holds the closed-issue trail.
   Internal-capability items do *not* count.
 * *A*: All of B, plus multi-source real-world external feedback confirming
-  value, no harm in the wild. STATE.a2ml `[field-signal]` populated.
+  value, no harm in the wild. field-signal evidence in `docs/status/` populated.
 
 *Publication gate:* non-abstract implementation claims require *B+*.
 Below B, any publication must be explicitly abstract or provisional.
@@ -65,7 +65,7 @@ Below B, any publication must be explicitly abstract or provisional.
 |===
 | Metric | Value | Source
 
-| Test count | _<N>_ | `.machine_readable/descriptiles/STATE.a2ml` or CI
+| Test count | _<N>_ | `docs/status/` or CI
 | Formal-verification posture | _<N `believe_me` / `sorry` / `Admitted` — irreducible only>_ | grep of proof dirs
 | Dangerous patterns (`assert_total`, `unsafeCoerce`, `Obj.magic`) | _<N>_ | grep {{CURRENT_DATE}}
 | Per-unit README coverage | _<M/N (percentage)>_ | filesystem scan of unit dirs
@@ -113,7 +113,7 @@ CRG v2.0 requires two new pieces of evidence on top of D:
 ** Home context: _<what "home" means for this project>_.
 ** "No known failures" is a moving claim — must hold continuously across
    the evidence window (recommended: 4 weeks, daily use).
-** Populate `STATE.a2ml [dogfooding-status]` with one entry per capability:
+** Populate dogfooding evidence in `docs/status/` with one entry per capability:
    `capability = "done — <concrete evidence>"`.
 
 . *Deep code and folder annotation.*
@@ -142,7 +142,7 @@ component. Candidate diversity axes:
 * Different topology (star, mesh, peer-to-peer).
 * Different trust model (same-org, federated, adversarial).
 
-Populate `STATE.a2ml`:
+Populate readiness evidence in `docs/status/`:
 
 * `[external-targets]` — target-id → `"<date> — <outcome> — <contact/URL>"`.
 * `[issues-fed-back]` — issue-id → `"<date> — <external reporter> — <resolution>"`.
@@ -156,7 +156,7 @@ into `[external-targets]`.
 == 6. What's Needed for B → A
 
 Real-world external feedback confirming value. Populate
-`STATE.a2ml [field-signal]` with multi-source entries:
+field-signal evidence in `docs/status/` with multi-source entries:
 
 * External users beyond the six B-targets.
 * Third-party writeups, talks, papers, or testimonials.
@@ -179,8 +179,8 @@ Real-world external feedback confirming value. Populate
 * `docs/governance/CRG-AUDIT-<DATE>.adoc` — formal audit (populate from
   `rsr-template-repo/docs/governance/CRG-AUDIT-TEMPLATE.adoc`).
 * `docs/practice/DOGFOOD-LOG.adoc` — dated dogfood evidence (required for C).
-* `.machine_readable/descriptiles/STATE.a2ml` — authoritative state (canonical keys
-  `[dogfooding-status]`, `[external-targets]`, `[issues-fed-back]`,
-  `[field-signal]`).
+* `.machine_readable/descriptiles/STATE.deed` — current phase and maturity;
+  `docs/status/` — dated readiness evidence, including dogfooding, external
+  targets, issues fed back, and field signals.
 
 _Run `just crg-badge` to generate the shields.io badge for your README._

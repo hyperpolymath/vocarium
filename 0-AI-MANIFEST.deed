@@ -1,0 +1,3 @@
+;; SPDX-License-Identifier: MPL-2.0
+;; SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+(repo-deed :schema-version "1.0.0" (front-doors :machine "vocarium_chora.deed" :human "README.adoc"))

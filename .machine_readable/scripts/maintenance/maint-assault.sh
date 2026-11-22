@@ -31,10 +31,10 @@ fi
 echo "Initiating full assault on $BINARY_NAME..."
 mkdir -p "$(dirname "$REPORT_PATH")"
 
-"$PA_BIN" assault "target/release/$BINARY_NAME" 
-    --source . 
-    --intensity medium 
-    --duration 10 
+"$PA_BIN" assault "target/release/$BINARY_NAME" \
+    --source . \
+    --intensity medium \
+    --duration 10 \
     --output "$REPORT_PATH"
 
 echo ""

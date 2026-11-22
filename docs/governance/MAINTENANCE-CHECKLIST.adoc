@@ -8,7 +8,7 @@ Use this as a repeatable maintenance runbook for any repo.
 Companion policy:
 
 - `docs/practice/SOFTWARE-DEVELOPMENT-APPROACH.adoc` (human-readable)
-- `.machine_readable/policies/SOFTWARE-DEVELOPMENT-APPROACH.a2ml` (machine-readable)
+- `vocarium_chora.deed` and `.machine_readable/descriptiles/` (machine-readable)
 
 ## Canonical Repo Baseline (Final)
 
@@ -91,8 +91,8 @@ Run this pass at the end of a corrective/adaptive/perfective cycle:
   - `MAINTAINER` in root
   - `.github/CODEOWNERS`
 - [ ] Keep machine-readable canonical structure under `.machine_readable/`:
-  - state/meta/ecosystem files (`*.a2ml` or repo standard)
-  - `anchors/ANCHOR.a2ml`
+  - state and metadata descriptile deeds
+  - the anchor in `vocarium_chora.deed`
   - `contractiles/` (`must`, `trust`, `intend`, and related)
   - `ai/` for AI guidance files
   - `bot_directives/` for bot control files
@@ -412,9 +412,9 @@ Add these checks for language/compiler repositories with formal ABI/FFI constrai
 - [x] README structure restored (index/TOC, audience paths, quickstart sanity).
 - [x] Wiki split by audience (laypeople/users/developers) and linked from docs index.
 - [x] Root-level clutter reduced (archive, analysis, reports relegated to `docs/` subtrees).
-- [x] Machine-readable docs synchronized (`STATE.a2ml`, `META.a2ml`, `ECOSYSTEM.a2ml`, contractiles).
+- [ ] Deeds and contractiles synchronized; see `docs/status/DEED-MIGRATION.adoc`.
 - [x] Human-readable docs synchronized (`README`, `QUICK_STATUS`, roadmap, wiki home).
-- [x] `Mustfile` invariants present and enforceable in CI.
+- [ ] Contractile invariants reviewed and enforceable in CI.
 - [x] `Trustfile` and `Intentfile` present and complete.
 - [x] FFI/ABI purity policy enforced (`*.zig` for FFI, `*.idr`/Idris2 for ABI).
 - [x] `panic-attack` findings triaged with explicit severity budget for release.

@@ -11,13 +11,10 @@ Per-tool config files (.cursorrules, .clinerules, etc.) reference this document.
 
 ## Session Startup
 
-1. Read `0-AI-MANIFEST.a2ml` FIRST (mandatory gatekeeper).
-2. Read `.machine_readable/descriptiles/STATE.a2ml` for current status and blockers.
-3. Read `.machine_readable/descriptiles/anchors/ANCHOR.a2ml` for canonical authority boundaries.
-4. Read `.machine_readable/policies/MAINTENANCE-AXES.a2ml` for maintenance/audit sequencing.
-5. Read `.machine_readable/policies/MAINTENANCE-CHECKLIST.a2ml` for baseline controls.
-6. Read `.machine_readable/policies/SOFTWARE-DEVELOPMENT-APPROACH.a2ml` for execution order.
-7. Read `.machine_readable/descriptiles/AGENTIC.a2ml` for agent constraints.
+1. Read `0-AI-MANIFEST.deed` and `vocarium_chora.deed`.
+2. Read `.machine_readable/descriptiles/STATE.deed` and `AFFIRMATION.adoc` for status and evidence.
+3. Read `.machine_readable/descriptiles/AGENTIC.deed` and `CLAUDE.md` for agent constraints.
+4. Consult the human governance documents in `docs/governance/` for maintenance controls.
 
 ## License
 
@@ -35,10 +32,8 @@ Per-tool config files (.cursorrules, .clinerules, etc.) reference this document.
 
 ## State Files
 
-State/metadata files, anchors, and policies (.a2ml) belong in `.machine_readable/` ONLY.
-NEVER create STATE.a2ml, META.a2ml, ECOSYSTEM.a2ml, AGENTIC.a2ml,
-NEUROSYM.a2ml, PLAYBOOK.a2ml, ANCHOR.a2ml, MAINTENANCE-AXES.a2ml,
-MAINTENANCE-CHECKLIST.a2ml, or SOFTWARE-DEVELOPMENT-APPROACH.a2ml in the repository root.
+Descriptive state lives under `.machine_readable/descriptiles/`; the root repo deed
+contains identity and ecosystem information. Do not add state files to the root.
 
 ## Banned Patterns
 
@@ -78,10 +73,9 @@ Use `just` (Justfile) for all build, test, lint, and format tasks.
 
 ## References
 
-- `0-AI-MANIFEST.a2ml` -- universal AI entry point
-- `.machine_readable/descriptiles/AGENTIC.a2ml` -- agent permissions and constraints
-- `.machine_readable/descriptiles/STATE.a2ml` -- current project state
-- `.machine_readable/descriptiles/anchors/ANCHOR.a2ml` -- canonical authority and policy boundary
-- `.machine_readable/policies/MAINTENANCE-AXES.a2ml` -- canonical axis sequencing and audit requirements
-- `.machine_readable/policies/MAINTENANCE-CHECKLIST.a2ml` -- baseline maintenance checklist policy
-- `.machine_readable/policies/SOFTWARE-DEVELOPMENT-APPROACH.a2ml` -- axis execution approach policy
+- `0-AI-MANIFEST.deed` -- universal AI entry point
+- `vocarium_chora.deed` -- repo identity, ecosystem and anchor
+- `.machine_readable/descriptiles/AGENTIC.deed` -- agent permissions
+- `.machine_readable/descriptiles/STATE.deed` -- current project state
+- `docs/governance/MAINTENANCE-CHECKLIST.adoc` -- maintenance checklist
+- `docs/status/DEED-MIGRATION.adoc` -- remaining migration work

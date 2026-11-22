@@ -1,0 +1,8 @@
+;; SPDX-License-Identifier: MPL-2.0
+;; SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+(descriptile-deed :schema-version "1.0.0" :canonical-name "vocarium"
+  :of-chora #u8"chora-registry:github.com/hyperpolymath/vocarium"
+  :affirmed "2026-11-22" :affirmed-by agent
+  (permissions :source #t :tests #t :docs #t :config #t :create-files #t)
+  (integrity :fail-closed #t :require-evidence-per-step #t :allow-silent-skip #f
+    :require-rerun-after-fix #t :release-claim-requires-hard-pass #t))

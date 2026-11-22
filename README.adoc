@@ -193,3 +193,10 @@ records, neighbours/nearestness (the retention order stays in trope-checker),
 Haec ingestion, the Hermeneia `StoreProvider` adapter (M2). Most docs outside
 this README/EXPLAINME are un-instantiated estate template text — trust the
 code and `docs/decisions/0002-pure-zig-wire-boundary.adoc` over them.
+
+## AI-Assisted Installation
+
+An assistant can help you build the experimental `voc` command locally; review
+all commands and changes before running them. See
+[the AI installation guide](docs/AI_INSTALLATION_GUIDE.adoc) for prerequisites,
+verification, privacy and the current scope.

@@ -1,0 +1,49 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= AI-Assisted Installation
+
+This guide lets a contributor or an assisting agent build the experimental
+Vocarium command from source. The assistant does not need access to credentials
+or production data. Review commands and their output yourself; never treat an
+unrun check as passing.
+
+== Prerequisites
+
+* Git and Zig 0.16.0 (the exact version is pinned in `.tool-versions`).
+* A Unix-like shell. `just` is optional for the commands below.
+* For the full invoke-slice gate: Rust/Cargo and network access to build the
+  pinned trope-checker dependency, or an explicitly supplied `TROPECHECK_BIN`.
+
+== Build and check
+
+[source,sh]
+----
+git clone https://github.com/hyperpolymath/vocarium.git
+cd vocarium
+zig version                         # must report 0.16.0
+zig build test
+zig build
+./zig-out/bin/voc ingest examples/vocarium-ingest.jsonl
+./zig-out/bin/voc invoke --store examples/vocarium-ingest.jsonl --use-model casual-note t_real
+----
+
+The final command emits a Trope IR document. These commands do not by themselves
+prove the full invoke slice. To run that separate end-to-end check, use
+`bash tests/e2e/invoke_slice.sh`; it fails if its compiler or checker dependency
+is absent. See `AFFIRMATION.adoc` for the dated claims and their evidence.
+
+[[ai-implementation]]
+== AI implementation and privacy
+
+The build and `voc` executable do not require an AI model or network service.
+AI assistance is optional and external to the executable. Check your assistant
+provider's data handling before sharing content. Do not submit secrets, private
+stores, or credentials to an assistant; use the checked-in example for a smoke
+check. Repository AI interaction guidance is in `.well-known/ai.txt`,
+`0-AI-MANIFEST.deed` and `CLAUDE.md`.
+
+== Current limits
+
+This is the M1 invoke slice, not a general-purpose production database. The
+README and `docs/decisions/0002-pure-zig-wire-boundary.adoc` describe the
+implemented scope and the planned Hermeneia adapter.

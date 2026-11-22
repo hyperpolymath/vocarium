@@ -1,0 +1,25 @@
+;; SPDX-License-Identifier: MPL-2.0
+;; SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+;; The retired CLADE described rsr-template-repo, not Vocarium. The db
+;; placement below is a proposal, not a registry assignment; chora-registry
+;; is authoritative and must confirm it. The repo UUID is a deterministic
+;; profile-C name, not a claim that a registry entry has already been minted.
+(repo-deed
+  :schema-version "1.0.0"
+  :canonical-name "vocarium"
+  :repo-uuid #u8"chora-registry:github.com/hyperpolymath/vocarium"
+  :beholding-chora #uuid"0889b37b-defb-831f-973c-e119500db00e"
+  (identity :primary-forge github :owner "hyperpolymath")
+  (clade :primary db :secondary ()
+    :rationale "Proposed db: Vocarium is a trope database. Pending confirmation by chora-registry; the old rm/gv placement described the template, not this repo.")
+  (forges :github "hyperpolymath/vocarium")
+  (lineage :type standalone :instantiated-from "rsr-template-repo")
+  (purpose :text "A structured store of vokeable particulars, transformations, grades, warrants and verdicts.")
+  (front-doors :machine "vocarium_chora.deed" :human "README.adoc")
+  (ecosystem :position-type "database" :purpose "Store vokeable particulars"
+    :not ("Haec transformation language" "Hermeneia query language" "trope-checker proof boundary")
+    :chain "haec -> vocarium -> hermeneia -> trope-checker")
+  (anchor :authority "upstream-canonical"
+    (golden-path :smoke-test-command ("zig build test" "bash tests/e2e/invoke_slice.sh")
+      :success-criteria ("Core tests pass" "Invoke slice gate passes with its checker dependency available")))
+  (rsr-profile :version "1.0.0" :spec "rsr-criteria-v2" :declares-against "2.1.1-draft" :capabilities ("zig" "bash")))

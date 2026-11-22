@@ -1,24 +1,8 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
-// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-= AI Guidance Directory
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= AI guidance
 
-Put AI-facing instructions in this folder.
-
-Examples:
-
-* `CLAUDE.md`
-* `COPILOT.md`
-* `GEMINI.md`
-* `AI.a2ml`
-* `AI.djot`
-
-Avoid scattering agent instruction files around the repo root.
-
-Recommended machine read order:
-
-* `.machine_readable/descriptiles/anchors/ANCHOR.a2ml`
-* `.machine_readable/policies/MAINTENANCE-AXES.a2ml`
-* `.machine_readable/policies/MAINTENANCE-CHECKLIST.a2ml`
-* `.machine_readable/policies/SOFTWARE-DEVELOPMENT-APPROACH.a2ml`
-* `.machine_readable/descriptiles/STATE.a2ml`
-* `.machine_readable/descriptiles/META.a2ml`
+Read `0-AI-MANIFEST.deed`, then `vocarium_chora.deed`, `CLAUDE.md`, and
+`.machine_readable/descriptiles/STATE.deed`. Agent permissions are in
+`.machine_readable/descriptiles/AGENTIC.deed`; maintenance guidance is in
+`docs/governance/` and `docs/practice/AI-CONVENTIONS.adoc`.

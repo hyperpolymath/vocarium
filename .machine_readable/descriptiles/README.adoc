@@ -1,37 +1,12 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
-// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-# A2ML Descriptiles Directory
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Vocarium descriptiles
 
-This directory contains the 6 core A2ML machine-readable metadata files for this
-repository: the descriptive half of the 6A2 format family (what-IS), paired with
-`.machine_readable/contractiles/` (the normative half, what-OUGHT).
+These descriptive deeds record what is, not normative contractile set-points.
+The root `vocarium_chora.deed` holds identity, the proposed clade, ecosystem
+and anchor. This directory holds `STATE.deed`, `META.deed`, `AGENTIC.deed` and
+`NEUROSYM.deed`. Dated evidence belongs in `docs/status/`.
 
-Formerly shipped as `.machine_readable/6a2/`. Renamed to the estate-canonical
-`.machine_readable/descriptiles/` — the layout `hyperpolymath/standards`
-(`0-canon/rsr/RSR-SPEC-v2.adoc`) names and `rsr-template-repo`, `trope-checker`
-and `hermeneia` all use. See vocarium#45 for the triage that prompted the move.
-
-## Files
-
-- `AGENTIC.a2ml` - AI agent operational gating, safety controls
-- `ECOSYSTEM.a2ml` - Project ecosystem position, relationships, explicit boundaries
-- `META.a2ml` - Architecture decisions (ADRs), development practices, design rationale
-- `NEUROSYM.a2ml` - Symbolic semantics, composition algebra
-- `PLAYBOOK.a2ml` - Executable plans, operational runbooks
-- `STATE.a2ml` - Project state, phase, milestones, session history
-
-## Standards Compliance
-
-These files follow the A2ML Format Family specification from:
-https://github.com/hyperpolymath/standards/tree/main/a2ml
-
-## Generation
-
-These files may be generated from .scm source files using transpilation tools.
-Source .scm files should be removed after successful transpilation.
-
-## See Also
-
-- [A2ML Repository Template](https://github.com/hyperpolymath/standards/blob/main/A2ML-REPO-TEMPLATE.adoc)
-- [6A2 Format Family](https://github.com/hyperpolymath/standards#a2ml-format-family-7-formats)
-
+The directory was renamed from `6a2/` in issue #45; the A2ML inputs are
+retired by issue #43. See `docs/status/DEED-MIGRATION.adoc` for migration and
+contractile limitations.

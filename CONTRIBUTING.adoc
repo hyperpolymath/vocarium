@@ -41,11 +41,10 @@ just doctor     # environment diagnostics
 
 === Machine-readable artefacts
 
-This repo carries `+.machine_readable/+` A2ML files (`+STATE.a2ml+`,
-`+META.a2ml+`, `+ECOSYSTEM.a2ml+`, `+AGENTIC.a2ml+`, `+NEUROSYM.a2ml+`,
-`+PLAYBOOK.a2ml+`). If your change alters project state, architecture,
-or operational steps, update the corresponding file in the same PR — CI
-validates them.
+The root `+vocarium_chora.deed+` records repo identity and the ecosystem;
+`+.machine_readable/descriptiles/+` holds state, metadata and agent constraints.
+Update the relevant deed when its facts change. CI validates the deed grammar
+and profiles; see `+docs/status/DEED-MIGRATION.adoc+` for remaining work.
 
 === Language policy
 
