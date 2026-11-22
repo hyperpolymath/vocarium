@@ -114,6 +114,14 @@ installed in the environment this was prepared in. The arrival pack's own
 `extract.sh` (the half that reads the files) was run directly and succeeds from
 the new path; `verify.sh` was not executed. Stated here rather than left implied.
 
+The real check is the gate itself, and it ran: on the change
+(link:https://github.com/hyperpolymath/vocarium/actions/runs/45079789153[run 45079789153])
+`Hypatia neurosymbolic scan` is **success**. `Fail on critical security findings`
+is *skipped* — no criticals to fail on — and all six annotations are gone. What
+remains is ten warnings (a `|| true` that swallows a failure, unpinned runner
+tags, two missing `timeout-minutes`), none of which blocks a merge and none of
+which is in this triage's scope.
+
 == Open item: the standalone lane never starts
 
 `hypatia-scan.yml` has produced no executed job since 2026-10-12: failures through
