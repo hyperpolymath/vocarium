@@ -19,18 +19,35 @@ repos:
         args: ['--maxkb=1024']
 
   # --- A2ML manifest validation ---
-  - repo: https://github.com/hyperpolymath/a2ml-pre-commit
-    rev: main
+  # The provider repo (hyperpolymath/a2ml-pre-commit) was DELETED upstream in
+  # the A2ML retirement (standards #836 owner ruling; R-H3), so this pin was
+  # broken plumbing — pre-commit could not clone it. Replaced with a local
+  # hook running the same validator CI's dogfood-gate lane uses
+  # (.github/workflows/dogfood-gate.yml), .githooks/validate-a2ml.sh. It scans
+  # every tracked .a2ml file. (The deed migration that retires .a2ml here is
+  # issue #43 / draft PR #61 — out of scope for this CI repair.)
+  - repo: local
     hooks:
       - id: validate-a2ml
         name: Validate A2ML manifests
+        entry: bash .githooks/validate-a2ml.sh
+        language: system
+        pass_filenames: false
+        files: '\.a2ml$'
 
   # --- K9 contract validation ---
-  - repo: https://github.com/hyperpolymath/k9-pre-commit
-    rev: main
+  # The provider repo (hyperpolymath/k9-pre-commit) was DELETED upstream in the
+  # same retirement (standards #836; R-H3). Replaced with a local hook running
+  # the canonical in-repo validator CI's dogfood-gate lane uses,
+  # .githooks/validate-k9.sh.
+  - repo: local
     hooks:
       - id: validate-k9
         name: Validate K9 contracts
+        entry: bash .githooks/validate-k9.sh
+        language: system
+        pass_filenames: false
+        files: '\.k9(\.ncl)?$'
 
   # --- Shell linting ---
   - repo: https://github.com/shellcheck-py/shellcheck-py

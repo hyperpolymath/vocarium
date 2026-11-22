@@ -10,6 +10,24 @@ https://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
 ==== Fixed
 
+* *Two pre-existing CI failures repaired: the dead pre-commit provider repos and
+  a stale lockfile entry (2026-11-22).* `pre-commit.ci` could not run at all:
+  `+.pre-commit-config.yaml+` pinned `+hyperpolymath/a2ml-pre-commit+` and
+  `+hyperpolymath/k9-pre-commit+`, both `+rev: main+`, and both repos were
+  deleted upstream in the A2ML retirement (standards #836, owner ruling R-H3),
+  so pre-commit died at `+git fetch origin --tags+` with *Repository not
+  found*. Both pins are replaced with `+repo: local+` hooks that run the same
+  validators the `+dogfood-gate+` lane already runs —
+  `+.githooks/validate-a2ml.sh+` and `+.githooks/validate-k9.sh+` — which pass
+  on the tracked files. The `+lint-workflows+` lane failed at *Check SHA-Pinned
+  Actions* because `+.github/workflows/actions.lock+` listed
+  `+actions/checkout@v7.0.1+` under `+sonarqube.yml+`, which only uses the
+  SHA-pinned form `+actions/checkout@3d3c42e5…+`; `+gh actions-lock
+  --verify-local+` reports that unused entry as *Stale* and exits non-zero. The
+  stale line is removed (the `+dependencies:+` entry is kept: other workflows
+  use the tag form). Both lanes were red on `+main+` before this change and are
+  not attributable to any single PR.
+
 * *`+mise.toml+` declared `+zig = "latest+` while `+.tool-versions+` pinned
 0.16.0 (2026-11-22).* The invoke-slice gate reads `+.tool-versions+` and
 hard-fails on any other `+zig version+`, so a developer whose mise resolved
