@@ -26,6 +26,15 @@ command -v zig >/dev/null || fail "zig not installed (need exactly ${ZIG_EXPECTE
 ZIG_ACTUAL="$(zig version)"
 [ "$ZIG_ACTUAL" = "$ZIG_EXPECTED" ] || fail "zig version skew: have ${ZIG_ACTUAL}, .tool-versions pins ${ZIG_EXPECTED}"
 
+# Coherence: mise.toml must not resolve zig to a different version than the
+# .tool-versions pin above. `zig = "latest"` let a developer's mise install a
+# compiler this gate refuses (issue #46). A missing zig line is accepted — then
+# .tool-versions is the single source, the issue's other permitted fix.
+MISE_ZIG="$(awk -F'"' '/^[[:space:]]*zig[[:space:]]*=/{print $2; exit}' mise.toml)"
+if [ -n "$MISE_ZIG" ] && [ "$MISE_ZIG" != "$ZIG_EXPECTED" ]; then
+  fail "toolchain skew: mise.toml pins zig ${MISE_ZIG}, .tool-versions pins ${ZIG_EXPECTED} (issue #46)"
+fi
+
 if [ -z "${TROPECHECK_BIN:-}" ]; then
   command -v cargo >/dev/null || fail "cargo not installed (needed to build tropecheck-rs at pin ${TROPECHECK_PIN})"
   command -v git >/dev/null || fail "git not installed"
