@@ -10,17 +10,24 @@ https://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
 ==== Fixed
 
-* *No proof recipe reports PASS over zero files (2026-11-16).* Each of
-  `+proof-check-idris2|lean4|agda|coq+` and `+proof-scan-dangerous+` in
-  `+build/just/proofs.just+` printed "PASS: All … proofs verified" and exited `+0+`
-  when `+find+` returned nothing: measured against the previous recipes over an
-  empty `+verification/proofs/+`, all five passed having checked nothing. Each now
-  collects its files first, fails with "nothing was verified, so nothing passes"
-  when there are none, and states the count in its PASS line. Over the real tree
-  the behaviour is otherwise unchanged (stub provers: 6 Idris2, 1 Lean, 1 Agda,
-  1 Coq file checked; the scan still reports its 8 comment matches). The
-  `+SKIP: <tool> not installed+` path is untouched and still recorded as a
-  `+no-silent-skip+` contradiction in `+docs/status/PROOF-STATUS.adoc+`.
+* *Workflow lint reads the SPDX header block and the lockfile (2026-11-17).*
+The lint tested line 1 of each workflow for the SPDX identifier, but
+`+gh actions-lock+` puts its own banner on line 1 whenever it refreshes the
+lockfile, so the test failed on 26 of 28 workflows here and on `+main+`. It now
+reads the leading comment block, the same test as `+standards+`
+`+governance-reusable.yml+`; a workflow with no identifier there still fails.
+The pin step required an inline commit on every action, which the move to
+`+actions.lock+` made unsatisfiable (38 tag references). It now checks lockfile
+coverage and keeps the inline-commit rule for reusable workflow calls, as the
+copy of this lint in haec does.
+
+* *Stack coherence: the checker pin and the scan pin (2026-11-17).* The
+invoke-slice gate pins trope-checker at `+0dceab6+` (was `+4ecba4f+`), the
+commit haec and hermeneia move to in the same sweep. Between the two commits
+trope-checker's `+src/+`, `+schemas/+`, `+spec/+` and conformance fixtures are
+unchanged. `+zig build test+` and `+tests/e2e/invoke_slice.sh+` pass at the new
+pin (Zig 0.16.0, run locally). The Hypatia scan pin moves to the revision that
+installs OTP 27.3.4.19 (hypatia#1061).
 
 * *The `+proof-check-idris2+` account was wrong (2026-11-09).* Review found it,
   and it was right. `+docs/status/PROOF-STATUS.adoc+` said that with a toolchain
