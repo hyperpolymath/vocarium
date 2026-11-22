@@ -11,7 +11,7 @@ and customize them with your project-specific content.
 [tree]
 ----
 .machine_readable/
-├── 6a2/
+├── descriptiles/
 │   ├── anchors/
 │   ├── META.a2ml
 │   ├── ECOSYSTEM.a2ml
@@ -48,7 +48,7 @@ The following command-line runners process these files:
 | `adjust` | Adjustfile.a2ml | Drift tolerance + corrective actions
 | `bust` | Bustfile.a2ml | Rollback procedures
 | `dust` | Dustfile.a2ml | Cleanup/hygiene checks
-| `anchor` | anchors/ | Anchoring system (6a2)
+| `anchor` | anchors/ | Anchoring system (descriptiles)
 | `just` | Justfile | Task automation
 |===
 
