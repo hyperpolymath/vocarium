@@ -2,17 +2,17 @@
 # SPDX-License-Identifier: MPL-2.0
 
 [project]
-name = "{{REPO}}"
+name = "vocarium"
 
 [[functions]]
-name = "build"
-source = "src/interface/ffi/build.zig"
+name = "main"
+source = "src/store/main.zig"
 energy-budget-mj = 15.0
 carbon-budget-mg = 3.0
 
 [[functions]]
-name = "setError"
-source = "src/interface/ffi/src/main.zig"
+name = "emitDocument"
+source = "src/store/emit.zig"
 energy-budget-mj = 5.0
 carbon-budget-mg = 1.0
 
