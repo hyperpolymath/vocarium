@@ -109,3 +109,14 @@ the `+1b402f9+` deletion carried out of band: 119 `+.a2ml+` files, 128,994 bytes
 with blob ids and `+sha256+` for each — all verified against `+1b402f9^+`. No
 `+.a2ml+` file is deleted, renamed or reintroduced by this change; nothing is
 minted or registered by it.
+* *The hosted pre-commit.ci baseline was cured at its root causes (2026-11-22).*
+`+.github/FUNDING.yml+` is instantiated (`+hyperpolymath+` ×3), matching the
+sibling convention of `+trope-checker+` / `+trope-particularity-workbench+`.
+The three unfilled Tier-C placeholders under `+container/stapeln/+`
+(`+compose.toml+`, `+compose.example.toml+`, `+manifest.toml+`) were removed:
+nothing at runtime reads them (`+build/just/container.just+` guards on existence),
+and estate siblings either fill them (hermeneia) or never ship them (haec,
+trope-checker). `+.devcontainer/devcontainer.json+` is exempt from `+check-json+`
+(JSONC by the Dev Container spec; the estate ships it with comments); no other
+JSON file is exempt. ShellCheck and EditorConfig baselines remain repo-wide and
+still fail the hosted job — they are tracked separately.
