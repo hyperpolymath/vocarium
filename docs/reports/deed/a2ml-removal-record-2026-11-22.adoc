@@ -1,0 +1,188 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= A2ML removal record — files deleted by the A2ML retirement (#61)
+:toc: macro
+:toclevels: 2
+
+*Date:* 2026-11-22 · *Base:* `1b402f9^` (`ae3a9b9`, the tree the retirement
+deleted from) · *Deleting commit:* `1b402f9c450df8b35b083b3ff7e5ccffe36fcd22`
+(merged pull request #61, 2026-11-22T23:34:58Z)
+
+This record is *reconstructed after the fact*: the deleting merge carried no
+removal table of its own. It exists so the deletion is auditable under the
+standards ruling of 2026-11-17 (state-v1-decision: a v1 source is *deleted,
+never archived*, and the deletion is recorded with path, size, sha256 and
+blob id) and so any later claim about what was removed can be checked
+against immutable Git data rather than prose. It lists *every* `.a2ml` file
+present at `1b402f9^`; none of these paths exist at `1b402f9`.
+
+This is a record, not an archive: no file contents are copied into this
+tree, and no `9-archive/` is created (the archival wording in the original
+2026-11-10 ruling was superseded on 2026-11-17 — sources die with the
+deleting commit; the record carries the hashes).
+
+== How to verify
+
+[source,bash]
+----
+# every row must reproduce from history alone — and must match the table.
+# The record's table rows are: | path | bytes | blob id | sha256
+# Extract path, declared size, blob and sha, recompute all three from
+# history, and compare field by field. Any mismatch fails the check.
+fail=0; n=0
+while IFS= read -r row; do
+  n=$((n + 1))
+  path=$(printf '%s' "$row"   | sed -E 's/^\| `([^`]+)` \|.*/\1/')
+  want_size=$(printf '%s' "$row" | sed -E 's/^\| `[^`]+` \| ([0-9]+) \|.*/\1/')
+  want_blob=$(printf '%s' "$row" | sed -E 's/^\| `[^`]+` \| [0-9]+ \| `([0-9a-f]{40})` \|.*/\1/')
+  want_sha=$(printf '%s' "$row" | sed -E 's/^\| `[^`]+` \| [0-9]+ \| `[0-9a-f]{40}` \| `([0-9a-f]{64})` \|.*/\1/')
+  blob=$(git rev-parse "1b402f9^:$path") || { printf 'FAIL rev-parse %s\n' "$path" >&2; fail=1; continue; }
+  size=$(git cat-file -s "$blob")       || { printf 'FAIL cat-file -s %s\n' "$path" >&2; fail=1; continue; }
+  sha=$(git cat-file blob "$blob" | sha256sum | cut -d' ' -f1) || { printf 'FAIL cat-file blob %s\n' "$path" >&2; fail=1; continue; }
+  if [ "$blob" != "$want_blob" ] || [ "$size" != "$want_size" ] || [ "$sha" != "$want_sha" ]; then
+    printf 'MISMATCH %s (blob %s!=%s, size %s!=%s, sha %s!=%s)\n' \
+      "$path" "$blob" "$want_blob" "$size" "$want_size" "$sha" "$want_sha" >&2
+    fail=1
+  fi
+done < <(grep -E '^\| `[^`]+` \| [0-9]+ \| `[0-9a-f]{40}` \| `[0-9a-f]{64}`' docs/reports/deed/a2ml-removal-record-2026-11-22.adoc)
+printf 'checked %d rows\n' "$n"
+[ "$fail" -eq 0 ] || exit 1
+# and no .a2ml file may exist now:
+git ls-tree -r --name-only HEAD | grep '\.a2ml$' || echo "none (as required)"
+----
+
+Recorded at this branch's creation: `git ls-tree -r --name-only HEAD`
+contains zero `.a2ml` paths, and the canonical deed validator
+(`.github/hooks/validate-deed.sh`) hard-fails on any `*.a2ml` file.
+
+== Totals
+
+* 119 files · 128,994 bytes · 119 distinct blob ids
+
+== The record
+
+[cols="2,>10,40,>64",options="header"]
+|===
+| Path | Bytes | Blob id | sha256
+| `.github/0.1-AI-MANIFEST.a2ml` | 33 | `85b2f0f0a097ea65882ef51128b002576e372198` | `4a01e142d7aa5bd591588351050775e02a3421160d6ea2e9ba1fc97dcc40b748`
+| `.machine_readable/0.1-AI-MANIFEST.a2ml` | 784 | `a28ee3799ea91009305d35c0efa93861499206e0` | `6da06125ea6c32fbfdcb4d801560a2d41530545137a8e775e35980e4cda3710d`
+| `.machine_readable/ENSAID_CONFIG.a2ml` | 5543 | `1384822c4860417da27b58dd0f22ed7e02eae2c4` | `d9e64557f78399d41d74826aa61c065f9c9d9b84490f01570cfd0c491ec0c082`
+| `.machine_readable/ai/0.2-AI-MANIFEST.a2ml` | 181 | `869cbee6163012180c5efbb32d5fcdf68e2c2af1` | `740b966f4ab66d7bbb61450da9dcf912116e108d67efa943e37261a7994ab122`
+| `.machine_readable/ai/AI.a2ml` | 2236 | `ed3cd3c05b067971d98999422ccf4aa951a2a008` | `16529c92e16161fefb180185d6a4913767b9c2e6867ac82f298508cec2f74b9d`
+| `.machine_readable/bot_directives/coverage.a2ml` | 2230 | `1bd30fa920eaa14825700c150f53dbca2f445f6e` | `b61a7256997a41be4ef8c4e88557c59c935ec8c3a0eea9a52f2f0533d0babcce`
+| `.machine_readable/bot_directives/debt.a2ml` | 1876 | `3289cbe3140d99773db2fb8cc303a3f0ac5fc3a6` | `795393c383a723bfdd035034d8df61c4c7988d7525700f10323182019b8a3dbe`
+| `.machine_readable/bot_directives/methodology.a2ml` | 4647 | `a88ab49938cd38fc28450a06c17f23c5f9bec3e4` | `28139037ce0d81d279dac82c605cc7f7f242d97a3cea77e75003ae01c642ffc4`
+| `.machine_readable/coaptation/receipts/latest.a2ml` | 3633 | `6c67db453ef4c511503b2dc7c2540d850703dff5` | `47ee2b210518850b7ccd0c049cdcecf7adac4e840340929d231a4ff2068076ac`
+| `.machine_readable/configs/0.2-AI-MANIFEST.a2ml` | 191 | `6e41e6c25b483cee8c48acf26fb48332fb367dc1` | `43e5323c8c189297afebd91ba719e4652139caa511b4dd4037f20d957e98ec53`
+| `.machine_readable/contractiles/INDEX.a2ml` | 5189 | `d44c3f2e4d5c4fc18ede287943885a897e11fc13` | `13b08601a37304b2bef927361ec498b5c4e89c100d004febf1a970ab9bb06ce5`
+| `.machine_readable/contractiles/adjust/Adjustfile.a2ml` | 2518 | `6f01e89f678a4b7a076a029f2538b34ed9da4bdf` | `8faad9ca06500fc0c14bae49ea2d78854d48765593fb1c676b81643467b88e8b`
+| `.machine_readable/contractiles/adjust/adjust.manifest.a2ml` | 1806 | `49a156b598e36a0285128b3bc6630ee52fcac005` | `64c853a166e1ff90897478ebf5738fb82fbbe480627688840ca316d2c9d02935`
+| `.machine_readable/contractiles/bust/Bustfile.a2ml` | 2567 | `c7fec2bccc5785449b1953b818eea9dc6bb339ac` | `dd6a53e1fc9b1223218b05a04f9fdf4fb3a27abae0cb9a23c5f28bef32c9f534`
+| `.machine_readable/contractiles/bust/bust.manifest.a2ml` | 1800 | `762bade9b8257ea75549333d90faebf64981bfcc` | `4ef20e06facf22fcca5b5fb0a051b0465e423f676bcd11d37dae082be4f49993`
+| `.machine_readable/contractiles/dust/Dustfile.a2ml` | 2449 | `c6bf986636826822617d90dbc71d880f6de9f528` | `8ce4f3c1efa00cf4b048531dabbe4592791cfa0921957db4f0b8b9dd70258883`
+| `.machine_readable/contractiles/dust/dust.manifest.a2ml` | 2309 | `fbd132c340db9b3d8bc9e49939652d65bc1c324e` | `5c740f0f85b40165cfd16de890a972d06bd6ea1bcb3625185a11e9d7d840c8e3`
+| `.machine_readable/contractiles/intend/Intentfile.a2ml` | 3482 | `ef74f45297190bcb243aaabded2e73a13d39c8fc` | `b5248bb14c9b12d253e00602ddc3c71eaf45509acb516a9bda107185bf3f90b0`
+| `.machine_readable/contractiles/intend/intend.manifest.a2ml` | 3023 | `f7823877f421e497f9bd69d26f4b7ce62da2460b` | `56139477025a34744b9c58ff68959c44917e7be200a68c50b7899c97188e2079`
+| `.machine_readable/contractiles/must/Mustfile.a2ml` | 3839 | `d269daff76888da6234bdef193b7172cceb317f9` | `84a82cba32da1370ddb3de7a4f0688ee0d026288477026ef3c94297798944beb`
+| `.machine_readable/contractiles/must/must.manifest.a2ml` | 2443 | `58f3ba77fd8099555795c2b3b115d3c01d644d70` | `e401fb11f4d0deca8e6792593dbeb338abdc946d81c9eb7b73844dd079bb19af`
+| `.machine_readable/contractiles/trust/Trustfile.a2ml` | 3170 | `e2028b560df6566a2ced967aa37c96e1cea3c596` | `32805d174f5336193d48e34727838fa32a652bcece303a7d14a1278a8a296044`
+| `.machine_readable/contractiles/trust/trust.manifest.a2ml` | 3201 | `034172075501524e6edb6eae56daa5544fdda3ad` | `bd88b59c8d3cb7f57d52dd6df71920d5bd4377680964716f1be958efa5af7605`
+| `.machine_readable/descriptiles/0-AI-MANIFEST.a2ml` | 924 | `046a105be1c57c1fb56fb71515c63d36d0731374` | `3c0ba5f8055b7bfdda2739fc0d5e13d81e8db24f18b50fa0d911bbb1a3d7dd3d`
+| `.machine_readable/descriptiles/AGENTIC.a2ml` | 1772 | `b21d81b55e2ac633fb25c64d540cb319050ac9e2` | `d72859864bbeb95fc7958b476afd4350c717ecb146a006defa6963fdf1bb1b45`
+| `.machine_readable/descriptiles/CLADE.a2ml` | 667 | `b14389cef4d1f90458e0c6edcddf18f09cc1d231` | `b974798d108a8ca7f3ec33156a71caac10e3fe9df6a3a1c57ea774562163c7d1`
+| `.machine_readable/descriptiles/ECOSYSTEM.a2ml` | 2725 | `81313641331d0ef159ba547b56d5796c10b6f11d` | `0a49cd5c02ea9f29b53c1511182dede84b5388d1e21e063859dd190b21630ba8`
+| `.machine_readable/descriptiles/META.a2ml` | 2077 | `d66fb7b3f5e9512c2e2f4bb896e23f07f1e27c8a` | `4592009f95c4140765412f4595db95799b9376a403ac2159ecf1a50e42265055`
+| `.machine_readable/descriptiles/NEUROSYM.a2ml` | 666 | `1acf7a3006cb94523077eb4371c0eb21eeae43fb` | `3708cf31fbb06e03ee6e1123ec49859cbcd19666363ddb6c94ebf9a3d00d4307`
+| `.machine_readable/descriptiles/PLAYBOOK.a2ml` | 6532 | `dc8fd2fc1faaca8c73b3ab01f66cf0141996a011` | `01dac6b5cff0347800681b0cb6e646d9ec36b103e1365bfb4a89f6255ab43dae`
+| `.machine_readable/descriptiles/STATE.a2ml` | 2792 | `98b8a63c41e5b51b5d28d86bbd8e4aa7de247dd9` | `4d5e52959bad61919fb18101e0b6cc0dc0b94721e141c2a46f60264964648fe9`
+| `.machine_readable/descriptiles/anchors/0-AI-MANIFEST.a2ml` | 548 | `0dd6825b17a70c589c0916a48c321f0fecb635a9` | `fb06417a3bd6d266398a3c7c20288b87a6623df1ff18f7eeb98ef22c37378c48`
+| `.machine_readable/descriptiles/anchors/ANCHOR.a2ml` | 1595 | `87238998342c4275d1aeb7742d5a50e13762230c` | `8b66b03d77361865d57b79680abefca343d0f06f36fb5a494e63832a3ec18f05`
+| `.machine_readable/integrations/feedback-o-tron.a2ml` | 456 | `691bb72cd78fc4de4487c9ff5069806f3c255e56` | `adf8b1f5f03974ec7d3cc614eb5ea031d28dc92e36679289b3f7cbe703bc3ecc`
+| `.machine_readable/integrations/groove.a2ml` | 1403 | `ea3fb8bc29d8bb2f5b51d996c30ba1661fc7fa13` | `10ffa198bc5707f491434c5205bd877829bedc2d849643eeb4865280a28b8c1c`
+| `.machine_readable/integrations/proven.a2ml` | 749 | `96a8a7d8b071117f28b217607f4c50b8ad065427` | `f2ed9aa90d5a73db1bd9e2aeebdf3a4ba13cd72c35c11de02d27b2619165a7db`
+| `.machine_readable/integrations/verisimdb.a2ml` | 535 | `78ca1f0efe3a63fa66cfb467a54fe224cb9e440c` | `970bd8d7dac0ba08f46599ba7de081273ac47d362d732eb534ea8cca36d9f5f6`
+| `.machine_readable/integrations/vexometer.a2ml` | 513 | `2f7ef80297c8209fe94c821e3a6e569db2b7a0c3` | `9fe1370d7bd8e970877c9298ae998c6141dc7e636e96c556a504bf755e35388b`
+| `.machine_readable/policies/0.2-AI-MANIFEST.a2ml` | 193 | `01a19140acedd9cc4c23a529e2abe48de2aa9e25` | `9bab97ba3f0d3a130991de23a7333f186d92fd6feb3218e07a7730e506f39985`
+| `.machine_readable/policies/MAINTENANCE-AXES.a2ml` | 1805 | `c073b9ace650e670453ae969ade9b2d6004c2dc3` | `9365ef8e36d2a94e4ad0ff12335184e92198d5e2d9411e680fdac0586c53ef65`
+| `.machine_readable/policies/MAINTENANCE-CHECKLIST.a2ml` | 3589 | `7a1584223a477af6fbd5bbc519cb1a9df689526b` | `b5552c8b848fc229471a790917b7526bb8a646a8eb8948d9b39a54e65e713a41`
+| `.machine_readable/policies/SOFTWARE-DEVELOPMENT-APPROACH.a2ml` | 1584 | `d7967d22bc14e6402df0302d377df2a52407de27` | `554a55da52411040982b371aca3b829b839c04add2884ffa16c1b1c6795738a2`
+| `.machine_readable/scripts/0.2-AI-MANIFEST.a2ml` | 398 | `615df84f01893de2968f783c8017f61be7f592d9` | `df879a53ce1dbc169a160164a1f161e97dba17e83e60808886abff74b871c54b`
+| `.machine_readable/scripts/forge/0.3-AI-MANIFEST.a2ml` | 206 | `4bbd6cf394f6417ee141b7f4a65e2e5a2b031a22` | `6bd8128d0a4eed6ee42f7355c1fdd687573657cfdd54c8950c8bfb084671f35b`
+| `.machine_readable/scripts/lifecycle/0.3-AI-MANIFEST.a2ml` | 214 | `3182d1754dfcaf846d6561b73f431d57e7f7d36d` | `376064428be7f0f23ef5a2d34591422a3165b36c3bab6fa855356f5df6f3d5c0`
+| `.machine_readable/scripts/verification/0.3-AI-MANIFEST.a2ml` | 220 | `460e0694090ab32ff28c1a30e31439aa9a490927` | `3c9c71c5c55c35e577b7ed53b07220f1ec8e5fc6691b9214a13a5c60f9e78052`
+| `0-AI-MANIFEST.a2ml` | 1465 | `68aad8cb50832e94587cf00010359fa346222d8e` | `6612392cd2c2c1cfb765274a2f25bf5e4edae9302c8c81874b66d73d2c1961b1`
+| `container/0.1-AI-MANIFEST.a2ml` | 5834 | `43d643739c4d610c1d84d175d51437858f681471` | `fb801d9ec57eeb1e03a099a419fecad1a2ec3e7083f4ed32e7a96e0c688c6b2c`
+| `docs/0.1-AI-MANIFEST.a2ml` | 832 | `7f79301eee4986d4ab205e1e3892ae6b9bb7636e` | `6a778966ddd95804ea340f836656be5d3b06ef7803fabbb457366b52b2404351`
+| `docs/architecture/0.2-AI-MANIFEST.a2ml` | 360 | `028b503d6da67b4d6644fc93f653a29a4ebaa08a` | `b6c0f401c2b229afd57074977266cc3bc7f9a80f515ede981d6f017b2b843cd8`
+| `docs/attribution/0.2-AI-MANIFEST.a2ml` | 209 | `52beaea4bee93d92aea55bfdf241c5bd23637f8e` | `294f049bfd4f27c72c941e6ffbe94273b850eac130afe628f422ef86cd8f7168`
+| `docs/decisions/0.2-AI-MANIFEST.a2ml` | 205 | `ac26298b425e4468c665fa943c1515e4be24e6de` | `41e93d56f58f740f55dcfea7351b8f74bb37d1970a875fbf65fab887857d7ea3`
+| `docs/developer/0.2-AI-MANIFEST.a2ml` | 205 | `c16fcc747290e1474d473bab9c286e6340c38f49` | `df741a1885af79ce9e2033b238768433dcab47ce5d36453631243a1889579878`
+| `docs/governance/0.1-AI-MANIFEST.a2ml` | 537 | `6e373bd2fd3d29fc3df932927fe089e8ea618e90` | `0c5f405160ce59b5b485ae5c460cd7bebd37a4b8024968d0bb2be70bb9c65d7b`
+| `docs/governance/CRG-CRITERIA.a2ml` | 4213 | `61625859454d7c5339c496a9938670360331d297` | `9f13976e7d60bfe80923372126b12de6f13a771a104c52e6bd03cb2619283521`
+| `docs/governance/TSDM.a2ml` | 542 | `f27036cc73444f211a8e61693db356555895b5eb` | `4c842eae6a7bf4c415728a41a49e54af44d1dd1cccc8274591eb69a623ca87a1`
+| `docs/governance/audit/0.2-AI-MANIFEST.a2ml` | 179 | `47224869992ee80c9d7b2056045c89752fc737f1` | `3d53caf64313669fa8e92d0d3fd3d253037b173f47ee58bb9f7bba8b24db4981`
+| `docs/governance/audit/compliance/0.3-AI-MANIFEST.a2ml` | 210 | `b13ec695f410b02473f9a07a7010b25aef7cbf25` | `a9e946712cb85154b101c176d5e23788fc17221337537e70b1f4d1f3fea1ad98`
+| `docs/governance/audit/effects/0.3-AI-MANIFEST.a2ml` | 204 | `0bccae0d02d57fa270e59c2eae8ae2a8c05e5970` | `957bca95a8d5aba602b3fe0e795c266a154f07544981de60f164d5a39dcfad4d`
+| `docs/governance/audit/systems/0.3-AI-MANIFEST.a2ml` | 204 | `f97bc9ccbfbc2bd64a567590dbaf44dc6efb1908` | `97eff44cd1c6961a29559a9568e42f9e4ad8485b7e3c7faba0f04ca610420064`
+| `docs/governance/maintenance/0.2-AI-MANIFEST.a2ml` | 191 | `8e0dff5ec71b474ed6d81dfd9078b7f761bd4ac4` | `2637c542f877adfe782781d242235538c7bd8bed3ae27b1208348928b11c7780`
+| `docs/governance/maintenance/adaptive/0.3-AI-MANIFEST.a2ml` | 212 | `63d1a9992f920d73a4869e3d672fc3314bdd1ee2` | `7044efa2e80b332279e5d122e64b0a4020df7823576aca1f46825f7875c0c358`
+| `docs/governance/maintenance/corrective/0.3-AI-MANIFEST.a2ml` | 216 | `05cb89da1a070424c871b407d2d1262d20507daf` | `9033b551ebec6b63c72291a174b30d0689c0866a5c1f2fd8b94b8fd4c1bb4093`
+| `docs/governance/maintenance/perfective/0.3-AI-MANIFEST.a2ml` | 216 | `832762feba6fd994ac3c7678b5501609d1deef0a` | `65e36530572105cfe4a8efbf3689f62cce7709906e06f24769b047c546b9e5ec`
+| `docs/governance/planning/0.2-AI-MANIFEST.a2ml` | 185 | `80339e77c5e3ea453f85b82409900dc010cb4710` | `9a5a216b8ac1eafba1f2ba943c66c129b2447cccecbd26c4036d2c1f82848ac9`
+| `docs/governance/planning/could/0.3-AI-MANIFEST.a2ml` | 203 | `fc17a27d07a0cbc239b94126ee01c6ba6727c1e5` | `334139889c6524262a5fd5eeb59b573ea1acf31463fc7e5e39b0627d7f311a57`
+| `docs/governance/planning/must/0.3-AI-MANIFEST.a2ml` | 201 | `0987daeedca51fd6833504cb8d8eeda69dd0047e` | `f0f80259f2f1767339a2977b03c017927c5fba57954963be7f2d933622ef905f`
+| `docs/governance/planning/should/0.3-AI-MANIFEST.a2ml` | 205 | `f492289a3fdeda6ce03e6aec4b751ad83158a8cc` | `d6e33a5936d69c4f311099021279ae93711d4ef70a8631537d2a41eb7b765b1f`
+| `docs/legal/0.2-AI-MANIFEST.a2ml` | 321 | `e547798339695a8b94ae35b111b23a31ef5ca721` | `49e25170aadb89ea7842fc7734b42ad1a5f68ce82427b4e21684a5c836dc12ec`
+| `docs/practice/0.2-AI-MANIFEST.a2ml` | 203 | `257f3a4f45c2136e41c20eac22988655ed7d7d29` | `4390033f8571b7f35b3ef77329a133e05078e0d77f969ae7ed4ecfa61b3bbab3`
+| `docs/reports/0.2-AI-MANIFEST.a2ml` | 395 | `5eb265dced303300a119a716b8bd3e5f6ad0e9f0` | `2fb1fd5c33272dce17c46ada60026ada486b22e6a11d87159921f05a7f0b907e`
+| `docs/reports/compliance/0.3-AI-MANIFEST.a2ml` | 223 | `6b3975282272e7cde4ceab8ef6438fa6177ccc40` | `ce2f6eba5d2fc818577731df1fc66874861e046d21c17f109fa6cd09d757b5ba`
+| `docs/reports/maintenance/0.3-AI-MANIFEST.a2ml` | 184 | `43eefe29a87473bd8fe2227a5bfbcc2f99e79915` | `d64bf6f223d568230e1464c41c9b1a9a7599dc9d761e95211fbe5fcc7d679112`
+| `docs/reports/performance/0.3-AI-MANIFEST.a2ml` | 225 | `40c09540c6729d114e36688912f22494c3ddd941` | `7d30f5e7053206e2c3114ca9bf3dffb04d67a054b3dbd8d3edb411f48a8e488a`
+| `docs/reports/quality/0.3-AI-MANIFEST.a2ml` | 217 | `d460edcfa09a6b79aa5de77f0256d113ddf887e4` | `a8f31b22b66a20a9f3b65e161071d11b53f5b0c6275728ef6a1b30fe7f2c5669`
+| `docs/reports/security/0.3-AI-MANIFEST.a2ml` | 219 | `696ab590cce2fe0cb8f6e3c3c8db414ef786864a` | `2a76a6917fd5e2733cd5df3264ee267209faba0975f03a8459831b8a4eefe466`
+| `docs/standards/0.2-AI-MANIFEST.a2ml` | 198 | `c147c6f8b1b1345bee2dd668f54613ad43ffd600` | `e1c9676243b0293fdb9ce5754726384c71b3c24e7bd65a18b8aeeed6f21c8f48`
+| `docs/theory/0.2-AI-MANIFEST.a2ml` | 542 | `93df18706e356c0a30ec71ee9ba3a6a625669fc1` | `594ed90af208ee4e07567c9c71745d3394ff17f53473137cc838435880289a8d`
+| `docs/theory/computing/0.3-AI-MANIFEST.a2ml` | 199 | `f387d08e9c17756c09be34d867ed2cecdc69c8e8` | `7fa644a782f8854f81eb50613f3c17ddce28e9e021cf31a49d78f636b22336d1`
+| `docs/theory/formalisms/0.3-AI-MANIFEST.a2ml` | 201 | `cdc2baa1492b37ea39d6bf7f3eef2d08fa2a229c` | `a97f055d1517ab0088f0ea051fd479bcfa922c81a85e9f87260aa6c14867dddd`
+| `docs/theory/mathematics/0.3-AI-MANIFEST.a2ml` | 203 | `677a4dacbabcc2d2820e89066a8e560170277918` | `842e5e61289a793973e13aac3048c9b2cb04c97c36fec91d99a26186992f4b4b`
+| `docs/theory/ontologies/0.3-AI-MANIFEST.a2ml` | 201 | `d888cee5699f2614564606f649646aa2ed98db03` | `b87607ebde247388a026a41df7252154a7dec71398c26c9ca6f39dd97a325c75`
+| `docs/theory/other/0.3-AI-MANIFEST.a2ml` | 191 | `166ed9e8b0cabbbfb72b9d6c2738bae52f6460ab` | `885947311e8fcdbe49d07a8fe22739d4b5a02adf391c05b038179ddae3c876ba`
+| `docs/theory/socio-technical/0.3-AI-MANIFEST.a2ml` | 211 | `891952224e39b2da79bb3fef9a5ebc09f3f9e35a` | `1b146d705286965485e6cc8851dff21f58f130701da1bfb9bb5b928522de65fc`
+| `docs/whitepapers/0.2-AI-MANIFEST.a2ml` | 454 | `c936101d8878013bc05c6db911cfd3998b5210a2` | `2367e88a518ca29a1e414c16e8709413bf5705cac53027dbf8220661c5c89146`
+| `docs/whitepapers/academic/0.3-AI-MANIFEST.a2ml` | 180 | `ceb8a1e71f6ec0fd860148213c662230db68f8cf` | `d24cc852a2e72a94abbe73118b4eefa2c7f60f77b6854dbf8163d734872d87df`
+| `docs/whitepapers/industry/0.3-AI-MANIFEST.a2ml` | 180 | `20156dd51da50143a3138a427feb91cf73f8b3d5` | `3701b02dfa536aa37c57424b187678c1070c75716f059e8184f6b783ac6ade24`
+| `docs/whitepapers/outreach/0.3-AI-MANIFEST.a2ml` | 450 | `ed7e1529f6470c0a9e913e9a39d433f8aa27ea42` | `af6b5532559a28e2485d59053a585a0985474f5a546243281299cfba089116d2`
+| `docs/wikis/0.2-AI-MANIFEST.a2ml` | 349 | `f071ca8a9f4544c5bf4f6cc607205aa39e9164b6` | `18ff555c2eb0e1c663a9fea24167560194825286085b6a665d0e22a0ea574f91`
+| `examples/0.1-AI-MANIFEST.a2ml` | 34 | `0d69c9050d933b29d1e6d4873f11839adf358d48` | `79d5e3b60bfb4d36e7030901f18324d400b7850e9e4cde3029cbe605b2191339`
+| `features/0.1-AI-MANIFEST.a2ml` | 392 | `dc3e4ee3a0472917a2124b8cc79869eb96fa9549` | `57cad6411ff86d234fd96d35cf8f60c1c8d3f3435c9215b15f8d12464bb5e79a`
+| `features/boj-server/0.2-AI-MANIFEST.a2ml` | 235 | `c77798cdfad945d57713c7e5f9a1f8a0e338d868` | `bcd2bc7c43fe050f532bf293896ba134512af4c517aae6e0106bb9bb97e1f67b`
+| `features/panic-attacker/0.2-AI-MANIFEST.a2ml` | 243 | `e61ad2440328d8de702f2defe6ac65694b871619` | `2d18c00e263d67a0e40a8d6d4d70a03f2477d6103bcef4e47e41faadef4dbaa6`
+| `features/ssg/0.2-AI-MANIFEST.a2ml` | 221 | `121c5ae273daeaa3ac51193956959064535ce583` | `608c4436f1319e1faa6f950b9d5ebdc89285def65816b8935bbdf2ded6dfa938`
+| `machine-readable-design/canonical-directory-structure/Adjustfile.a2ml` | 1514 | `5dd1956a05784b0c62674a5774e43b2dde86c0aa` | `0af5fde367e187a419863eab18c876f4b35bb430ca04d5c61845ed12177fa01b`
+| `machine-readable-design/canonical-directory-structure/Intentfile.a2ml` | 2535 | `11509cad0c259b1055f2a3923e0083fc57b13b3d` | `e7fb2c6d47c0d3b45f6173472f5ee650b2cfbafacc58d6e24ebc004966184ba9`
+| `machine-readable-design/canonical-directory-structure/Mustfile.a2ml` | 1555 | `4bf484fd68866a414bcbf458a1915b46936fa5f8` | `a15790e836cf85c1c3aab7cb15b3a55b114dd023d81f7ec4c6a1ff59bb82ab1a`
+| `machine-readable-design/canonical-directory-structure/Trustfile.a2ml` | 1923 | `342fe03ba361725e047bc19b3db9b7a0669d53f0` | `c33edd74d6ecfa587e1b74fdf8ce542b2a85cb665e01617a01913193844cbcc2`
+| `machine-readable-design/canonical-directory-structure/bust/Bustfile.a2ml` | 635 | `992851f3f9d2b1ec805db7cd4cee5a4899b6ba4b` | `4aecf00a9fb410a83c16008dd8516b7a72d33d37f433298f9e57283f61ef76e0`
+| `machine-readable-design/canonical-directory-structure/dust/Dustfile.a2ml` | 940 | `603200d5e518e6311810249ae78c4b460616cbc8` | `1beba25af0a23b4440e6f07dc14a9ad28d4a3823849e72f2c1ac4400a12993d0`
+| `src/0.1-AI-MANIFEST.a2ml` | 650 | `0f144f81c639cf42e5c395c361e79043c1067506` | `4b686c2d683e705c5f020b963eb0bc0c823e690b247934985e51e86a8d4a5148`
+| `src/aspects/0.2-AI-MANIFEST.a2ml` | 356 | `3d5b209e23764858ba1fe36b41b85844d6160956` | `5b95454aac384aca1190abfc9b94245740b30d8a73913d8c95e9674c7d5b3217`
+| `src/aspects/integrity/0.3-AI-MANIFEST.a2ml` | 208 | `f114cbd2472ca76d93bbb1b7bc3be80dd0e8a85a` | `8b9fd56a987f208d1d9b147c4e4b9c6125bb4d320c22dbc83d4fb85de836ecf7`
+| `src/aspects/observability/0.3-AI-MANIFEST.a2ml` | 216 | `e16cbdf9d7401849e66bce138efcaf1425ed0a42` | `bc1543f319ed77f5887425abd88e9c4d2d8fd8ad432b8e4563069036e0904d2a`
+| `src/aspects/security/0.3-AI-MANIFEST.a2ml` | 206 | `0996536363dea355b985767e6349895c847e5d2a` | `2e481c7379b9f66a19dfbef455df2fa9a3df0a78840fcf732d482caf6d9b88ec`
+| `src/bridges/0.2-AI-MANIFEST.a2ml` | 226 | `3d3e27a077f68a58eda75a65b2c18b1dc84339a1` | `3c338c33fc2ca688a334ab237e398389afc70fdfb4645bfe2a0a42f8e1943fcc`
+| `src/contracts/0.2-AI-MANIFEST.a2ml` | 204 | `0bd9198f8363642fc2ab020debaa41a6778bc319` | `926a3f364aa33bcaa4f1a39deb9aaf4463c123403e9974b82b0d0ab0022a5f3a`
+| `src/core/0.2-AI-MANIFEST.a2ml` | 206 | `22846c785bfc95fad225c17cb93000a023ccf1d2` | `a07a4742b1882846de3c0067615440db553b08af7dc69003caa73e715cc057fa`
+| `src/definitions/0.2-AI-MANIFEST.a2ml` | 208 | `e54f4dabbae9b83fae8e1ca352f0e165cae98cd4` | `55c1374763728159f14d0e3c53c58953dd77e325dcb172e20a77e76392f72eb7`
+| `src/errors/0.2-AI-MANIFEST.a2ml` | 198 | `dddcc6c43a957a224d8222405f478a495cc704e0` | `9ee5b544aaa19f2dece17ee491c3c9dba7eb502154112206e31597ee64e8f2c2`
+| `verification/0.1-AI-MANIFEST.a2ml` | 740 | `3435bdb41bc22273454fc25416ff43f0fe1687f7` | `dcfc7a5a3cf7480ce21a0502a3ba0c699bd5f577eb0e059df39470ad31b61f1f`
+| `verification/benchmarks/0.2-AI-MANIFEST.a2ml` | 170 | `d922a4c74ecb92d4cf23333a2e3354088ba07324` | `cce3a2380d24b123bfa544e3fd1804ccc65a09787983a0f6e7136fc2eefc0d55`
+| `verification/coverage/0.2-AI-MANIFEST.a2ml` | 286 | `32b819e4e0b9737e50c7bb0bd5c94415752633b0` | `f246a8fc101ffb74858c936b5856043430b7f79b3fb00a8b4d53de451a692485`
+| `verification/fuzzing/0.2-AI-MANIFEST.a2ml` | 194 | `5178d400e913379938d4a170dabbbf4f3f582a1e` | `d13f11a5e4b89c462c62316170cd38479df9fc9bcf91a6eb253a5d8c7fb5f7fd`
+| `verification/proofs/0.2-AI-MANIFEST.a2ml` | 193 | `135e181bdb33ad26c55732e36f4a1731de53f47d` | `1ca920ad7ee6fd38761c0c4b9c783e8855d66719997c4e8c363de935556355b7`
+| `verification/safety_case/0.2-AI-MANIFEST.a2ml` | 292 | `d461915b8a1a93db9749878b4833c2908e28364b` | `05535208c8fc81dfaa4ac54dd394aafa70d2cbff1f1a9c65a1a661f971e2c53e`
+| `verification/simulations/0.2-AI-MANIFEST.a2ml` | 202 | `f890ecace2b8d193f19902872e8a8b629b02a339` | `121289312bd69584a180208a51c6d3d8b9ed1347d6257a06461b52810acfd357`
+| `verification/tests/0.2-AI-MANIFEST.a2ml` | 31 | `0008fcfaf28d6f8cf4c65c0f0ca5e2542f166a09` | `0f89582da96de1f765583999e8f8020e7ce2f96ba3a66feba6d55190670f48a6`
+| `verification/traceability/0.2-AI-MANIFEST.a2ml` | 294 | `966776651b42a3fdea4191028eb00770b9f5caf3` | `9634abe63221a8c456d10749ee2dd8d559e8e813f3b9aeed34076be683700763`
+|===
+
+Recorded 2026-11-22; generated with: `git ls-tree -r 1b402f9^` + `git cat-file` + `sha256sum`. See `a2ml-retirement-triage-2026-11-22.adoc` (same directory) for status, registration bundle and unblock path.

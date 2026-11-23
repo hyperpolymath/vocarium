@@ -1,16 +1,16 @@
 # SPDX-License-Identifier: MPL-2.0
-# stapeln.toml — Layer-based container build for {{SERVICE_NAME}}
+# stapeln.toml — Layer-based container build for vocarium
 #
 # stapeln builds containers as composable layers (German: "to stack").
 # Each layer is independently cacheable, verifiable, and signable.
 
 [metadata]
-name = "{{SERVICE_NAME}}"
+name = "vocarium"
 version = "0.1.0"
-description = "{{SERVICE_NAME}} container service"
+description = "vocarium container image (voc; no server mode yet)"
 author = "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"
 license = "MPL-2.0"
-registry = "{{REGISTRY}}"
+registry = "ghcr.io/hyperpolymath"
 
 [build]
 containerfile = "Containerfile"
@@ -18,6 +18,13 @@ context = "."
 runtime = "podman"
 
 # ── Layer Definitions ──────────────────────────────────────────
+#
+# NOTE on what this image is: `vocarium` builds `voc` (build.zig,
+# addExecutable name = "voc"), a CLI over the store (`voc ingest`,
+# `voc invoke`). There is no HTTP server mode and no /health endpoint
+# yet; starting this image runs `voc` with no arguments and the process
+# exits. The compose stack (container/compose.yaml) is inert for the
+# same reason until the app contract is completed.
 
 [layers.base]
 description = "Chainguard Wolfi minimal base"
@@ -28,22 +35,24 @@ verify = true
 [layers.toolchain]
 description = "Build tools"
 extends = "base"
-packages = []
+packages = ["zig"]
 cache = true
 
 [layers.build]
-description = "{{SERVICE_NAME}} build"
+description = "vocarium build (voc)"
 extends = "toolchain"
-commands = []
+commands = [
+    "zig build --prefix /app -Doptimize=ReleaseSafe",
+]
 
 [layers.runtime]
 description = "Minimal runtime"
 from = "cgr.dev/chainguard/wolfi-base:latest"
 packages = ["ca-certificates", "curl"]
 copy-from = [
-    { layer = "build", src = "/app/", dst = "/app/" },
+    { layer = "build", src = "/app/bin/voc", dst = "/app/voc" },
 ]
-entrypoint = ["/app/{{SERVICE_NAME}}"]
+entrypoint = ["/app/voc"]
 user = "nonroot"
 
 # ── Security ───────────────────────────────────────────────────
@@ -75,7 +84,7 @@ fail-on = ["critical", "high"]
 # ── Targets ────────────────────────────────────────────────────
 
 [targets.development]
-layers = ["base", "chainguard-toolchain", "build"]
+layers = ["base", "toolchain", "build"]
 env = { LOG_LEVEL = "debug" }
 
 [targets.production]
@@ -83,5 +92,5 @@ layers = ["runtime"]
 env = { LOG_LEVEL = "info" }
 
 [targets.test]
-layers = ["base", "chainguard-toolchain", "build"]
+layers = ["base", "toolchain", "build"]
 env = { LOG_LEVEL = "debug" }

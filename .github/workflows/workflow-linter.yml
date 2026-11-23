@@ -44,7 +44,7 @@ jobs:
           for file in .github/workflows/*.yml .github/workflows/*.yaml; do
             [ -f "$file" ] || continue
             if ! awk '/^---[[:space:]]*$/ { next } /^#/ { print; next } { exit }' "$file" \
-                 | grep -q "^# SPDX-License-Identifier:"; then
+                | grep -q "^# SPDX-License-Identifier:"; then
               echo "ERROR: $file has no SPDX-License-Identifier in its header comment block"
               failed=1
             fi

@@ -26,21 +26,21 @@ anywhere**.
 == Decision
 
 1. The store engine is a single *pure-Zig* executable, `voc`
-   (`src/store/`). No C sources, no C-ABI structs, no bindings.
+  (`src/store/`). No C sources, no C-ABI structs, no bindings.
 2. Vocarium's only contract is **Trope IR v0.2 JSON over process I/O**
-   (`trope-checker/schemas/trope-ir.schema.json` is the trust boundary).
-   `voc invoke` emits an IR Document; `tropecheck` is the verifier.
+  (`trope-checker/schemas/trope-ir.schema.json` is the trust boundary).
+  `voc invoke` emits an IR Document; `tropecheck` is the verifier.
 3. Hermeneia integration is a later milestone: a small Rust adapter crate
-   implements `hermeneia_store::StoreProvider` by driving `voc` as a
-   subprocess. Hermeneia built that trait expressly so vocarium could be
-   substituted without its planner changing.
+  implements `hermeneia_store::StoreProvider` by driving `voc` as a
+  subprocess. Hermeneia built that trait expressly so vocarium could be
+  substituted without its planner changing.
 4. Vocarium never absorbs the grading algebra. Anything that requires the
-   cross-kind retention order (e.g. `neighbours(max_loss)`) is answered
-   `unsupported` until tropecheck exposes it — the order lives in the
-   checker's calculus, not here.
+  cross-kind retention order (e.g. `neighbours(max_loss)`) is answered
+  `unsupported` until tropecheck exposes it — the order lives in the
+  checker's calculus, not here.
 5. If linkage is ever genuinely forced, Zig `export fn` produces
-   C-convention symbols without a line of C being written. That door stays
-   shut until a real, named consumer needs it.
+  C-convention symbols without a line of C being written. That door stays
+  shut until a real, named consumer needs it.
 
 == Consequences
 

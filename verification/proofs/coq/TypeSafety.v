@@ -1,9 +1,9 @@
 (* SPDX-License-Identifier: MPL-2.0 *)
 (* Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) *)
 (*
-   Coq Proof Template: Type system soundness
-   Replace with your project's type system proofs.
-   All proofs must be complete — NO Admitted allowed.
+  Coq Proof Template: Type system soundness
+  Replace with your project's type system proofs.
+  All proofs must be complete — NO Admitted allowed.
 *)
 
 Require Import Coq.Lists.List.

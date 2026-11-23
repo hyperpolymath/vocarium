@@ -74,19 +74,19 @@ jobs:
           # taxonomy. Fetched BEFORE the label read below so that read stays as
           # close to the write as possible.
           mapfile -t DEFINED < <(gh label list -R "$GITHUB_REPOSITORY" --limit 1000 \
-                                   --json name --jq '.[].name' 2>/dev/null)
+                                  --json name --jq '.[].name' 2>/dev/null)
 
           # Labels already present; a human's work is never overridden. Read
           # HERE rather than earlier: every API call between this read and the
           # edit below widens a window in which someone could add a type label
           # and get a second one back from us. Only the local jq call is inside it.
           HAVE=$(gh issue view "$NUM" -R "$GITHUB_REPOSITORY" \
-                   --json labels --jq '[.labels[].name]' 2>/dev/null) || HAVE='[]'
+                  --json labels --jq '[.labels[].name]' 2>/dev/null) || HAVE='[]'
           [[ -n "$HAVE" ]] || HAVE='[]'
           echo "already has: $HAVE"
 
           mapfile -t ADD < <(jq -r --arg title "$TITLE" --argjson have "$HAVE" \
-                               -f "$SCRIPT" "$RULES" 2>/dev/null)
+                              -f "$SCRIPT" "$RULES" 2>/dev/null)
           if [[ ${#ADD[@]} -eq 0 || -z "${ADD[0]:-}" ]]; then
             echo "no confident classification - leaving for a human"
             exit 0

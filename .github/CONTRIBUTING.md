@@ -3,15 +3,15 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 -->
 # Clone the repository
-git clone https://{{FORGE}}/{{OWNER}}/{{REPO}}.git
-cd {{REPO}}
+git clone https://github.com/hyperpolymath/vocarium.git
+cd vocarium
 
 # Using Guix (recommended for reproducibility)
-guix shell -D -f guix.scm
+guix shell -D -f build/guix.scm
 
 # Or using toolbox/distrobox
-toolbox create {{REPO}}-dev
-toolbox enter {{REPO}}-dev
+toolbox create vocarium-dev
+toolbox enter vocarium-dev
 # Install dependencies manually
 
 # Verify setup
@@ -21,35 +21,38 @@ just test    # Run test suite
 
 ### Repository Structure
 ```
-{{REPO}}/
-├── src/                 # Source code (Perimeter 1-2)
-├── lib/                 # Library code (Perimeter 1-2)
-├── extensions/          # Extensions (Perimeter 2)
-├── plugins/             # Plugins (Perimeter 2)
-├── tools/               # Tooling (Perimeter 2)
+vocarium/
+├── src/                 # Source code (store: Zig, Perimeter 1-2)
+│   ├── store/           # The voc store (src/store/main.zig → `voc`)
+│   ├── contracts/       # Idris2 ABI contracts
+│   ├── definitions/     # Shared definitions
+│   ├── errors/          # Error specifications
+│   └── aspects/         # Aspect specifications
+├── build.zig            # Zig build (executable `voc`, zig-out/bin/voc)
 ├── docs/                # Documentation (Perimeter 3)
-│   ├── architecture/    # ADRs, specs (Perimeter 2)
-│   └── proposals/       # RFCs (Perimeter 3)
 ├── examples/            # Examples (Perimeter 3)
-├── spec/                # Spec tests (Perimeter 3)
 ├── tests/               # Test suite (Perimeter 2-3)
 ├── .machine_readable/   # ALL machine-readable content (Perimeter 1)
-│   ├── *.a2ml           # State files (STATE, META, ECOSYSTEM, etc.)
+│   ├── *.deed           # Deeds (STATE, META, NEUROSYM, AGENTIC, …)
 │   ├── bot_directives/  # Bot configs
 │   └── contractiles/    # Policy contracts (k9, dust, lust, must, trust)
 ├── .well-known/         # Protocol files (Perimeter 1-3)
 ├── .github/             # GitHub config (Perimeter 1)
 │   ├── ISSUE_TEMPLATE/
+│   ├── CODE_OF_CONDUCT.md
+│   ├── CONTRIBUTING.md  # This file
+│   ├── GOVERNANCE.md
+│   ├── MAINTAINERS      # Maintainer contact (this repo: lead maintainer)
+│   ├── SECURITY.md      # GitHub security policy
 │   └── workflows/
-├── CHANGELOG.md
-├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md      # This file
-├── GOVERNANCE.md
+├── CHANGELOG.adoc
+├── CONTRIBUTING.adoc    # Root contributor guide
+├── GOVERNANCE.adoc
 ├── LICENSE
-├── MAINTAINERS.md
+├── MAINTAINERS.adoc
 ├── README.adoc
-├── SECURITY.md
-├── guix.scm             # Guix package — primary (Perimeter 1)
+├── build/
+│   └── guix.scm         # Guix package — primary (Perimeter 1)
 └── Justfile             # Task runner (Perimeter 1)
 ```
 
@@ -61,7 +64,7 @@ just test    # Run test suite
 
 **Before reporting**:
 1. Search existing issues
-2. Check if it's already fixed in `{{MAIN_BRANCH}}`
+2. Check if it's already fixed in `main`
 3. Determine which perimeter the bug affects
 
 **When reporting**:
@@ -94,10 +97,10 @@ Use the [feature request template](.github/ISSUE_TEMPLATE/feature_request.md) an
 
 Look for issues labelled:
 
-- [`good first issue`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/good%20first%20issue) — Simple Perimeter 3 tasks
-- [`help wanted`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/help%20wanted) — Community help needed
-- [`documentation`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/documentation) — Docs improvements
-- [`perimeter-3`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/perimeter-3) — Community sandbox scope
+- [`good first issue`](https://github.com/hyperpolymath/vocarium/labels/good%20first%20issue) — Simple Perimeter 3 tasks
+- [`help wanted`](https://github.com/hyperpolymath/vocarium/labels/help%20wanted) — Community help needed
+- [`documentation`](https://github.com/hyperpolymath/vocarium/labels/documentation) — Docs improvements
+- [`perimeter-3`](https://github.com/hyperpolymath/vocarium/labels/perimeter-3) — Community sandbox scope
 
 ---
 

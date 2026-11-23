@@ -128,15 +128,15 @@ When copying this set into a new repo:
 
 1. Replace every template file's placeholders with project-specific content.
 2. `Mustfile` — encode real invariants (schema versions, ports, required
-   checks), not generic samples.
+  checks), not generic samples.
 3. `Trustfile` — point at actual keys, policies, and authority boundaries.
 4. `Adjustfile` — define the drift tolerances and corrective actions the
-   repo commits to.
+  repo commits to.
 5. `Dustfile` — describe how this repo actually rolls back or retires
-   behaviour while preserving the audit trail.
+  behaviour while preserving the audit trail.
 6. `Bustfile` — declare real breakage / expiry / hard-stop conditions.
 7. `Intentfile` — list tracked next-actions with observable probes
-   ([[intents]] section) AND horizon aspirations ([[wishes]] section).
+  ([[intents]] section) AND horizon aspirations ([[wishes]] section).
 8. Pair any `k9/*.k9.ncl` with a specific contractile via `paired_xfile`.
 
 == Intentfile: Commitments vs Aspirations — Two Sections, One File

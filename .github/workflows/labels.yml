@@ -57,7 +57,7 @@ jobs:
           created=0; updated=0; skipped=0; failed=0
 
           existing=$(gh api "repos/$GITHUB_REPOSITORY/labels" --paginate \
-                       --jq '.[] | [.name, .color, (.description // "")] | @tsv')
+                      --jq '.[] | [.name, .color, (.description // "")] | @tsv')
 
           while IFS=$'\t' read -r name color desc; do
             [ -z "$name" ] && continue
@@ -74,7 +74,7 @@ jobs:
               # label the repo does not define, so every `security` finding was
               # silently discarded estate-wide.
               if err=$(gh label create "$name" --color "$color" \
-                         --description "$desc" 2>&1 >/dev/null); then
+                        --description "$desc" 2>&1 >/dev/null); then
                 created=$((created+1)); sleep 0.4
               else
                 echo "  create failed: $name -- ${err:-unknown}"; failed=$((failed+1))
@@ -85,7 +85,7 @@ jobs:
               ccol=$(cut -f2 <<<"$cur"); cdesc=$(cut -f3- <<<"$cur")
               if [ "${ccol,,}" != "${color,,}" ] || [ "$cdesc" != "$desc" ]; then
                 if err=$(gh label edit "$name" --color "$color" \
-                           --description "$desc" 2>&1 >/dev/null); then
+                          --description "$desc" 2>&1 >/dev/null); then
                   updated=$((updated+1)); sleep 0.4
                 else
                   echo "  edit failed: $name -- ${err:-unknown}"; failed=$((failed+1))

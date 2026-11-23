@@ -93,6 +93,7 @@ detect_platform() {
         Linux*)
             OS="linux"
             if [ -f /etc/os-release ]; then
+                # shellcheck source=/dev/null
                 DISTRO=$(. /etc/os-release && echo "$ID")
             elif [ -f /etc/redhat-release ]; then
                 DISTRO="rhel"

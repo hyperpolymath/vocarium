@@ -1,0 +1,280 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= A2ML retirement — aftermath and registry triage (2026-11-22)
+:toc: macro
+:toclevels: 2
+
+*Status:* informational; no code is changed by this document. The A2ML file
+format is already gone from this tree (deleted by #61, merged
+2026-11-22T23:34:58Z). What remains is a *registry confirmation* problem and
+a set of follow-ups that only the owner can rule on. This document records
+what happened, what is blocked and on what, a ready-to-file registration
+bundle for `chora-registry`, and the residue of the retired format.
+
+See also `a2ml-removal-record-2026-11-22.adoc` (this directory) for the
+per-file removal record of every `.a2ml` file deleted at `1b402f9`.
+
+== Timeline of 2026-11-22
+
+* `7ea3fe9` — proof recipes refuse PASS over zero files (#57, merged earlier).
+* `ae3a9b9` — `mise.toml` zig pin fix (#62, merged earlier).
+* `11bf363` — workflow-start alarm (#59, merged as #63, merged earlier).
+* This branch was cut from `602700e` (main at the time) carrying an
+  "unblock pre-commit.ci" fix (swap unreachable remote hook repos for the
+  in-repo validators) and this triage dossier.
+* `1b402f9` — **#61 merged: "Draft: retire A2ML and introduce Vocarium repo
+  deed"**. Its squash body is marked *"In progress — not ready to merge …
+  Do not merge yet, even if GitHub shows the branch as mergeable"*, and it
+  landed unreviewed under the Phase 0 brief; the commits are unsigned.
+  This branch was rebased onto `1b402f9`; the pre-commit.ci fix became
+  empty (its two remote hook repos are gone from the config entirely, the
+  K9 hook now runs the in-repo validator, and `.githooks/validate-a2ml.sh`
+  was deleted) and was dropped from the branch.
+* 2026-11-22T23:34:58Z — merge of #61 recorded. Facts, not litigation; see
+  <<the merge was not under phase 0 review>>.
+
+== What the tree looks like now
+
+* Zero `*.a2ml` files (enforced: `.github/hooks/validate-deed.sh` hard-fails
+  on any `*.a2ml` path).
+* The machine-readable surface is `.machine_readable/` with deeds:
+  `descriptiles/{STATE,META,NEUROSYM,AGENTIC}.deed`, pointer-only root
+  `0-AI-MANIFEST.deed`, and the root repo deed `vocarium_chora.deed`
+  (front door named `vocarium_chora.deed`; `README.adoc` is the human face).
+* The arrival pack is wired to the deed (`claude-md.k9.ncl`, rewritten
+  `generate.sh`/`verify.sh`); `CLAUDE.md` states the repo is
+  deed-authoritative.
+* `docs/status/DEED-MIGRATION.adoc` is the migration status of record; it
+  states plainly that nothing in that merge claims registry confirmation,
+  that the contractile migration is unfinished (coapt fails closed;
+  `just coapt`, `just coapt-reanchor`, `just validate-coapt` unavailable),
+  and that the deed, `.machine_readable/`, root allowlist and
+  `coordination.k9` require owner review.
+
+== Blocking fact: no `chora-registry` entry exists for vocarium
+
+Re-verified against the public registry at the pinned seed commit
+`235e877e86858c79941614f7fc6d315664ec9cb8` (clone clean at that pin):
+a case-insensitive search for `vocat|ocari` matches only the word
+"behaviour" in `.github/CODE_OF_CONDUCT.md`. There is no vocarium `(repo …)`
+entry, no minted repository UUID, and no clade placement.
+
+Consequences, all visible in the tree today:
+
+* `vocarium_chora.deed` carries
+  `:repo-uuid #u8"chora-registry:github.com/hyperpolymath/vocarium"` — a
+  deterministic *profile-C name*, not a `#uuid` mint. The file header says
+  so, and `DEED-MIGRATION.adoc` repeats it.
+* The four descriptiles carry
+  `:of-chora #u8"chora-registry:github.com/hyperpolymath/vocarium"` under
+  the same profile-C convention.
+* `vocarium_chora.deed` proposes `(clade :primary db …)` with an explicit
+  rationale ("Pending confirmation by chora-registry; the old rm/gv
+  placement described the template, not this repo."). It is a proposal;
+  the registry and the owner decide. The old `rm`/`gv` clade described the
+  `rsr-template-repo` the repo was instantiated from.
+* `0-AI-MANIFEST.deed` and the descriptiles are read by `validate-deed.sh`
+  today, but nothing in the estate treats them as authoritative until the
+  registry confirms identity and placement.
+* The merge is not registered work under the registry's rules: placement,
+  minting and affirmation are the registry's to decide, and an entry, once
+  made, is never removed (registry policy, ADR 0008).
+
+== The registration bundle (ready to file in `hyperpolymath/chora-registry`)
+
+*Draft — not filed from this branch.* Filing is a change to a different
+repository and is the owner's (or the registry owner's) act. ADR 0008 lets a
+registration be merged by the owner; `sync/uuid-v8.sh` is the registry's
+mint tooling. Do not compute-and-commit an id into vocarium.
+
+[source]
+----
+(repo :name "vocarium" :owner "hyperpolymath"
+      :uuid #uuid"<minted by chora-registry tooling at the birth path —
+                  never copied or guessed>"
+      :minted-in chora-registry
+      :description "A structured store of vokeable particulars, transformations, grades, warrants and verdicts."
+      (lineage :type standalone :instantiated-from "rsr-template-repo")
+      (placement :scheme clade-12 :category db :primary #t))
+----
+
+Notes for the filer:
+
+* The description above is lifted verbatim from
+  `vocarium_chora.deed` (`(purpose :text …)`) — owner edits welcome before
+  filing.
+* The proposed `category db` comes from the same deed's clade rationale, not
+  from this document. Categories in the seed used as reference points
+  (facts, not recommendations): `haec` holds `fv` primary (rank 1 for `nl`),
+  and `trope-checker` / `trope-particularity-workbench` hold `rm` primary.
+  The owner decides vocarium's category at filing time; `db` is the only
+  value consistent with the deed as merged.
+* Birth path for the profile-C computation: `github.com/hyperpolymath/vocarium`.
+* `:beholding-chora` for the estate chora, as read from the registry seed at
+  the pinned revision: `#uuid"0889b37b-defb-831f-973c-e119500db00e"`.
+* If ADR-008 profile C were applied today with the `chora-registry` domain,
+  `SHA-256("chora-registry:github.com/hyperpolymath/vocarium")`, truncated to
+  16 bytes with the version-8 nibble and RFC 9562 variant, yields
+  `31c90719-e7d5-8162-8356-558d6ab6e9fd`. With the legacy `gv-clade-index`
+  domain (pre-V9 ids), the same computation yields
+  `9029d13d-f348-8c6e-8e4b-f06d6ef5d5ef`. *Neither is an id of record.*
+  Which domain applies is the registry's call (V9 2026-11 vs this
+  repository's 2026-06-26 birth per `CLAUDE.md`) — the owner rules at
+  filing; the registry mints; vocarium is then re-pointed.
+* Lineage is `standalone`, instantiated from `rsr-template-repo` — that is
+  what the deed states; the registry may classify it differently.
+
+== What remains after registration (in order)
+
+. **Register and mint.** File the bundle above in `hyperpolymath/chora-registry`
+  on a new branch; owner merges per ADR 0008; mint the repository UUID with
+  the registry's tooling; confirm the clade placement (`db` proposed) and the
+  mint domain (V9 vs `gv-clade-index`) — these are the registry/owner's
+  decisions, not this repository's.
+. **Cure the profile-C placeholders in this repository.** Replace
+  `#u8"chora-registry:…"` in `vocarium_chora.deed` and the four descriptiles
+  with the minted `#uuid` (a normal PR; keep `.github/hooks/validate-deed.sh`
+  green; keep exactly one root `*_chora.deed`).
+. **Phase 0 owner review.** The deed, `.machine_readable/`, the root
+  allowlist and `coordination.k9` are owner-only under the Phase 0 brief.
+  Review them as they are on `main`, or rule on reverting #61 — this
+  document records the merge, it does not endorse it.
+. **Finish the contractile migration.** Per `DEED-MIGRATION.adoc`: the K9
+  contractile components still reference the deleted Xfiles; coaptation
+  fails closed; Vocarium-specific declarations, witness map, readers and
+  tests must be authored and the runners re-enabled before any
+  `just coapt*` claim can be made. Out of scope here; owned by the
+  migration follow-up.
+. **pre-commit.ci.** Still failing on `main` (repository-wide baseline —
+  confirmed fresh on PR #73: `check-yaml` on `.github/FUNDING.yml`,
+  `check-json` on `.devcontainer/devcontainer.json`, `check-toml` on
+  `container/stapeln/*.toml`, ShellCheck findings across `.envrc`,
+  `.githooks/validate-k9.sh`, `benches/`, `build/setup.sh`, `tests/e2e.sh`;
+  EditorConfig findings per #61). **This PR now addresses the baseline
+  rather than the hook swap:** `FUNDING.yml` is clean; the JSONC
+  `devcontainer.json` is exempted from check-json; the three Stapeln TOMLs
+  (`container/stapeln/compose.toml`, `compose.example.toml`,
+  `manifest.toml`) are removed with the inert service configuration;
+  `eclexiaiser.toml` keeps a valid `[project]` section and function
+  entries pointing at files that exist; ShellCheck findings are annotated
+  rather than rewritten; EditorConfig indentation is normalised down-round;
+  and a sweep commit fills the remaining `{{…}}` placeholder files with
+  vocarium identity. Hosted pre-commit.ci passes on the PR branch (run
+  1795399513, 2026-11-23). Any check that still fails on `main` until this
+  PR merges is the pre-merge baseline; re-verify `main` after merge.
+. **Residue sweep.** See next section; a follow-up chore can retire the
+  historical references. The placeholder sweep is NOT that chore: it fills
+  unfilled template files, it does not retire historical a2ml references.
+
+== Residue: files that still mention `a2ml` (and what to do with them)
+
+Zero files match `*.a2ml`. The remaining 54 mention "a2ml" as text.
+Grouped by disposition:
+
+* *Deliberate, keep:* `.github/hooks/validate-deed.sh` (hard-fails on any
+  `*.a2ml`), `tests/workflows/deed_migration_test.sh` (regression test),
+  `scripts/deed-field.sh` (one-line history comment), `.gitignore`
+  (ignores the retired coaptation receipt artifact), all of `docs/`
+  including this file and the removal record (historical reports, audits,
+  the Hypatia triage, ADR `0001-adopt-rsr-standard.adoc`,
+  `docs/status/DEED-MIGRATION.adoc`), and
+  `.machine_readable/descriptiles/README.adoc` + `anchors/README.adoc`
+  (migration narrative).
+* *Migration mechanics, keep until the contractile follow-up lands:*
+  `.machine_readable/coaptation/*.sh`, `coapt.ncl`, `witness-map.ncl`,
+  `.machine_readable/contractiles/{README.adoc,_base.ncl,Justfile,*/*.ncl,
+  */*.k9.ncl}`, `build/contractile.just` (generated recipes of the retired
+  sources — explicitly not evidence of a complete migration), `build/just/
+  groove.just`, `.machine_readable/self-validating/*`,
+  `.machine_readable/ai/PLACEHOLDERS.adoc` (template placeholder table),
+  `session/dispatch.sh` (points at a standards path, not this repo's a2ml),
+  `.machine_readable/configs/` was deleted; nothing remains.
+* *Stale, fix in a follow-up chore (not here):* `.github/CONTRIBUTING.md`
+  and `.github/copilot-instructions.md` still describe `*.a2ml` as the
+  state-file family and tell agents to read `0-AI-MANIFEST.a2ml`;
+  `.well-known/ai.txt` was updated by #61 and needs no change;
+  `.github/workflows/dogfood-gate.yml` still names the job `a2ml-validate`
+  and the `A2ML_STATUS` summary variable (renaming a job id or an output is
+  a workflow-behavior change — owner decision).
+
+None of these strings blocks validation today; the gate is the `*.a2ml`
+file check, not grep.
+
+== Validation evidence (at the pre-merge revision)
+
+The claims in this section describe the branch *as first cut from*
+`1b402f9` — not the final PR. The final PR additionally carries the
+pre-commit.ci cure (ShellCheck annotations, EditorConfig normalisation),
+the `{{…}}` placeholder sweep, and this document's own later corrections.
+Recorded here as evidence for that revision, kept for the audit trail, and
+refreshed where stale:
+
+* Rebased onto `origin/main` at `1b402f9`; zero commits of our own remain
+  *at that revision* (the pre-commit.ci fix was dropped as obsolete — its two remote hook
+  repos no longer exist in the config; the K9 hook runs the in-repo script).
+  Since then the branch has grown the cure and sweep commits; see the PR
+  commit list for the final scope.
+* `STANDARDS_DIR=/tmp/standards bash .github/hooks/validate-deed.sh` → exit
+  0. All checks OK: the four descriptiles, `0-AI-MANIFEST.deed`,
+  `vocarium_chora.deed` (role unset notice, pre-existing), the RSR profile,
+  STATE (phase active, maturity experimental), META (0 ADRs), AGENTIC
+  (affirmation required), NEUROSYM (hypatia on, standard). The standards
+  checkout used was a depth-1 clone at `75d38f80b6cb41e9785cf6f0c6ecf60846db7519`
+  (`main`, 2026-11-22, unverified pin) — the same interface CI runs against
+  its pinned standards revision.
+* `git ls-tree -r --name-only HEAD | grep '\.a2ml$'` → no matches.
+* Removal record verified (at record creation, with full history
+  available): all 119 sha256 rows reproduce from
+  `git cat-file blob 1b402f9^:<path> | sha256sum` (script run at the time;
+  119/119 match); record totals 119 files / 128,994 bytes. The removal
+  record's embedded verifier prints path, size, blob id and sha256 for
+  every row and fails loudly on any mismatch — but note the reproduction
+  requires *full history* (`1b402f9^` must resolve). The current
+  contributing environment has a shallow clone (7 commits, `1b402f9` at the
+  boundary), so re-running the verifier there errors at
+  `git rev-parse 1b402f9^` rather than verifying; run it in a full clone
+  (or after `git fetch --unshallow`).
+* Registry absence re-verified by grep at the pinned seed `235e877`.
+* `git diff origin/main --stat` (at that revision) → this file, the removal record,
+  `CHANGELOG.adoc`. The final PR changes many more files and removes the
+  three Stapeln TOMLs named above; see `git diff origin/main --stat` at the
+  final commit.
+* Nothing was minted, registered, translated, deleted, or renamed here at that
+  revision, and nothing in the later sweep commits changes that: the sweep
+  fills template identity only.
+
+== Sources
+
+* `hyperpolymath/vocarium` `1b402f9` (#61 squash), `docs/status/DEED-MIGRATION.adoc`,
+  `vocarium_chora.deed`, `.machine_readable/descriptiles/*.deed`,
+  `.machine_readable/arrival-pack/*`, `.github/hooks/validate-deed.sh`,
+  `.github/workflows/dogfood-gate.yml`, `.machine_readable/root-allow.txt`,
+  `CLAUDE.md`.
+* `hyperpolymath/chora-registry` at pin `235e877e86858c79941614f7fc6d315664ec9cb8`
+  (seed `verisim/seed/chora-registry_praxis.deed`; `sync/uuid-v8.sh`;
+  ADR 0008 "a registered repo is never removed").
+* `metadatastician/standards` (depth-1 clone, `main` at `75d38f8`, unverified
+  pin): `1-formats/deed/spec/`, `1-formats/deed/tools/deed_lint.js`,
+  `1-formats/deed/mappings/` — including `state-v1-decision.adoc` (2026-11-17
+  removal-record amendment this file's sibling implements),
+  `clade-to-repo-deed.adoc`, `ai-manifest-decision.adoc`,
+  `ply-manifest-decision.adoc` (all RULED), and
+  `meta-ecosystem-to-repo-deed.adoc` (**PROPOSAL**). This document cites
+  them for disposition only; nothing was converted.
+* PR/issue history: #43 (parent campaign), #45 (6a2 retire, merged as #58),
+  #54 (pre-commit.ci fix — closed unmerged), #57/#62/#63 (merged),
+  #61 (merged — see above).
+
+[discrete]
+== The merge was not under Phase 0 review
+
+Recorded for the owner, deliberately unresolved here: #61's squash message
+declares it "In progress — not ready to merge", names the Phase 0 owner
+ownership of the deed, `.machine_readable/`, root allowlist and
+`coordination.k9`, records that its commits are unsigned, and says CI was
+retriggered but incomplete. It was merged at 2026-11-22T23:34:58Z regardless.
+Options for the owner: (a) accept the merge and run the Phase 0 review now
+against `main`, (b) revert `1b402f9` and re-land it through the review,
+(c) treat review findings as follow-up issues. This repository's history and
+all current files are consistent with (a) being the taken path; nothing here
+assumes it is correct.

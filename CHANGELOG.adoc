@@ -98,3 +98,35 @@ vocarium, so the 0%-proven summary is accurate rather than a backlog. The note
 also records that `+build/just/proofs.just+`'s `+proof-check-*+` recipes report
 `+SKIP+` and continue, against this repository's `+no-silent-skip+` constraint,
 and that they are not reachable from the golden path.
+* *An aftermath record and registry triage for the A2ML retirement (2026-11-22).*
+`+docs/reports/deed/a2ml-retirement-triage-2026-11-22.adoc+` records what
+`+1b402f9+` (#61) changed, why the deeds on `+main+` are proposals rather than
+registry-confirmed facts (no `+chora-registry+` entry exists for vocarium), a
+ready-to-file registration bundle, the ordered unblock path, and the residue of
+the retired format. Its sibling
+`+a2ml-removal-record-2026-11-22.adoc+` reconstructs, per file, the removal record
+the `+1b402f9+` deletion carried out of band: 119 `+.a2ml+` files, 128,994 bytes,
+with blob ids and `+sha256+` for each — all verified against `+1b402f9^+`. No
+`+.a2ml+` file is deleted, renamed or reintroduced by this change; nothing is
+minted or registered by it.
+* *The hosted pre-commit.ci baseline was cured at its root causes (2026-11-22).*
+`+.github/FUNDING.yml+` is instantiated (`+hyperpolymath+` ×3), matching the
+sibling convention of `+trope-checker+` / `+trope-particularity-workbench+`.
+The three unfilled Tier-C placeholders under `+container/stapeln/+`
+(`+compose.toml+`, `+compose.example.toml+`, `+manifest.toml+`) were removed:
+nothing at runtime reads them (`+build/just/container.just+` guards on existence),
+and estate siblings either fill them (hermeneia) or never ship them (haec,
+trope-checker). `+.devcontainer/devcontainer.json+` is exempt from `+check-json+`
+(JSONC by the Dev Container spec; the estate ships it with comments); no other
+JSON file is exempt. The ShellCheck lane is annotated at the exact findings
+(comment/directive-only edits: a `+# shellcheck shell=bash+` directive in
+`+.envrc+`, file-level `+disable=SC2094+` in `+.githooks/validate-k9.sh+`
+(targets are read, never written), `+disable=SC2034+` for unused palette/timing
+assignments and `+disable=SC2317+` for helper functions invoked indirectly in
+`+tests/e2e.sh+`, `+source=/dev/null+` for the `+/etc/os-release+` read in
+`+build/setup.sh+`, and `+disable=SC2016+` on the intentional literal
+`+${{ }}+` grep patterns asserting workflow expressions). The EditorConfig lane
+is cured by normalising leading-padding to the `+.editorconfig+` multiples
+(195 lines, 30 files, down-rounding; verified whitespace-only via
+`+git diff -w+` and a local multiple-of-N scan). The two lanes are pre-existing
+repository-wide issues, not introduced by this change; both are now green.

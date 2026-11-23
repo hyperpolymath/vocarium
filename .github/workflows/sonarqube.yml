@@ -103,7 +103,7 @@ jobs:
               .details_url == $url and
               ((try (.started_at | fromdateiso8601) catch 0) > $event_epoch) and
               ((try (.completed_at | fromdateiso8601) catch 0) >=
-               (try (.started_at | fromdateiso8601) catch 0))
+              (try (.started_at | fromdateiso8601) catch 0))
             ' >/dev/null; then
             echo '::error::Official receipt is unavailable, stale, or belongs to a different project, PR, branch, commit, or quality gate.'
             exit 1

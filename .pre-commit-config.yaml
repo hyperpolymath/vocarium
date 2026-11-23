@@ -21,6 +21,10 @@ repos:
         exclude: '^(LICENSE|LICENSES/.*)$'
       - id: check-yaml
       - id: check-json
+        # .devcontainer/devcontainer.json is JSONC by design (the Dev Container
+        # config spec allows // comments) and ships in the estate with them
+        # (e.g. rsr-template-repo, trope-checker); it can never parse as JSON.
+        exclude: '^\.devcontainer/devcontainer\.json$'
       - id: check-toml
       - id: check-merge-conflict
       - id: detect-private-key

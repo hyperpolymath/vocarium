@@ -352,28 +352,28 @@ main = do
 When modifying the ABI/FFI:
 
 1. **Update ABI first** (`src/interface/Abi/*.idr`)
-   - Modify type definitions
-   - Update proofs
-   - Ensure backward compatibility
+  - Modify type definitions
+  - Update proofs
+  - Ensure backward compatibility
 
 2. **Generate C header**
-   ```bash
-   idris2 --cg c-header src/interface/Abi/Types.idr -o generated/abi/{{project}}.h
-   ```
+  ```bash
+  idris2 --cg c-header src/interface/Abi/Types.idr -o generated/abi/{{project}}.h
+  ```
 
 3. **Update FFI implementation** (`ffi/zig/src/main.zig`)
-   - Implement new functions
-   - Match ABI types exactly
+  - Implement new functions
+  - Match ABI types exactly
 
 4. **Add tests**
-   - Unit tests in Zig
-   - Integration tests
-   - ABI verification tests
+  - Unit tests in Zig
+  - Integration tests
+  - ABI verification tests
 
 5. **Update documentation**
-   - Function signatures
-   - Usage examples
-   - Migration guide (if breaking changes)
+  - Function signatures
+  - Usage examples
+  - Migration guide (if breaking changes)
 
 ## License
 

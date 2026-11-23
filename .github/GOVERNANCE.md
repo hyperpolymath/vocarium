@@ -4,13 +4,13 @@ Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 -->
 # Project Governance
 
-This document describes the governance model for **{{PROJECT_NAME}}**.
+This document describes the governance model for **Vocarium**.
 
 ---
 
 ## Project Governance Model
 
-{{PROJECT_NAME}} follows a **Benevolent Dictator For Life (BDFL)** governance model.
+Vocarium follows a **Benevolent Dictator For Life (BDFL)** governance model.
 This model is well-suited for solo maintainers and small project teams where rapid,
 consistent decision-making is more valuable than formal consensus processes.
 
@@ -90,23 +90,23 @@ release schedules, contributor access, and community standards.
 A contributor may be nominated to become a maintainer when they demonstrate:
 
 1. **Sustained quality contributions** -- a track record of well-crafted pull requests
-   that follow project conventions and require minimal revision.
+  that follow project conventions and require minimal revision.
 2. **Understanding of RSR standards** -- familiarity with the Repository Structure
-   Requirements, security policies, and CI/CD workflows used across the project.
+  Requirements, security policies, and CI/CD workflows used across the project.
 3. **Constructive participation** -- helpful issue triage, thoughtful code review
-   comments, and mentoring of other contributors.
+  comments, and mentoring of other contributors.
 4. **Reliability** -- consistent engagement over a meaningful period (typically 3+
-   months of active contribution).
+  months of active contribution).
 
 ### Process
 
 1. An existing maintainer nominates the candidate by opening a private discussion
-   with the BDFL.
+  with the BDFL.
 2. The BDFL reviews the candidate's contribution history and community interactions.
 3. The BDFL approves or declines the nomination, with reasoning provided to the
-   nominator.
+  nominator.
 4. If approved, the new maintainer is added to [MAINTAINERS.md](MAINTAINERS.md) and
-   granted appropriate repository access.
+  granted appropriate repository access.
 
 ---
 
@@ -150,11 +150,11 @@ be:
 1. Documented as an ADR in `docs/decisions/` explaining the rationale for the change.
 2. Committed to the repository with a clear commit message.
 3. Communicated to existing maintainers and contributors via the project's usual
-   channels.
+  channels.
 
 Substantive changes (e.g., changing the governance model itself) should be discussed
 with the community before adoption, even though the BDFL retains final authority.
 
 ---
 
-<sub>Copyright (c) {{CURRENT_YEAR}} {{OWNER}}. Licensed under MPL-2.0.</sub>
+<sub>Copyright (c) 2026 hyperpolymath. Licensed under MPL-2.0.</sub>

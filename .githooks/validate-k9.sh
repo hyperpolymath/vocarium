@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2094 # targets are read, never written, by this script
 # SPDX-License-Identifier: MPL-2.0
 # Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 #
@@ -212,7 +213,7 @@ validate_k9() {
         # prematurely terminated the validator's view of the pedigree —
         # making `pedigree.metadata.name` invisible.
         if [[ "$line" =~ ^[[:space:]]*pedigree[[:space:]]*=.*\{ ]] || \
-           [[ "$line" =~ ^let[[:space:]]+component_pedigree[[:space:]]*=[[:space:]]*\{ ]]; then
+          [[ "$line" =~ ^let[[:space:]]+component_pedigree[[:space:]]*=[[:space:]]*\{ ]]; then
             has_pedigree=true
             in_pedigree=true
             pedigree_depth=0
@@ -231,38 +232,57 @@ validate_k9() {
                 :
             fi
 
-            # Check for name field within pedigree.metadata or pedigree directly.
-            # Two patterns cover both multi-line and single-line pedigrees:
-            #   1. ^[[:space:]]+name[[:space:]]*= — the normal multi-line case where
-            #      `name = "..."` appears on its own indented line.
-            #   2. [[:space:]]name[[:space:]]*= — inline within a single-line
-            #      pedigree assignment such as:
-            #        pedigree = component_pedigree & { name = "foo" }
-            #      (root cause: developer-ecosystem@baab1534 — single-line form
-            #      was missed entirely because the pedigree block opened and
-            #      closed in one line, never reaching the ^[[:space:]]+ check on
-            #      a subsequent iteration.)
-            if [[ "$line" =~ ^[[:space:]]+name[[:space:]]*= ]] || \
-               [[ "$line" =~ [[:space:]]name[[:space:]]*= ]]; then
-                has_pedigree_name=true
+            # Comment-only lines carry no fields: a comment such as
+            # `  # name = "example"` must not set has_pedigree_name.
+            local is_comment=false
+            if [[ "$line" =~ ^[[:space:]]*# ]]; then
+                is_comment=true
             fi
 
-            # Check for version field
-            if [[ "$line" =~ ^[[:space:]]+(version|schema_version)[[:space:]]*= ]] || \
-               [[ "$line" =~ [[:space:]](version|schema_version)[[:space:]]*= ]]; then
-                has_pedigree_version=true
-            fi
+            if [[ "$is_comment" == "false" ]]; then
+                # Check for name field within pedigree.metadata or pedigree directly.
+                # Two patterns cover both multi-line and single-line pedigrees:
+                #   1. ^[[:space:]]+name[[:space:]]*= — the normal multi-line case where
+                #      `name = "..."` appears on its own indented line.
+                #   2. [[:space:]]name[[:space:]]*= — inline within a single-line
+                #      pedigree assignment such as:
+                #        pedigree = component_pedigree & { name = "foo" }
+                #      (root cause: developer-ecosystem@baab1534 — single-line form
+                #      was missed entirely because the pedigree block opened and
+                #      closed in one line, never reaching the ^[[:space:]]+ check on
+                #      a subsequent iteration.)
+                if [[ "$line" =~ ^[[:space:]]+name[[:space:]]*= ]] || \
+                  [[ "$line" =~ [[:space:]]name[[:space:]]*= ]]; then
+                    has_pedigree_name=true
+                fi
 
-            # Check for security level (leash field)
-            if [[ "$line" =~ ^[[:space:]]+(leash|security_level)[[:space:]]*= ]]; then
-                has_security_level=true
-                security_level_value="$(normalise_level "$line")"
-                security_level_line=$line_num
-            fi
+                # Check for version field
+                if [[ "$line" =~ ^[[:space:]]+(version|schema_version)[[:space:]]*= ]] || \
+                  [[ "$line" =~ [[:space:]](version|schema_version)[[:space:]]*= ]]; then
+                    has_pedigree_version=true
+                fi
 
-            # Check for signature fields
-            if [[ "$line" =~ ^[[:space:]]+(signature|signature_required)[[:space:]]*= ]]; then
-                has_signature_field=true
+                # Check for security level (leash field). Matches both the
+                # multi-line form and inline fields in single-line pedigrees
+                # (same two-pattern approach as name). The level value is
+                # extracted from the leash/security_level occurrence itself,
+                # not from the first '=' on the line.
+                if [[ "$line" =~ ^[[:space:]]+(leash|security_level)[[:space:]]*= ]] || \
+                  [[ "$line" =~ [[:space:]](leash|security_level)[[:space:]]*= ]]; then
+                    has_security_level=true
+                    if [[ "$line" =~ (leash|security_level)[[:space:]]*=[[:space:]]*[\'\"]?([A-Za-z_-]+) ]]; then
+                        security_level_value="${BASH_REMATCH[2],,}"
+                    else
+                        security_level_value="$(normalise_level "$line")"
+                    fi
+                    security_level_line=$line_num
+                fi
+
+                # Check for signature fields (both multi-line and inline)
+                if [[ "$line" =~ ^[[:space:]]+(signature|signature_required)[[:space:]]*= ]] || \
+                  [[ "$line" =~ [[:space:]](signature|signature_required)[[:space:]]*= ]]; then
+                    has_signature_field=true
+                fi
             fi
 
             # End of pedigree block

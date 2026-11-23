@@ -17,6 +17,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC2034 # exported for later use / parity with other repo tests
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 PASS=0
@@ -31,6 +32,7 @@ bold()  { printf '\033[1m%s\033[0m\n' "$*"; }
 
 # ─── Assertion helpers ───────────────────────────────────────────────
 
+# shellcheck disable=SC2317 # invoked indirectly below; reachability false positive
 # check <label> <expected-substring> <actual>
 check() {
     local name="$1" expected="$2" actual="$3"
@@ -43,6 +45,7 @@ check() {
     fi
 }
 
+# shellcheck disable=SC2317 # invoked indirectly below; reachability false positive
 # check_status <label> <expected-http-status> <actual-http-status>
 check_status() {
     local name="$1" expected="$2" actual="$3"
@@ -55,6 +58,7 @@ check_status() {
     fi
 }
 
+# shellcheck disable=SC2317 # invoked indirectly below; reachability false positive
 # skip <label> <reason>
 skip_test() {
     yellow "  SKIP: $1 ($2)"
@@ -62,7 +66,7 @@ skip_test() {
 }
 
 echo "═══════════════════════════════════════════════════════════════"
-echo "  {{PROJECT}} — End-to-End Tests"
+echo "  vocarium — End-to-End Tests"
 echo "═══════════════════════════════════════════════════════════════"
 echo ""
 
@@ -122,7 +126,7 @@ echo ""
 # else
 #     STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$VERISIM_URL/api/v1/hexads" \
 #         -H "Content-Type: application/json" \
-#         -d '{"tool":"{{PROJECT}}","modality":"document","content":"e2e test"}')
+#         -d '{"tool":"vocarium","modality":"document","content":"e2e test"}')
 #     check_status "hexad POST" "201" "$STATUS"
 # fi
 
