@@ -1,0 +1,12 @@
+{
+  "$schema": "https://raw.githubusercontent.com/editorconfig-checker/editorconfig-checker/main/.editorconfig-checker.schema.json",
+
+  "Exclude": [
+    "^LICENSES/",
+    "^LICENSE$"
+  ],
+
+  "Disable": {
+    "IndentSize": true
+  }
+}
