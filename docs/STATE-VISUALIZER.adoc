@@ -43,8 +43,8 @@
                         │  │  ct-build.sh  deploy.k9.ncl      │  │
                         │  └──────────────────────────────────┘  │
                         └────────│─────────────────│──────────────┘
-                                 │                 │
-                                 ▼                 ▼
+                                │                 │
+                                ▼                 ▼
                         ┌─────────────────────────────────────────┐
                         │          PLATFORM INTEGRATION           │
                         │  ┌───────────┐  ┌───────────┐  ┌───────┐│
@@ -100,20 +100,20 @@ OVERALL:                            ██████████ 100%    RSR T
 
 ```
 Philosophy ──────► RSR Standard ──────► Template Scaffolding ──► New Repo
-     │                 │                      │                    │
-     ▼                 ▼                      ▼                    ▼
+    │                 │                      │                    │
+    ▼                 ▼                      ▼                    ▼
 CCCP Policy ─────► 0-AI-MANIFEST ────────► Justfile ──────────► Compliance
                                               │
                                               ▼
                                       Container Ecosystem
-                                   ┌──────────┼──────────┐
-                                   ▼          ▼          ▼
+                                  ┌──────────┼──────────┐
+                                  ▼          ▼          ▼
                               selur-compose  cerro-   svalinn/
                               (orchestrate)  torre    vordr
-                                             (sign)   (monitor)
+                                            (sign)   (monitor)
                                               │
                                               ▼
-                                         k9-svc deploy
+                                        k9-svc deploy
 ```
 
 ## Update Protocol

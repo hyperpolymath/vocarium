@@ -160,7 +160,7 @@ Day 1-2        We acknowledge receipt
 Day 7          We confirm vulnerability and share initial assessment
 Day 7-90       We develop and test fix
 Day 90         Coordinated public disclosure
-               (earlier if fix is ready; later by mutual agreement)
+              (earlier if fix is ready; later by mutual agreement)
 ```
 
 If we cannot reach agreement on disclosure timing, we default to 90 days from your initial report.

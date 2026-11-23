@@ -118,5 +118,15 @@ nothing at runtime reads them (`+build/just/container.just+` guards on existence
 and estate siblings either fill them (hermeneia) or never ship them (haec,
 trope-checker). `+.devcontainer/devcontainer.json+` is exempt from `+check-json+`
 (JSONC by the Dev Container spec; the estate ships it with comments); no other
-JSON file is exempt. ShellCheck and EditorConfig baselines remain repo-wide and
-still fail the hosted job — they are tracked separately.
+JSON file is exempt. The ShellCheck lane is annotated at the exact findings
+(comment/directive-only edits: a `+# shellcheck shell=bash+` directive in
+`+.envrc+`, file-level `+disable=SC2094+` in `+.githooks/validate-k9.sh+`
+(targets are read, never written), `+disable=SC2034+` for unused palette/timing
+assignments and `+disable=SC2317+` for helper functions invoked indirectly in
+`+tests/e2e.sh+`, `+source=/dev/null+` for the `+/etc/os-release+` read in
+`+build/setup.sh+`, and `+disable=SC2016+` on the intentional literal
+`+${{ }}+` grep patterns asserting workflow expressions). The EditorConfig lane
+is cured by normalising leading-padding to the `+.editorconfig+` multiples
+(195 lines, 30 files, down-rounding; verified whitespace-only via
+`+git diff -w+` and a local multiple-of-N scan). The two lanes are pre-existing
+repository-wide issues, not introduced by this change; both are now green.

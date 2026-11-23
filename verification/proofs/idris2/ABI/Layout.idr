@@ -25,8 +25,8 @@ public export
 paddingFor : (offset : Nat) -> (alignment : Nat) -> {auto 0 ok : NonZero alignment} -> Nat
 paddingFor offset alignment = let r = modNatNZ offset alignment ok
                               in case r of
-                                   Z => Z
-                                   (S _) => minus alignment r
+                                  Z => Z
+                                  (S _) => minus alignment r
 
 ||| Proof that an offset with zero remainder needs zero padding.
 export

@@ -91,7 +91,7 @@ mint tooling. Do not compute-and-commit an id into vocarium.
 ----
 (repo :name "vocarium" :owner "hyperpolymath"
       :uuid #uuid"<minted by chora-registry tooling at the birth path —
-                   never copied or guessed>"
+                  never copied or guessed>"
       :minted-in chora-registry
       :description "A structured store of vokeable particulars, transformations, grades, warrants and verdicts."
       (lineage :type standalone :instantiated-from "rsr-template-repo")

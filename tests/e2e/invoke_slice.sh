@@ -40,7 +40,7 @@ if [ -z "${TROPECHECK_BIN:-}" ]; then
   command -v git >/dev/null || fail "git not installed"
   TC_DIR=".gate-tools/trope-checker"
   if [ ! -x "${TC_DIR}/src/rust/target/release/tropecheck-rs" ] || \
-     [ "$(git -C "${TC_DIR}" rev-parse HEAD 2>/dev/null)" != "${TROPECHECK_PIN}" ]; then
+    [ "$(git -C "${TC_DIR}" rev-parse HEAD 2>/dev/null)" != "${TROPECHECK_PIN}" ]; then
     rm -rf "${TC_DIR}"
     git clone -q https://github.com/hyperpolymath/trope-checker "${TC_DIR}" || fail "cannot clone trope-checker"
     git -C "${TC_DIR}" checkout -q "${TROPECHECK_PIN}" || fail "cannot checkout tropecheck pin ${TROPECHECK_PIN}"

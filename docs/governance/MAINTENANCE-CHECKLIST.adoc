@@ -500,9 +500,9 @@ Required behavior:
 6. Run language-specific checks (Rust/Python/Elixir) relevant to this repo.
 7. Run benchmark/regression checks for touched hot paths.
 8. Enforce permission policy:
-   - no group/world writable source files unless justified
-   - executable bit only where intended
-   - use .maintenance-perms-ignore for justified exceptions
+  - no group/world writable source files unless justified
+  - executable bit only where intended
+  - use .maintenance-perms-ignore for justified exceptions
 9. Update docs/roadmap/checklist entries to reflect actual state.
 10. Produce a final report using the template in MAINTENANCE-CHECKLIST.md.
 
@@ -523,21 +523,21 @@ Non-negotiable rules:
 1. Do not claim any step is complete unless you actually ran it.
 2. Do not silently skip checklist items. If skipped, state SKIPPED + exact reason.
 3. For every check, provide evidence:
-   - command executed
-   - pass/fail/warn
-   - key output summary
-   - artifact/log path
+  - command executed
+  - pass/fail/warn
+  - key output summary
+  - artifact/log path
 4. If a command fails, stop claiming success and report the failure clearly.
 5. After each fix, re-run the relevant failing check and report the rerun result.
 6. Do not hide uncertainty. If unsure, say so and run additional verification.
 7. Never mark “all done” while any fail/warn remains unexplained.
 8. Do not make destructive or broad permission changes by default.
-   - permission changes must be audit-first
-   - use --fix-perms only with explicit intent
+  - permission changes must be audit-first
+  - use --fix-perms only with explicit intent
 9. Final output must include:
-   - checklist coverage matrix (each item: PASS/FAIL/WARN/SKIPPED)
-   - unresolved risks
-   - exact next actions
+  - checklist coverage matrix (each item: PASS/FAIL/WARN/SKIPPED)
+  - unresolved risks
+  - exact next actions
 10. Prioritize user safety and reputation: no “looks fine” claims without evidence.
 ```
 

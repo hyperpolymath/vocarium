@@ -48,10 +48,10 @@ let base    = import "../_base.ncl" in
     metadata = {
       name = "intend-k9",
       version = "2.0.0",             # 1.0.0 (2026-04-18 AM): initial trident.
-                                     # 2.0.0 (2026-04-18 PM): negotiation +
-                                     # accountability + plain-language-translation
-                                     # schema baked into on_open — prerequisite for
-                                     # the adversarial Gemini+Copilot drift pilot.
+                                    # 2.0.0 (2026-04-18 PM): negotiation +
+                                    # accountability + plain-language-translation
+                                    # schema baked into on_open — prerequisite for
+                                    # the adversarial Gemini+Copilot drift pilot.
       description = "Executes Intentfile probes + emits drift log. Non-gating; reporting authority only. on_open hook implements negotiation-ratification-accountability protocol.",
       paired_xfile = "Intentfile.a2ml",
       paired_runner = "intend.ncl",

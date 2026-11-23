@@ -16,7 +16,7 @@
   (version 0)
   (url "https://github.com/{{OWNER}}/{{PROJECT_NAME}}")
   (dependencies
-   (channel
-     (name 'guix)
-     (url "https://git.savannah.gnu.org/git/guix.git")
-     (branch "master"))))
+  (channel
+    (name 'guix)
+    (url "https://git.savannah.gnu.org/git/guix.git")
+    (branch "master"))))

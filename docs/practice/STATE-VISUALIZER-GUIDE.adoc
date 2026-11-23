@@ -38,26 +38,26 @@ Read the entire repository and produce a TOPOLOGY.md file for the repo root.
 The file must contain exactly three sections:
 
 1. **System Architecture** — An ASCII box diagram showing the complete system
-   as it will look when finished. Use Unicode box-drawing characters
-   (┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼), arrows (▲ ▼ ◄ ► → ←), and double lines
-   (═ ║) for boundaries. Show:
-   - All external services (DNS, CDN, gateways) at the top
-   - Application components in the middle
-   - Data layer (databases, caches, queues) below
-   - Repo infrastructure (CI, contractiles, SCM files) at the bottom
-   - Every box labelled, every connection labelled or obvious from context
-   - The diagram should be BESPOKE to this project, not generic
+  as it will look when finished. Use Unicode box-drawing characters
+  (┌ ┐ └ ┘ │ ─ ├ ┤ ┬ ┴ ┼), arrows (▲ ▼ ◄ ► → ←), and double lines
+  (═ ║) for boundaries. Show:
+  - All external services (DNS, CDN, gateways) at the top
+  - Application components in the middle
+  - Data layer (databases, caches, queues) below
+  - Repo infrastructure (CI, contractiles, SCM files) at the bottom
+  - Every box labelled, every connection labelled or obvious from context
+  - The diagram should be BESPOKE to this project, not generic
 
 2. **Completion Dashboard** — A table in a code block listing every component
-   from the diagram. For each component show:
-   - Name (left-aligned, padded to 35 chars)
-   - Progress bar: 10 characters using █ (done) and ░ (remaining)
-   - Percentage (0% to 100% in 10% increments)
-   - A short note explaining the status
-   Group components by layer/concern. End with an OVERALL summary line.
+  from the diagram. For each component show:
+  - Name (left-aligned, padded to 35 chars)
+  - Progress bar: 10 characters using █ (done) and ░ (remaining)
+  - Percentage (0% to 100% in 10% increments)
+  - A short note explaining the status
+  Group components by layer/concern. End with an OVERALL summary line.
 
 3. **Key Dependencies** — An ASCII arrow diagram showing the critical path.
-   What must finish before what else can start.
+  What must finish before what else can start.
 
 Add a header comment with SPDX-License-Identifier and Last updated date.
 End with an "Update Protocol" section explaining how to maintain the file.
