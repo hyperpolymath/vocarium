@@ -7,7 +7,7 @@ git clone https://github.com/hyperpolymath/vocarium.git
 cd vocarium
 
 # Using Guix (recommended for reproducibility)
-guix shell -D -f guix.scm
+guix shell -D -f build/guix.scm
 
 # Or using toolbox/distrobox
 toolbox create vocarium-dev
@@ -22,34 +22,37 @@ just test    # Run test suite
 ### Repository Structure
 ```
 vocarium/
-├── src/                 # Source code (Perimeter 1-2)
-├── lib/                 # Library code (Perimeter 1-2)
-├── extensions/          # Extensions (Perimeter 2)
-├── plugins/             # Plugins (Perimeter 2)
-├── tools/               # Tooling (Perimeter 2)
+├── src/                 # Source code (store: Zig, Perimeter 1-2)
+│   ├── store/           # The voc store (src/store/main.zig → `voc`)
+│   ├── contracts/       # Idris2 ABI contracts
+│   ├── definitions/     # Shared definitions
+│   ├── errors/          # Error specifications
+│   └── aspects/         # Aspect specifications
+├── build.zig            # Zig build (executable `voc`, zig-out/bin/voc)
 ├── docs/                # Documentation (Perimeter 3)
-│   ├── architecture/    # ADRs, specs (Perimeter 2)
-│   └── proposals/       # RFCs (Perimeter 3)
 ├── examples/            # Examples (Perimeter 3)
-├── spec/                # Spec tests (Perimeter 3)
 ├── tests/               # Test suite (Perimeter 2-3)
 ├── .machine_readable/   # ALL machine-readable content (Perimeter 1)
-│   ├── *.a2ml           # State files (STATE, META, ECOSYSTEM, etc.)
+│   ├── *.deed           # Deeds (STATE, META, NEUROSYM, AGENTIC, …)
 │   ├── bot_directives/  # Bot configs
 │   └── contractiles/    # Policy contracts (k9, dust, lust, must, trust)
 ├── .well-known/         # Protocol files (Perimeter 1-3)
 ├── .github/             # GitHub config (Perimeter 1)
 │   ├── ISSUE_TEMPLATE/
+│   ├── CODE_OF_CONDUCT.md
+│   ├── CONTRIBUTING.md  # This file
+│   ├── GOVERNANCE.md
+│   ├── MAINTAINERS      # Maintainer contact (this repo: lead maintainer)
+│   ├── SECURITY.md      # GitHub security policy
 │   └── workflows/
-├── CHANGELOG.md
-├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md      # This file
-├── GOVERNANCE.md
+├── CHANGELOG.adoc
+├── CONTRIBUTING.adoc    # Root contributor guide
+├── GOVERNANCE.adoc
 ├── LICENSE
-├── MAINTAINERS.md
+├── MAINTAINERS.adoc
 ├── README.adoc
-├── SECURITY.md
-├── guix.scm             # Guix package — primary (Perimeter 1)
+├── build/
+│   └── guix.scm         # Guix package — primary (Perimeter 1)
 └── Justfile             # Task runner (Perimeter 1)
 ```
 

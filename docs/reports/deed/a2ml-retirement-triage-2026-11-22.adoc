@@ -54,7 +54,7 @@ per-file removal record of every `.a2ml` file deleted at `1b402f9`.
 == Blocking fact: no `chora-registry` entry exists for vocarium
 
 Re-verified against the public registry at the pinned seed commit
-`235e877e86858c79941614f7fc6f0c6ecf60846db7519` (clone clean at that pin):
+`235e877e86858c79941614f7fc6d315664ec9cb8` (clone clean at that pin):
 a case-insensitive search for `vocat|ocari` matches only the word
 "behaviour" in `.github/CODE_OF_CONDUCT.md`. There is no vocarium `(repo …)`
 entry, no minted repository UUID, and no clade placement.
@@ -150,12 +150,21 @@ Notes for the filer:
   `check-json` on `.devcontainer/devcontainer.json`, `check-toml` on
   `container/stapeln/*.toml`, ShellCheck findings across `.envrc`,
   `.githooks/validate-k9.sh`, `benches/`, `build/setup.sh`, `tests/e2e.sh`;
-  EditorConfig findings per #61). None of these files is touched by this
-  change; the run flags nothing this PR adds. It is unrelated to the
-  retired remote hooks, and not addressed by this PR. Fix the baseline or
-  rule on the hosted job.
+  EditorConfig findings per #61). **This PR now addresses the baseline
+  rather than the hook swap:** `FUNDING.yml` is clean; the JSONC
+  `devcontainer.json` is exempted from check-json; the three Stapeln TOMLs
+  (`container/stapeln/compose.toml`, `compose.example.toml`,
+  `manifest.toml`) are removed with the inert service configuration;
+  `eclexiaiser.toml` keeps a valid `[project]` section and function
+  entries pointing at files that exist; ShellCheck findings are annotated
+  rather than rewritten; EditorConfig indentation is normalised down-round;
+  and a sweep commit fills the remaining `{{…}}` placeholder files with
+  vocarium identity. Hosted pre-commit.ci passes on the PR branch (run
+  1795399513, 2026-11-23). Any check that still fails on `main` until this
+  PR merges is the pre-merge baseline; re-verify `main` after merge.
 . **Residue sweep.** See next section; a follow-up chore can retire the
-  historical references. Do not bundle it into the cure PR.
+  historical references. The placeholder sweep is NOT that chore: it fills
+  unfilled template files, it does not retire historical a2ml references.
 
 == Residue: files that still mention `a2ml` (and what to do with them)
 
@@ -191,11 +200,20 @@ Grouped by disposition:
 None of these strings blocks validation today; the gate is the `*.a2ml`
 file check, not grep.
 
-== Validation evidence (this branch)
+== Validation evidence (at the pre-merge revision)
+
+The claims in this section describe the branch *as first cut from*
+`1b402f9` — not the final PR. The final PR additionally carries the
+pre-commit.ci cure (ShellCheck annotations, EditorConfig normalisation),
+the `{{…}}` placeholder sweep, and this document's own later corrections.
+Recorded here as evidence for that revision, kept for the audit trail, and
+refreshed where stale:
 
 * Rebased onto `origin/main` at `1b402f9`; zero commits of our own remain
-  (the pre-commit.ci fix was dropped as obsolete — its two remote hook
+  *at that revision* (the pre-commit.ci fix was dropped as obsolete — its two remote hook
   repos no longer exist in the config; the K9 hook runs the in-repo script).
+  Since then the branch has grown the cure and sweep commits; see the PR
+  commit list for the final scope.
 * `STANDARDS_DIR=/tmp/standards bash .github/hooks/validate-deed.sh` → exit
   0. All checks OK: the four descriptiles, `0-AI-MANIFEST.deed`,
   `vocarium_chora.deed` (role unset notice, pre-existing), the RSR profile,
@@ -205,12 +223,25 @@ file check, not grep.
   (`main`, 2026-11-22, unverified pin) — the same interface CI runs against
   its pinned standards revision.
 * `git ls-tree -r --name-only HEAD | grep '\.a2ml$'` → no matches.
-* Removal record verified: all 119 sha256 rows reproduce from
-  `git cat-file blob 1b402f9^:<path> | sha256sum` (script run this session;
-  119/119 match); record totals 119 files / 128,994 bytes.
+* Removal record verified (at record creation, with full history
+  available): all 119 sha256 rows reproduce from
+  `git cat-file blob 1b402f9^:<path> | sha256sum` (script run at the time;
+  119/119 match); record totals 119 files / 128,994 bytes. The removal
+  record's embedded verifier prints path, size, blob id and sha256 for
+  every row and fails loudly on any mismatch — but note the reproduction
+  requires *full history* (`1b402f9^` must resolve). The current
+  contributing environment has a shallow clone (7 commits, `1b402f9` at the
+  boundary), so re-running the verifier there errors at
+  `git rev-parse 1b402f9^` rather than verifying; run it in a full clone
+  (or after `git fetch --unshallow`).
 * Registry absence re-verified by grep at the pinned seed `235e877`.
-* `git diff origin/main --stat` → this file, the removal record, `CHANGELOG.adoc`.
-* Nothing was minted, registered, translated, deleted, or renamed here.
+* `git diff origin/main --stat` (at that revision) → this file, the removal record,
+  `CHANGELOG.adoc`. The final PR changes many more files and removes the
+  three Stapeln TOMLs named above; see `git diff origin/main --stat` at the
+  final commit.
+* Nothing was minted, registered, translated, deleted, or renamed here at that
+  revision, and nothing in the later sweep commits changes that: the sweep
+  fills template identity only.
 
 == Sources
 
@@ -219,7 +250,7 @@ file check, not grep.
   `.machine_readable/arrival-pack/*`, `.github/hooks/validate-deed.sh`,
   `.github/workflows/dogfood-gate.yml`, `.machine_readable/root-allow.txt`,
   `CLAUDE.md`.
-* `hyperpolymath/chora-registry` at pin `235e877e86858c79941614f7fc6f0c6ecf60846db7519`
+* `hyperpolymath/chora-registry` at pin `235e877e86858c79941614f7fc6d315664ec9cb8`
   (seed `verisim/seed/chora-registry_praxis.deed`; `sync/uuid-v8.sh`;
   ADR 0008 "a registered repo is never removed").
 * `metadatastician/standards` (depth-1 clone, `main` at `75d38f8`, unverified

@@ -25,10 +25,28 @@ deleting commit; the record carries the hashes).
 
 [source,bash]
 ----
-# every row must reproduce from history alone:
-for want in $(git ls-tree -r 1b402f9^ --name-only | grep '\.a2ml$'); do
-  git cat-file blob "1b402f9^:$want" | sha256sum
-done
+# every row must reproduce from history alone — and must match the table.
+# The record's table rows are: | path | bytes | blob id | sha256
+# Extract path, declared size, blob and sha, recompute all three from
+# history, and compare field by field. Any mismatch fails the check.
+fail=0; n=0
+while IFS= read -r row; do
+  n=$((n + 1))
+  path=$(printf '%s' "$row"   | sed -E 's/^\| `([^`]+)` \|.*/\1/')
+  want_size=$(printf '%s' "$row" | sed -E 's/^\| `[^`]+` \| ([0-9]+) \|.*/\1/')
+  want_blob=$(printf '%s' "$row" | sed -E 's/^\| `[^`]+` \| [0-9]+ \| `([0-9a-f]{40})` \|.*/\1/')
+  want_sha=$(printf '%s' "$row" | sed -E 's/^\| `[^`]+` \| [0-9]+ \| `[0-9a-f]{40}` \| `([0-9a-f]{64})` \|.*/\1/')
+  blob=$(git rev-parse "1b402f9^:$path") || { printf 'FAIL rev-parse %s\n' "$path" >&2; fail=1; continue; }
+  size=$(git cat-file -s "$blob")       || { printf 'FAIL cat-file -s %s\n' "$path" >&2; fail=1; continue; }
+  sha=$(git cat-file blob "$blob" | sha256sum | cut -d' ' -f1) || { printf 'FAIL cat-file blob %s\n' "$path" >&2; fail=1; continue; }
+  if [ "$blob" != "$want_blob" ] || [ "$size" != "$want_size" ] || [ "$sha" != "$want_sha" ]; then
+    printf 'MISMATCH %s (blob %s!=%s, size %s!=%s, sha %s!=%s)\n' \
+      "$path" "$blob" "$want_blob" "$size" "$want_size" "$sha" "$want_sha" >&2
+    fail=1
+  fi
+done < <(grep -E '^\| `[^`]+` \| [0-9]+ \| `[0-9a-f]{40}` \| `[0-9a-f]{64}`' docs/reports/deed/a2ml-removal-record-2026-11-22.adoc)
+printf 'checked %d rows\n' "$n"
+[ "$fail" -eq 0 ] || exit 1
 # and no .a2ml file may exist now:
 git ls-tree -r --name-only HEAD | grep '\.a2ml$' || echo "none (as required)"
 ----

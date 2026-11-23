@@ -2,6 +2,18 @@
 #
 # Vocarium — portable compose stack (Tier B)
 #
+# KNOWN GAP (as of 2026-11-23): vocarium builds `voc` (build.zig,
+# addExecutable name = "voc"), a CLI over the store with no HTTP server
+# mode and no /health endpoint. container/Containerfile does not yet
+# produce a running service image, and this file sets no `command:` for
+# the vocarium service — the healthcheck below therefore cannot pass and
+# `rokur` (which needs vocarium service_healthy) will not start. Do not
+# attempt `compose up` expecting a running stack. Completing the app
+# image contract (builder → runtime copy → CMD/ENTRYPOINT → 2xx /health
+# on 8080) is a separate, owner-ruled task. This file is committed
+# because `container/compose.yaml` is the Tier-B path container.just
+# falls back to; it documents the intended stack, not a working one.
+#
 # This is the runtime-agnostic, OCI compose-spec file. It works unchanged with:
 #   podman compose  -f container/compose.yaml up -d
 #   nerdctl compose -f container/compose.yaml up -d
