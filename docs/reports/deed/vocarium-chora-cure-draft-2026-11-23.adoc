@@ -1,0 +1,166 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Vocarium chora — registration and cure draft (2026-11-23)
+:toc: macro
+:toclevels: 2
+
+*Date:* 2026-11-23 · *Status:* DRAFT — no act is taken by this document. The
+registry filing is the owner's act (ADR 0008); the cure lands afterwards as
+one PR touching one repo. This document records the current CHORA/CLADE canon
+as publicly visible on 2026-11-23, the deltas against vocarium's current
+tree, and a ready-to-review blueprint for both. It supersedes the "profile-C
+`#u8` placeholders are intentional" note in
+`a2ml-retirement-triage-2026-11-22.adoc` (V8/CA1 below postdate it).
+
+NOTE: the author of this document could not read `2-protocols/chora/CHORA-SPEC.adoc`,
+`deed.abnf`, or the registry seed directly (no network to GitHub from the
+authoring environment). Every canon claim below traces to the public PR/issue
+record and the registry README; where a value is a calculation or an
+assumption it is marked `UNVERIFIED`.
+
+== The canon, as of 2026-11-23
+
+Identity (the "one id" rules):
+
+* *ADR 0008* (gv-clade-index#111): a repository id is minted once, from the
+  birth path; a move changes location only; a registered repo is never removed.
+* *U4 / V8 / deed.abnf v1.3.0* (standards#1473, #1475, #1479, #1481): the deed
+  carries the registry's `uuid_v8` for the birth path as an opaque
+  `#uuid"…"` literal. UUIDv5 of the same path stays in the registry as
+  an alias and never appears in a deed. v5-in-an-identity-field is a
+  strict-mode error (C10/T30). `#u5` in an identity field is an error in
+  every mode (Q2). Estate, platform and federation ids are the profile-C
+  UUIDv8 of their `chora:` preimages (C9, amended, owner-confirmed 2026-11-12).
+* *U1* — minted once, never moves. *B1* — `:beholding-chora` is the birth
+  estate, not the current org. *V1* (2026-11-12): exactly one id per deed.
+* *L1* — a repo that predates V9 and was never registered is registered
+  late. *Registry rename (2026-11-19, chora-registry#124)* — the
+  registry is now `hyperpolymath/chora-registry`; no id is minted in the
+  retired `gv-clade-index` domain; late mints mint in the `chora-registry`
+  domain with `:minted-in chora-registry` (precedent: affinescript,
+  `chora-registry:github.com/hyperpolymath/affinescript`,
+  `0858724e-265e-81d0-909b-05cf7e1b4b2d`, chora-registry#125).
+
+CLADE (placement):
+
+* *clade-12 is authoritative* (owner ruling W10): `fv nl rm gv db ap ix dx pt
+  ax gm sc` = Formal Verification · Nextgen Languages · Repo Management ·
+  Governance & Standards · Databases · Applications · Infrastructure & Cloud ·
+  Developer Ecosystem · Protocols & Interop · AI & Neurosymbolic · Games ·
+  Security. The old `clade-hygiene` contractile is retired with A2ML.
+* *Placement is an identity fact* in the repo's own `<repo>_chora.deed`
+  `(clade …)` clause, checked against clade-12; the registry wins on any
+  difference.
+* *CA1* (CHORA-SPEC v0.4.9, standards#1680, 2026-11-19): `(clade …)` takes the
+  registry seed's placement shape —
+
+  (clade (placement :scheme clade-12 :category rm :primary #t)
+         (placement :scheme clade-12 :category gv :rank 1))
+
+  One primary per scheme; ranks 1..n. The flat `:primary/:secondary` form and
+  `:primary-name`/`:assigned`/`:rationale` are **withdrawn**. Placements are
+  copied from the registry; a chora may name only schemes and categories the
+  registry declares; migration is one repo per PR with a one-release warning
+  (precedent: standards#1685).
+* *CLADE.deed does not exist yet* — blocked until `clade.abnf` (A7 M3) lands
+  (CHORA-SPEC 11.1 rule 3; standards#1648, which asks the owner to rule
+  CLADE.deed as the source of truth over `standards-map.toml`; unruled).
+
+== What vocarium carries today (as merged in #73)
+
+[cols="1,3"]
+|===
+| File | Current value
+
+| `vocarium_chora.deed:10`
+| `:repo-uuid #u8"chora-registry:github.com/hyperpolymath/vocarium"` — a recomputable profile-C name. Not the deed.abnf v1.3.0 form; not registry-minted; not one id.
+
+| `vocarium_chora.deed:11`
+| `:beholding-chora #uuid"0889b37b-defb-831f-973c-e119500db00e"` — opaque form; recorded in the 2026-11-22 triage dossier as read from the registry seed at pin `235e877e86858c79941614f7fc6d315664ec9cb8` (hyperpolymath's estate id). UNVERIFIED here (seed not readable from this environment). Form and source match B1 as far as the dossier shows; keep, do not recompute.
+
+| `vocarium_chora.deed` `(clade …)`
+| `(clade :primary db :secondary () :rationale "…")` — the withdrawn flat form; `db` is a proposal, not a registry placement; `:rationale` is withdrawn by CA1 (keep any rationale as a comment above the clause, per #1685).
+
+| `.machine_readable/descriptiles/{AGENTIC,META,NEUROSYM,STATE}.deed`
+| `:of-chora #u8"chora-registry:github.com/hyperpolymath/vocarium"` — same recomputable-name problem as `:repo-uuid`; these are the only other in-tree carries of the value (plus the dossier and `scripts/deed-field.sh`, the latter handling all literal forms by design).
+
+| `.machine_readable/descriptiles/anchors/`
+| README only — no deed to re-point.
+|===
+
+Zero `*.a2ml` files exist in the tree (enforced by `validate-deed.sh`).
+
+== Filing act — for the owner (not executable from this repository)
+
+The bundle in `a2ml-retirement-triage-2026-11-22.adoc` §"The registration
+bundle" is the base. Deltas against that bundle, under the 2026-11-19 rulings:
+
+* The "which domain" dilemma in the bundle is *resolved by the registry
+  rename*: vocarium was never registered, so it registers late in the
+  `chora-registry` domain (L1 as applied by affinescript, not the retired
+  `gv-clade-index` domain). `:minted-in chora-registry` stands.
+* The `31c90719-e7d5-8162-8356-558d6ab6e9fd` value in the bundle is a
+  *calculation*, not an id of record. Do not commit it anywhere. The id
+  comes from the registry's mint tooling and must be copied from the
+  registry after filing.
+* `(placement :scheme clade-12 :category db :primary #t)` in the bundle is
+  already CA1-shaped; the registry records it (or re-places vocarium —
+  `db` is a proposal, the registry rules).
+* `:beholding-chora 0889b37b-…` — owner confirms against the seed at the
+  pinned revision at filing time; do not recompute.
+* Lineage `standalone`, `instantiated-from: rsr-template-repo` — as stated in
+  the deed; the registry may classify differently (e.g. `satellite` if it
+  rules the rsr-template-repo parent matters).
+* After the registry PR merges, the registry mints; `worker/data/repos.json`
+  and the praxis deed regenerate; `scripts/check-registry.sh` must pass with
+  all previously registered repos unchanged (the affinescript filing moved
+  the count by exactly one: 327 → 328).
+
+== Cure blueprint — post-registration PR (one repo, one PR)
+
+Apply *after* filing, in this repository, as a single PR:
+
+1. `vocarium_chora.deed`:
+   * `:repo-uuid #u8"chora-registry:github.com/hyperpolymath/vocarium"` →
+     `:repo-uuid #uuid"<id minted by the registry>"`.
+   * `(clade :primary db :secondary () :rationale …)` →
+     `(clade (placement :scheme clade-12 :category <as recorded by the registry>
+     :primary #t))` — with the old rationale kept only as a `;;` comment
+     above the clause if the owner wants the history (#1685 pattern).
+   * Header comment: drop the "deterministic profile-C name, not a claim that
+     a registry entry has already been minted" note; keep the truth — the id
+     is registry-minted, minted once, never moves.
+   * Line length stays under the 998-octet cap (longest current line: 119).
+2. Four descriptiles: `:of-chora` → the same opaque `#uuid"<minted>"` id.
+3. `:beholding-chora` — unchanged.
+4. `CLAUDE.md` / `README.adoc` — check for `#u8`/`profile-C` mentions
+   (`grep -n '#u8\|profile-C'`); update to the minted-id wording if present.
+5. Verification for that PR:
+   * `deed_lint.js` (standards, deed.abnf v1.3.0) on `vocarium_chora.deed`
+     and the four descriptiles;
+   * `scripts/check-uuid-v8.sh --strict` (no `.uuid-v8-exempt` entry);
+   * `.github/hooks/validate-deed.sh` → exit 0;
+   * `.github/workflows` K9 contract validation → unchanged files still pass;
+   * the CA1 migration gets the one-release warning note in the PR body, not
+     in the deed.
+6. Explicit non-goals of the cure PR: no registry change, no id computation,
+   no clade re-placement, no CLADE.deed (blocked by A7 M3 / standards#1648).
+
+== Open questions for the owner
+
+. File the registration now, or hold?
+. `db` (Databases) as vocarium's clade-12 category — affirm at filing, or
+  rule otherwise (e.g. `pt` for protocols/interop, or `fv` if the property
+  engine dominates)? The registry decides; this document proposes nothing.
+. Confirm `0889b37b-defb-831f-973c-e119500db00e` is the hyperpolymath estate
+  id in the seed at the filing pin.
+. After filing: approve the cure PR as a normal PR (no `--admin`), one repo.
+
+== Not in scope here
+
+* Filing, minting, registry PRs — owner acts.
+* Any edit to `vocarium_chora.deed` or the descriptiles *before* filing —
+  the deed must carry the registry-minted id, never a recomputed one.
+* The contractile migration and coaptation re-enablement
+  (`DEED-MIGRATION.adoc`) — separate owner-ruled track.
+* The `db`-clade question for the *registry seed* — the registry owns it.
