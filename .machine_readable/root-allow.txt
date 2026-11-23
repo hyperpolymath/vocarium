@@ -48,6 +48,7 @@ zig-out/
 CLAUDE.md                  # AI session instructions, generated from the deed and STATE by the arrival pack
 GEMINI.md                  # Gemini agent entry point; discovered at repository root.
 .hypatia-ignore            # repo-scoped Hypatia scanner exemptions; the scanner reads it from the repo root
+.ecrc                      # editorconfig-checker config; the editorconfig-checker pre-commit hook reads it from the repo root
 sonar-project.properties   # SonarCloud analysis config; the SonarQube scan action reads it from the repo root
 
 # ─── Directories ─────────────────────────────────────────────────────────────

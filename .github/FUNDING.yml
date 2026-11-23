@@ -1,7 +1,13 @@
 # SPDX-License-Identifier: MPL-2.0
-# Funding platforms for {{OWNER}} projects
+# Funding platforms for vocarium.
 # See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+#
+# `ko_fi` and `liberapay` were removed rather than filled in: the inherited
+# template emitted `{{OWNER}}` for both, and there is no account on either
+# platform. A funding entry that points nowhere is worse than no entry — GitHub
+# renders the sponsor button and the reader finds nothing behind it. Add either
+# key back if an account is ever created.
+#
+# `github:` takes a username or organisation, not a repository.
 
-github: {{OWNER}}
-ko_fi: {{OWNER}}
-liberapay: {{OWNER}}
+github: hyperpolymath

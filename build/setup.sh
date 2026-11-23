@@ -93,6 +93,7 @@ detect_platform() {
         Linux*)
             OS="linux"
             if [ -f /etc/os-release ]; then
+                # shellcheck disable=SC1091  # /etc/os-release is host-provided
                 DISTRO=$(. /etc/os-release && echo "$ID")
             elif [ -f /etc/redhat-release ]; then
                 DISTRO="rhel"

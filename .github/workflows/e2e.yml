@@ -35,24 +35,32 @@ concurrency:
   group: e2e-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  # ─── Default: template smoke (always runs — not a silent no-op) ─────
-  # Runs the template's own E2E harness (tests/e2e.sh). On the bare template
-  # this is a clean pass (no stack-specific checks enabled yet); downstream
-  # repos either extend tests/e2e.sh or uncomment a stack block below.
+  # ─── The real end-to-end gate ────────────────────────────────────────
+  # This job used to run tests/e2e.sh and report "E2E — template smoke". That
+  # harness is inherited scaffolding with every check commented out, so it
+  # always exited 0 with PASS=0 FAIL=0 SKIP=0: a green check that proved
+  # nothing and read as coverage that did not exist (#67).
+  #
+  # The genuine end-to-end proof for this repository is the invoke-slice gate
+  # in tests/e2e/invoke_slice.sh — it builds the `voc` binary and asserts
+  # use-relativity, the warrant door and the unit tests against a pinned
+  # tropecheck-rs. vocarium-ci.yml runs the same script as `invoke-slice gate`.
+  # Running it here too is deliberate: this lane used to be the cheap one, and
+  # it should stop being green until it earns it. tests/e2e.sh now exits 1 on a
+  # zero-test run rather than pretending, so the old command is not coming back.
   e2e:
-    name: E2E — template smoke
+    name: E2E — invoke slice
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
-      - name: Run E2E harness
-        run: |
-          if [ -f tests/e2e.sh ]; then
-            bash tests/e2e.sh
-          else
-            echo "::notice::no tests/e2e.sh present — nothing to run"
-          fi
+      - name: Setup Zig (exact pin from .tool-versions)
+        uses: mlugg/setup-zig@v2.2.1
+        with:
+          version: 0.16.0
+      - name: Run the invoke-slice gate
+        run: ./tests/e2e/invoke_slice.sh
 
 # ─── End-to-End Tests (downstream stack-specific examples) ─────────
 # Uncomment ONE of the following e2e job blocks matching your stack.

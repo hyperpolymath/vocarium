@@ -11,6 +11,7 @@ for trigger in pull_request push merge_group; do
 done
 grep -Fxq '    branches: [main]' "$workflow" || fail 'main push trigger missing'
 grep -Fxq '    types: [checks_requested]' "$workflow" || fail 'merge-group checks_requested missing'
+# shellcheck disable=SC2016  # the literal ${{ }} is GitHub's syntax, not a shell expansion
 grep -Fxq '  group: ${{ github.workflow }}-${{ github.ref }}' "$workflow" || fail 'concurrency is not scoped by ref'
 grep -Fxq 'permissions: {}' "$workflow" || fail 'workflow-wide permissions are not disabled'
 
