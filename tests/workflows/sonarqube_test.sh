@@ -53,6 +53,7 @@ route_case 'different repository is not this project' push refs/heads/main '' ot
 
 # Check the wiring around the scripts as well as their runtime behaviour.
 grep -Fq 'uses: hyperpolymath/cicd-suite/actions/sonarcloud-result-check@4404c3c0474e17753fe7689f3485c02890aac113' "$workflow" || fail 'verifier is not pinned'
+# shellcheck disable=SC2016 # literal pattern: workflow expression text is asserted, not expanded
 grep -Fq 'sha: ${{ github.event.pull_request.head.sha || github.sha }}' "$workflow" || fail 'subject is not the PR head / push SHA'
 grep -Fxq 'permissions: {}' "$workflow" || fail 'workflow-wide token permissions are not disabled'
 grep -Fxq '      checks: read' "$workflow" || fail 'job-scoped checks: read is missing'
