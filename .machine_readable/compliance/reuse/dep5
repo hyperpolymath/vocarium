@@ -49,9 +49,7 @@ Copyright: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 License: MPL-2.0
 
 # Git-cliff config
-# Path is .machine_readable/configs/git-cliff/cliff.toml; the inherited
-# template said 'Files: cliff.toml', a repo-root glob that matched nothing.
-Files: .machine_readable/configs/git-cliff/cliff.toml
+Files: cliff.toml
 Copyright: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 License: MPL-2.0
 

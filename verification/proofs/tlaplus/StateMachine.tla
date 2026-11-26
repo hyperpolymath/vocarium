@@ -48,8 +48,8 @@ Transition(newState) ==
     /\ ValidTransition(state, newState)
     /\ state' = newState
     /\ IF newState = "done"
-       THEN processed' = processed + 1
-       ELSE processed' = processed
+      THEN processed' = processed + 1
+      ELSE processed' = processed
     /\ UNCHANGED queue
 
 \* Enqueue a request (only when idle or scanning)

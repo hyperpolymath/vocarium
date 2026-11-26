@@ -187,13 +187,13 @@ crg-badge:
     @grade=$$(grep -oP '(?<=\*\*Current Grade:\*\* )[A-FX]' READINESS.md 2>/dev/null | head -1); \
     [ -z "$$grade" ] && grade="X"; \
     case "$$grade" in \
-      A) color="brightgreen" ;; \
-      B) color="green" ;; \
-      C) color="yellow" ;; \
-      D) color="orange" ;; \
-      E) color="red" ;; \
-      F) color="critical" ;; \
-      *) color="lightgrey" ;; \
+    A) color="brightgreen" ;; \
+    B) color="green" ;; \
+    C) color="yellow" ;; \
+    D) color="orange" ;; \
+    E) color="red" ;; \
+    F) color="critical" ;; \
+    *) color="lightgrey" ;; \
     esac; \
     echo "[![CRG $$grade](https://img.shields.io/badge/CRG-$$grade-$$color?style=flat-square)](https://github.com/hyperpolymath/standards/tree/main/component-readiness-grades)"
 

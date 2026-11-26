@@ -419,16 +419,16 @@ Recommended next evidence items:
 ```text
 1. Minimal JSON schemas for trope, grade, path, use-model, verdict, warrant.
 2. One full worked example:
-   source quotation → paraphrase → claim → verdict.
+  source quotation → paraphrase → claim → verdict.
 3. One passing case and three failing cases:
-   over-attenuated quality
-   dropped context
-   wrong record / force
+  over-attenuated quality
+  dropped context
+  wrong record / force
 4. A small CLI or fixture runner:
-   vocarium validate examples/*.json
+  vocarium validate examples/*.json
 5. A design note explaining exactly what Vocarium stores and what it delegates to Haec/Hermeneia.
 6. A no-overclaiming status table:
-   Designed / Schematized / Implemented / Tested / Integrated.
+  Designed / Schematized / Implemented / Tested / Integrated.
 ```
 
 Until those receipts exist, the safe claim is:

@@ -112,18 +112,18 @@ CRG v2.0 requires two new pieces of evidence on top of D:
 ** Start date: _<date of first dogfood-log entry>_.
 ** Home context: _<what "home" means for this project>_.
 ** "No known failures" is a moving claim — must hold continuously across
-   the evidence window (recommended: 4 weeks, daily use).
+  the evidence window (recommended: 4 weeks, daily use).
 ** Populate dogfooding evidence in `docs/status/` with one entry per capability:
-   `capability = "done — <concrete evidence>"`.
+  `capability = "done — <concrete evidence>"`.
 
 . *Deep code and folder annotation.*
 ** Per-directory orientation READMEs in every non-trivial source subtree.
 ** Per-file header comments: purpose, boundaries, invariants,
-   execution/test/proof surface.
+  execution/test/proof surface.
 ** Per-unit (cartridge/panel/plugin/module) README covering: purpose,
-   tools, architecture-at-a-glance, build steps. Overview-level alone is
-   not sufficient — depth is required where a reviewer would otherwise
-   have to read source to orient.
+  tools, architecture-at-a-glance, build steps. Overview-level alone is
+  not sufficient — depth is required where a reviewer would otherwise
+  have to read source to orient.
 
 *Minimum first-ring targets for C promotion:* list the trunk components
 here. If these aren't C, nothing else can be.

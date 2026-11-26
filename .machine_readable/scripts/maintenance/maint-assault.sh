@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-BINARY_NAME="{{project}}"
+BINARY_NAME="voc"  # build.zig: addExecutable name = "voc"
 REPORT_PATH="docs/reports/security/assault-latest.json"
 PA_BIN="${PANIC_ATTACK_BIN:-panic-attack}"
 
@@ -21,17 +21,17 @@ if ! command -v "$PA_BIN" &>/dev/null; then
     exit 1
 fi
 
-if [ ! -f "target/release/$BINARY_NAME" ]; then
-    echo "Warning: Release binary not found at target/release/$BINARY_NAME"
+if [ ! -f "zig-out/bin/$BINARY_NAME" ]; then
+    echo "Warning: binary not found at zig-out/bin/$BINARY_NAME"
     echo "Running build first..."
-    just build --release
+    just build -Doptimize=ReleaseSafe
 fi
 
 # 2. Run Assault
 echo "Initiating full assault on $BINARY_NAME..."
 mkdir -p "$(dirname "$REPORT_PATH")"
 
-"$PA_BIN" assault "target/release/$BINARY_NAME" \
+"$PA_BIN" assault "zig-out/bin/$BINARY_NAME" \
     --source . \
     --intensity medium \
     --duration 10 \

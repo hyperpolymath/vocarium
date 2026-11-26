@@ -19,8 +19,8 @@ verify-template:
 
     # Check for double-brace placeholder patterns
     HITS=$(grep -rn '{{'{{'}}[A-Z_]*{{'}}'}}' --include="*.adoc" --include="*.md" --include="*.deed" \
-           --include="*.scm" --include="*.toml" --include="*.yml" --include="*.yaml" \
-           . 2>/dev/null | grep -v 'node_modules\|\.git/' | grep -v 'PLACEHOLDERS.adoc' || true)
+          --include="*.scm" --include="*.toml" --include="*.yml" --include="*.yaml" \
+          . 2>/dev/null | grep -v 'node_modules\|\.git/' | grep -v 'PLACEHOLDERS.adoc' || true)
     if [ -n "$HITS" ]; then
         echo ""
         echo "⚠ Unreplaced placeholders found:"

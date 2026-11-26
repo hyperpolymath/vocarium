@@ -13,7 +13,8 @@ OUTPUT_FORMAT="${2:-human}"  # human | json | csv
 # ANSI colors
 BLUE='\033[0;34m'
 GREEN='\033[0;32m'
-# YELLOW was defined here and never used; the file has no warn() helper.
+# shellcheck disable=SC2034 # unused; kept for palette completeness
+YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 log_info() {
@@ -30,8 +31,8 @@ command -v /usr/bin/time >/dev/null 2>&1 || {
     TIME_CMD="time"
 }
 
-# shellcheck disable=SC2034  # retained for the timing helper a project adds
-TIME_CMD="${TIME_CMD:-time}"
+# shellcheck disable=SC2034 # unused; kept for parity with CI timing
+TIME_CMD="/usr/bin/time -f %e" 2>/dev/null || TIME_CMD="time"
 
 echo ""
 echo "═══════════════════════════════════════════════════════════════════════════════"

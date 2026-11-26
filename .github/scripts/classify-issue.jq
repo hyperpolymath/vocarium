@@ -55,15 +55,15 @@ def norm: (. // "") | ascii_downcase
 def kwrx($kw):
   ( "s|es|ed|d|ing|er|ers|y|ies"
     + (if   ($kw | endswith("at"))   then "|ion|ions|e"
-       elif ($kw | endswith("ment")) then "|ation|ations"
-       else "" end)
+      elif ($kw | endswith("ment")) then "|ation|ations"
+      else "" end)
   ) as $suf
   # Boundaries are conditional: a keyword not starting alphanumeric has no left
   # boundary to enforce, and one not ending alphanumeric takes no suffix.
   | (if ($kw | test("^[A-Za-z0-9]")) then "(?<![A-Za-z0-9])" else "" end)
   + ($kw | reesc)
   + (if ($kw | test("[A-Za-z0-9]$"))
-     then "(?:" + $suf + ")?(?![A-Za-z0-9])" else "" end);
+    then "(?:" + $suf + ")?(?![A-Za-z0-9])" else "" end);
 
 def kwhit($kw; $text): $text | test(kwrx($kw); "i");
 
@@ -77,8 +77,8 @@ def bracket($R; $t):
   (($t | capture("^[[:space:]]*\\[(?<tag>[^\\]]{1,25})\\]")) // null) as $m
   | if $m == null then {rule: null, rest: $t}
     else (($m.tag | norm | split("#")[0]) | norm) as $tag
-       | { rule: ($R.bracket_tag[$tag] // null),
-           rest: ($t | sub("^[[:space:]]*\\[[^\\]]{1,25}\\]"; "")) }
+      | { rule: ($R.bracket_tag[$tag] // null),
+          rest: ($t | sub("^[[:space:]]*\\[[^\\]]{1,25}\\]"; "")) }
     end;
 
 # Leading `word:` / `word(scope):` conventional-commit prefix.
@@ -86,11 +86,11 @@ def prefixrule($R; $t):
   (($t | capture("^[[:space:]]*(?<w>[A-Za-z][A-Za-z0-9_./-]{1,24})(?:[[:space:]]*\\([^)]*\\))?[[:space:]]*:")) // null) as $m
   | if $m == null then null
     else ($m.w | norm) as $k
-       # Compound prefixes such as "adaptive/must:" carry their meaning in the
-       # ISO 14764 category only; the modality does not label.
-       | (if ($R.prefix_split_on // "") != "" and ($k | contains($R.prefix_split_on))
+      # Compound prefixes such as "adaptive/must:" carry their meaning in the
+      # ISO 14764 category only; the modality does not label.
+      | (if ($R.prefix_split_on // "") != "" and ($k | contains($R.prefix_split_on))
           then ($k | split($R.prefix_split_on) | .[0]) else $k end) as $key
-       | ($R.title_prefix[$key] // null)
+      | ($R.title_prefix[$key] // null)
     end;
 
 def signals($R; $tl; $sec):
@@ -111,9 +111,9 @@ def enforce($R; $labels):
   ($labels | unique)
   | group_by($R.tier_of[.] // "?")
   | map( ($R.tier_of[.[0]] // "?") as $tier
-       | ($R.tier_max[$tier] // null) as $mx
-       | if $mx == null or (length <= $mx) then .
-         else (sort_by([($R.precedence[.] // 99), .]))[0:$mx] end )
+      | ($R.tier_max[$tier] // null) as $mx
+      | if $mx == null or (length <= $mx) then .
+        else (sort_by([($R.precedence[.] // 99), .]))[0:$mx] end )
   | flatten;
 
 def classify($R; $title; $have0):
@@ -132,7 +132,7 @@ def classify($R; $title; $have0):
   | ($l1 + $l2 + signals($R; $tl; "keyword_area")) as $acc
   # 4. a type only if neither the rules nor the issue already supplied one
   | (if (($acc + $have) | any(. as $x | $types | index($x)))
-     then null else kwtype($R; $tl) end)           as $ty
+    then null else kwtype($R; $tl) end)           as $ty
   | ($acc + (if $ty != null then [$ty] else [] end))             as $acc
   | ($matched0 or ($ty != null))                   as $matched
   | ( $acc

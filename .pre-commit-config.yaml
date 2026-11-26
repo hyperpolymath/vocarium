@@ -12,7 +12,7 @@ ci:
 repos:
   # --- Standard hooks ---
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       # License texts are third-party/owner-controlled; never auto-format them.
       - id: trailing-whitespace
@@ -21,6 +21,10 @@ repos:
         exclude: '^(LICENSE|LICENSES/.*)$'
       - id: check-yaml
       - id: check-json
+        # .devcontainer/devcontainer.json is JSONC by design (the Dev Container
+        # config spec allows // comments) and ships in the estate with them
+        # (e.g. rsr-template-repo, trope-checker); it can never parse as JSON.
+        exclude: '^\.devcontainer/devcontainer\.json$'
       - id: check-toml
       - id: check-merge-conflict
       - id: detect-private-key
@@ -29,20 +33,20 @@ repos:
 
   # --- Shell linting ---
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.10.0.1
+    rev: v0.11.0.1-1
     hooks:
       - id: shellcheck
 
   # --- EditorConfig ---
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
-    rev: 3.2.1
+    rev: 3.11.1
     hooks:
       - id: editorconfig-checker
         exclude: '(^LICENSE$|^LICENSES/|\.git/|node_modules/|target/|_build/|deps/|\.deno/|external_corpora/|\.lake/)'
 
   # --- Secret detection ---
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.24.3
+    rev: v8.30.0
     hooks:
       - id: gitleaks
 

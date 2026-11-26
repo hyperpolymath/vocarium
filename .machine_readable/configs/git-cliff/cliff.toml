@@ -4,10 +4,9 @@
 # git-cliff configuration for conventional commit changelog generation.
 # https://git-cliff.org/docs/configuration
 #
-# The `remote_url` macro below is a LIVE Tera template: whatever is written in
-# it is rendered into every generated changelog, so the repository URL must be
-# literal. It read `https://github.com/OWNER/REPO` as a mint placeholder, which
-# emitted those literal braces into CHANGELOG.adoc.
+# Placeholders — replace before first use:
+#   hyperpolymath — GitHub organization or username
+#   vocarium  — GitHub repository name
 
 [changelog]
 # Changelog header

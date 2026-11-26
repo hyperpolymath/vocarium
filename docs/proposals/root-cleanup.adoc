@@ -224,7 +224,7 @@ For each downstream repo (start with `the-nash-equilibrium`):
 2. Copy the new `.machine_readable/root-allow.txt` and adapt comments/extras.
 3. Update internal links (README, docs, Justfile recipes).
 4. Run `just check-root-shape` and `scripts/validate-template.sh` to confirm
-   shape parity with the template.
+  shape parity with the template.
 
 == Out of scope (mentioned for follow-up)
 
