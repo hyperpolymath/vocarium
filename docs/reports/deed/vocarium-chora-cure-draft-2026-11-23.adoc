@@ -124,8 +124,12 @@ Apply *after* filing, in this repository, as a single PR:
    * `:repo-uuid #u8"chora-registry:github.com/hyperpolymath/vocarium"` →
      `:repo-uuid #uuid"<id minted by the registry>"`.
    * `(clade :primary db :secondary () :rationale …)` →
-     `(clade (placement :scheme clade-12 :category <as recorded by the registry>
-     :primary #t))` — with the old rationale kept only as a `;;` comment
+     `(clade (placement :scheme clade-12 :category <primary as recorded by the registry>
+     :primary #t) (placement :scheme clade-12 :category <further as recorded>
+     :rank 1) …)` — copy the complete clade-12 placement set the registry holds:
+     one `:primary #t`, then one `:rank n` per further category, ranks 1 to n
+     with no gap; "as recorded" applies to each `:category`, not to how many
+     placements there are — with the old rationale kept only as a `;;` comment
      above the clause if the owner wants the history (#1685 pattern).
    * Header comment: drop the "deterministic profile-C name, not a claim that
      a registry entry has already been minted" note; keep the truth — the id
@@ -138,11 +142,16 @@ Apply *after* filing, in this repository, as a single PR:
 5. Verification for that PR:
    * `deed_lint.js` (standards, deed.abnf v1.3.0) on `vocarium_chora.deed`
      and the four descriptiles;
-   * `scripts/check-uuid-v8.sh --strict` (no `.uuid-v8-exempt` entry);
+   * `scripts/check-uuid-v8.sh --strict` from a checkout of metadatastician/standards
+     (the checker is not in this repository), run as
+     `sh <standards>/scripts/check-uuid-v8.sh --strict <vocarium checkout>`, so it
+     scans this repository and not the current directory (no `.uuid-v8-exempt`
+     entry);
    * `.github/hooks/validate-deed.sh` → exit 0;
    * `.github/workflows` K9 contract validation → unchanged files still pass;
-   * the CA1 migration gets the one-release warning note in the PR body, not
-     in the deed.
+   * the CA1 one-release warning (a flat-form `(clade …)` read with a warning)
+     is validator behaviour tracked separately; a note in the PR body does not
+     satisfy it.
 6. Explicit non-goals of the cure PR: no registry change, no id computation,
    no clade re-placement, no CLADE.deed (blocked by A7 M3 / standards#1648).
 
