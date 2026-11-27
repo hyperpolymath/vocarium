@@ -170,6 +170,9 @@ validate_k9() {
     local yaml_pedigree=false
 
     line_num=0
+    # shellcheck disable=SC2094  # this pipeline only READS "$file"; nothing here
+    # writes to it, so the "same file in the same pipeline" heuristic misfires.
+    # ShellCheck is misled by the loop variable being named `line`.
     while IFS= read -r line; do
         line_num=$((line_num + 1))
 
