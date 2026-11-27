@@ -50,7 +50,7 @@ contains identity and ecosystem information. Do not add state files to the root.
 
 | Banned              | Use Instead        |
 |---------------------|--------------------|
-| TypeScript          | ReScript           |
+| TypeScript          | AffineScript       |
 | Node.js / npm / bun | Deno               |
 | Go                  | Rust               |
 | Python              | Julia / Rust       |
